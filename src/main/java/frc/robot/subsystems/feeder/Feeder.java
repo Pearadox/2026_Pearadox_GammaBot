@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems.feeder;
 
-import com.ctre.phoenix6.hardware.CANrange;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,10 +17,10 @@ public class Feeder extends SubsystemBase {
   private final FeederIOInputsAutoLogged inputs = new FeederIOInputsAutoLogged();
   private FeederState feederState = FeederState.RUNNING;
 
-  private final CANrange canRange = new CANrange(FeederConstants.CANRANGE_CAN_ID);
   private Debouncer canRangeDebouncer = new Debouncer(0.125, DebounceType.kFalling);
   private int fuelCount = 0;
   private boolean lastDetected = false;
+
   /** Creates a new Feeder. */
   public Feeder(FeederIO io) {
     this.io = io;
@@ -50,11 +49,11 @@ public class Feeder extends SubsystemBase {
   }
 
   public boolean isDetectedDebounced() {
-    return canRangeDebouncer.calculate(canRange.getIsDetected().getValue());
+    return canRangeDebouncer.calculate(inputs.canRangeIsDetected);
   }
 
   public double canRangeGetDistanceMeters() {
-    return canRange.getDistance().getValueAsDouble();
+    return inputs.canRangeDistanceMeters;
   }
 
   public void updateFuelCount() {

@@ -18,7 +18,7 @@ public abstract class FeederIOTalonFX implements FeederIO {
   private VoltageOut feederControl;
 
   private CANrange canRange;
-  private CANrangeConfiguration CAN_RANGE_CONFIG = FeederConstants.createCaNrangeConfig();
+  private CANrangeConfiguration CAN_RANGE_CONFIG = FeederConstants.createCANrangeConfig();
 
   public FeederIOTalonFX() {
     feeder =
@@ -34,6 +34,9 @@ public abstract class FeederIOTalonFX implements FeederIO {
   @Override
   public void updateInputs(FeederIOInputsAutoLogged inputs) {
     inputs.feederData = feeder.getData();
+    
+    inputs.canRangeDistanceMeters = canRange.getDistance().getValueAsDouble();
+    inputs.canRangeIsDetected = canRange.getIsDetected().getValue();
   }
 
   @Override

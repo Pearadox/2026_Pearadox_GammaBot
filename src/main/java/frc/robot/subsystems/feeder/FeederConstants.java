@@ -70,7 +70,7 @@ public class FeederConstants {
   //   canRangeConfig.ToFParams.UpdateMode = UpdateModeValue.ShortRange100Hz;
   // }
 
-  public static CANrangeConfiguration createCaNrangeConfig() {
+  public static CANrangeConfiguration createCANrangeConfig() {
     CANrangeConfiguration canRangeConfig = new CANrangeConfiguration();
     canRangeConfig.ProximityParams.MinSignalStrengthForValidMeasurement = 2000;
     canRangeConfig.ProximityParams.ProximityThreshold = 0.1;
