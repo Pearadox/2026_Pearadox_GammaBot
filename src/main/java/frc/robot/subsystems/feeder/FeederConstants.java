@@ -24,7 +24,7 @@ public class FeederConstants {
   }
 
   public static record StateConfig(double voltage) {
-    public static final Map<FeederState, StateConfig> SPINDEXER_STATE_MAP =
+    public static final Map<FeederState, StateConfig> FEEDER_STATE_MAP =
         Map.of(
             FeederState.STOPPED, new StateConfig(0),
             FeederState.RUNNING, new StateConfig(-5.414));
@@ -61,11 +61,21 @@ public class FeederConstants {
   }
 
   // canRange constants
-  public static final CANrangeConfiguration canRangeConfig = new CANrangeConfiguration();
+  public static final int CANRANGE_CAN_ID = 25;
+  // public static final CANrangeConfiguration canRangeConfig = new CANrangeConfiguration();
 
-  public static final void getCanRangeConfig() {
+  // public static final void getCanRangeConfig() {
+  //   canRangeConfig.ProximityParams.MinSignalStrengthForValidMeasurement = 2000;
+  //   canRangeConfig.ProximityParams.ProximityThreshold = 0.1;
+  //   canRangeConfig.ToFParams.UpdateMode = UpdateModeValue.ShortRange100Hz;
+  // }
+
+  public static CANrangeConfiguration createCaNrangeConfig() {
+    CANrangeConfiguration canRangeConfig = new CANrangeConfiguration();
     canRangeConfig.ProximityParams.MinSignalStrengthForValidMeasurement = 2000;
     canRangeConfig.ProximityParams.ProximityThreshold = 0.1;
     canRangeConfig.ToFParams.UpdateMode = UpdateModeValue.ShortRange100Hz;
+    return canRangeConfig;
+
   }
 }

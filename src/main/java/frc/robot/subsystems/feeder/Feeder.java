@@ -18,15 +18,14 @@ public class Feeder extends SubsystemBase {
   private final FeederIOInputsAutoLogged inputs = new FeederIOInputsAutoLogged();
   private FeederState feederState = FeederState.RUNNING;
 
-  private final CANrange canRange = new CANrange(4);
+  private final CANrange canRange = new CANrange(FeederConstants.CANRANGE_CAN_ID);
   private Debouncer canRangeDebouncer = new Debouncer(0.125, DebounceType.kFalling);
   private int fuelCount = 0;
   private boolean lastDetected = false;
-
   /** Creates a new Feeder. */
   public Feeder(FeederIO io) {
     this.io = io;
-    canRange.getConfigurator().apply(FeederConstants.canRangeConfig);
+    // canRange.getConfigurator().apply(FeederConstants.canRangeConfig);
   }
 
   @Override
@@ -37,7 +36,8 @@ public class Feeder extends SubsystemBase {
     Logger.recordOutput("Feeder/CanRange/Distance from Fuel", canRangeGetDistanceMeters());
     Logger.recordOutput("Feeder/CanRange/FuelIsDetected", isDetectedDebounced());
     Logger.recordOutput("Feeder/CanRange/Number of Fuel", getFuelCount());
-    io.runFeederVoltage(StateConfig.SPINDEXER_STATE_MAP.get(feederState).voltage());
+    io.runFeederVoltage(StateConfig.FEEDER_STATE_MAP.get(feederState).voltage());
+    updateFuelCount();
   }
 
 
