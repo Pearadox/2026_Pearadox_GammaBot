@@ -70,7 +70,7 @@ public class LauncherConstants {
   public static final int SERVO_MAX_PULSE_WIDTH = 2500;
   public static final int SERVO_MIN_PULSE_WIDTH = 500;
 
-  public static final double SERVO_POSITION_TO_ROTATIONS_CONVERSION = 5;
+  public static final double SERVO_POSITION_TO_ROTATIONS_CONVERSION = 4;
   public static final double SERVO_POSITION_TO_PW_CONVERSION = 2000;
   public static final double SERVO_ROTATIONS_TO_PW_CONVERSION = 400;
 
