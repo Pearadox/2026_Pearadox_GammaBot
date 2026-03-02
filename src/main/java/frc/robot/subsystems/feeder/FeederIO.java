@@ -13,6 +13,8 @@ public interface FeederIO {
   @AutoLog
   public static class FeederIOInputs {
     public MotorData feederData = new MotorData();
+    public double canRangeDistanceMeters = 0.0;
+    public boolean canRangeIsDetected = false;
   }
 
   public default void updateInputs(FeederIOInputsAutoLogged inputs) {}

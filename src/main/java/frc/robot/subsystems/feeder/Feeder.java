@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.feeder;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.feeder.FeederConstants.FeederState;
 import frc.robot.subsystems.feeder.FeederConstants.StateConfig;
@@ -15,9 +17,14 @@ public class Feeder extends SubsystemBase {
   private final FeederIOInputsAutoLogged inputs = new FeederIOInputsAutoLogged();
   private FeederState feederState = FeederState.RUNNING;
 
+  private Debouncer canRangeDebouncer = new Debouncer(0.125, DebounceType.kFalling);
+  private int fuelCount = 0;
+  private boolean lastDetected = false;
+
   /** Creates a new Feeder. */
   public Feeder(FeederIO io) {
     this.io = io;
+    // canRange.getConfigurator().apply(FeederConstants.canRangeConfig);
   }
 
   @Override
@@ -25,8 +32,13 @@ public class Feeder extends SubsystemBase {
     // This method will be called once per scheduler run
     io.updateInputs(inputs);
     Logger.processInputs("FeederInputs", inputs);
-    io.runFeederVoltage(StateConfig.SPINDEXER_STATE_MAP.get(feederState).voltage());
+    Logger.recordOutput("Feeder/CanRange/Distance from Fuel", canRangeGetDistanceMeters());
+    Logger.recordOutput("Feeder/CanRange/FuelIsDetected", isDetectedDebounced());
+    Logger.recordOutput("Feeder/CanRange/Number of Fuel", getFuelCount());
+    io.runFeederVoltage(StateConfig.FEEDER_STATE_MAP.get(feederState).voltage());
+    updateFuelCount();
   }
+
 
   public void setStopped() {
     feederState = FeederState.STOPPED;
@@ -34,6 +46,26 @@ public class Feeder extends SubsystemBase {
 
   public void setRunning() {
     feederState = FeederState.RUNNING;
+  }
+
+  public boolean isDetectedDebounced() {
+    return canRangeDebouncer.calculate(inputs.canRangeIsDetected);
+  }
+
+  public double canRangeGetDistanceMeters() {
+    return inputs.canRangeDistanceMeters;
+  }
+
+  public void updateFuelCount() {
+    boolean isDetectedDebounced = isDetectedDebounced();
+    if (isDetectedDebounced && !lastDetected) {
+      fuelCount++;
+    }
+    lastDetected = isDetectedDebounced;
+  }
+
+  public int getFuelCount() {
+    return fuelCount;
   }
 
   // public void launch() {
