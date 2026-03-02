@@ -58,9 +58,9 @@ public class LauncherConstants {
   }
 
   // SERVO
-  public static final int HOOD_SERVO_HUB_CAN_ID = 0; // TODO: set
+  public static final int HOOD_SERVO_HUB_CAN_ID = 23; // TODO: set
   public static final ChannelId HOOD_1_ID = ChannelId.kChannelId0; // TODO: set
-  public static final ChannelId HOOD_2_ID = ChannelId.kChannelId1; // TODO: set
+  public static final ChannelId HOOD_2_ID = ChannelId.kChannelId5; // TODO: set
 
   public static final double HOOD_GEARING = 25 / 12; // TODO: double check
 
@@ -70,9 +70,10 @@ public class LauncherConstants {
   public static final int SERVO_MAX_PULSE_WIDTH = 2500;
   public static final int SERVO_MIN_PULSE_WIDTH = 500;
 
-  public static final double SERVO_POSITION_TO_ROTATIONS_CONVERSION = 4;
+  public static final double SERVO_POSITION_TO_ROTATIONS_CONVERSION = 4.25;
   public static final double SERVO_POSITION_TO_PW_CONVERSION = 2000;
-  public static final double SERVO_ROTATIONS_TO_PW_CONVERSION = 400;
+  public static final double SERVO_ROTATIONS_TO_PW_CONVERSION =
+      SERVO_POSITION_TO_PW_CONVERSION / SERVO_POSITION_TO_ROTATIONS_CONVERSION;
 
   public static final double pulseWidthtoAngularPosition(int pulseWidth) {
     return (pulseWidth - SERVO_MIN_PULSE_WIDTH) / SERVO_POSITION_TO_PW_CONVERSION;

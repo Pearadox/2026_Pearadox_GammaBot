@@ -71,13 +71,14 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
         && angleRads > LauncherConstants.HOOD_MIN_ANGLE_RADS) {
       double angleRadsFromMinimum = angleRads - LauncherConstants.HOOD_MIN_ANGLE_RADS;
 
-      double angularPosition =
-          (Units.radiansToRotations(angleRadsFromMinimum) * LauncherConstants.HOOD_GEARING) / LauncherConstants.SERVO_POSITION_TO_ROTATIONS_CONVERSION;
+      double servoRotations =
+          (Units.radiansToRotations(angleRadsFromMinimum) * LauncherConstants.HOOD_GEARING)
+              / LauncherConstants.SERVO_POSITION_TO_ROTATIONS_CONVERSION;
 
-      hoodServo1.setPulseWidth(LauncherConstants.angularPositiontoPulseWidth(angularPosition));
+      hoodServo1.setPulseWidth(LauncherConstants.rotationstoPulseWidth(servoRotations));
       hoodServo2.setPulseWidth(
           LauncherConstants.SERVO_MAX_PULSE_WIDTH
-              - LauncherConstants.angularPositiontoPulseWidth(angularPosition));
+              - LauncherConstants.rotationstoPulseWidth(servoRotations));
     } else {
       Logger.recordOutput("HoodAngleOutOfRange", angleRads);
     }
