@@ -31,6 +31,7 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.feeder.Feeder;
+import frc.robot.subsystems.feeder.FeederIO;
 import frc.robot.subsystems.feeder.FeederIOReal;
 import frc.robot.subsystems.feeder.FeederIOSim;
 import frc.robot.subsystems.intake.Intake;
@@ -38,11 +39,13 @@ import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.launcher.Launcher;
+import frc.robot.subsystems.launcher.LauncherIO;
 import frc.robot.subsystems.launcher.LauncherIOReal;
 import frc.robot.subsystems.launcher.LauncherIOSim;
 import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerIO;
 import frc.robot.subsystems.spindexer.SpindexerIOReal;
+import frc.robot.subsystems.spindexer.SpindexerIOSim;
 import frc.robot.subsystems.turret.Turret;
 import frc.robot.subsystems.turret.TurretIO;
 import frc.robot.subsystems.turret.TurretIOReal;
@@ -115,7 +118,7 @@ public class RobotContainer {
         feeder = new Feeder(new FeederIOSim());
         intake = new Intake(new IntakeIOSim());
         launcher = new Launcher(new LauncherIOSim());
-        spindexer = new Spindexer(new SpindexerIO() {}); // TODO: make spindexer sim
+        spindexer = new Spindexer(new SpindexerIOSim());
         turret = new Turret(new TurretIOSim(), drive::getChassisSpeeds, drive::getRotation);
         vision = new Vision(drive::addVisionMeasurement);
 
@@ -131,9 +134,9 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
 
-        feeder = new Feeder(new FeederIOSim() {}); // TODO make blank IO
+        feeder = new Feeder(new FeederIO() {});
         intake = new Intake(new IntakeIO() {});
-        launcher = new Launcher(new LauncherIOSim()); // TODO make blank IO
+        launcher = new Launcher(new LauncherIO() {});
         spindexer = new Spindexer(new SpindexerIO() {});
         turret = new Turret(new TurretIO() {}, drive::getChassisSpeeds, drive::getRotation);
         vision = new Vision(drive::addVisionMeasurement);
@@ -159,12 +162,6 @@ public class RobotContainer {
         "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
-    // vision =
-    // new Vision(
-    // drive::addVisionMeasurement,
-    // new VisionIOPhotonVision(VisionConstants.camera0Name,
-    // VisionConstants.robotToCamera0));
 
     visualizer =
         new RobotVisualizer(
@@ -249,7 +246,7 @@ public class RobotContainer {
 
     opController.a().onTrue(new InstantCommand(() -> turret.goToZero(), turret));
     opController.b().onTrue(new InstantCommand(() -> turret.goToPlus180(), turret));
-    opController.x().onTrue(new InstantCommand(() -> turret.goToMinus180(), turret));
+    // opController.x().onTrue(new InstantCommand(() -> turret.goToMinus180(), turret));
     opController
         .y()
         .onTrue(
@@ -260,8 +257,9 @@ public class RobotContainer {
                 },
                 turret));
 
-    opController.x().whileTrue(new InstantCommand(() -> intake.setIntaking()));
-    opController.x().whileFalse(new InstantCommand(() -> intake.setDeployed()));
+    // opController.povLeft().whileTrue(new InstantCommand(() -> intake.setIntaking()));
+    drivercontroller.povUp().onTrue(new InstantCommand(() -> intake.setDeployed()));
+    drivercontroller.povDown().onTrue(new InstantCommand(() -> intake.setStowed()));
 
     // drivercontroller.y().onTrue(new InstantCommand(() -> launcher.setPassing()));
     // drivercontroller.a().onTrue(new InstantCommand(() -> launcher.setScoring()));

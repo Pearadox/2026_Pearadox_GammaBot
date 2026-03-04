@@ -46,7 +46,7 @@ public class Launcher extends SubsystemBase {
         LauncherConstants.angularPositiontoRotations(inputs.hoodServo1Position)
             / LauncherConstants.HOOD_GEARING); // 5 because 1.0 position -> 5 rotations
 
-    setVelocity(40);
+    // setVelocity(67);
   }
 
   /** velocity will be calculated from aim assist command factory */

@@ -28,7 +28,7 @@ public class Spindexer extends SubsystemBase {
     SmarterDashboard.putNumber(
         "Spindexer/SupplyCurrent", inputs.spindexerMotorData.supplyCurrent());
 
-    io.runSpindexerVoltage(StateConfig.SPINDEXER_STATE_MAP.get(spindexerState).voltage());
+    // io.runSpindexerVoltage(StateConfig.SPINDEXER_STATE_MAP.get(spindexerState).voltage());
   }
 
   public void setStopped() {

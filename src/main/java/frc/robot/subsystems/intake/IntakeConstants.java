@@ -34,9 +34,6 @@ public class IntakeConstants {
   // roller constants
   public static final int ROLLER_1_LEADER_ID = 31;
   public static final int ROLLER_2_FOLLOWER_ID = 32;
-  public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Brake;
-  public static final int CURRENT_LIMIT = 50;
-  public static final boolean INVERTED = false;
 
   // pivot constants
   public static final int PIVOT_ID = 30;
@@ -56,9 +53,9 @@ public class IntakeConstants {
   public static final TalonFXConfiguration getRollerConfigTalonFX() {
 
     ROLLER_CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
-    ROLLER_CONFIG.CurrentLimits.SupplyCurrentLimit = 40;
+    ROLLER_CONFIG.CurrentLimits.SupplyCurrentLimit = 60;
     ROLLER_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
-    ROLLER_CONFIG.CurrentLimits.StatorCurrentLimit = 40;
+    ROLLER_CONFIG.CurrentLimits.StatorCurrentLimit = 60;
 
     ROLLER_SLOT0_CONFIGS.kP = 0.1;
     ROLLER_SLOT0_CONFIGS.kI = 0.0;

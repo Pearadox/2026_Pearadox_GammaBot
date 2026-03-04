@@ -13,6 +13,10 @@ public interface IntakeIO {
 
   public default void updateInputs(IntakeIOInputs inputs) {}
 
+  public default void runRollersAmps(double amps, double maxDutyOut) {}
+
+  public default void runRollersVelocityTorqueCurrentFOC(double velocity) {}
+
   public default void runRollersVolts(double volts) {}
 
   public default void runPositionDegrees(double degrees) {}

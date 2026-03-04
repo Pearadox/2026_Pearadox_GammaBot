@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.feeder;
 
-import java.util.Map;
-
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -72,10 +70,9 @@ public class FeederConstants {
 
   public static CANrangeConfiguration createCANrangeConfig() {
     CANrangeConfiguration canRangeConfig = new CANrangeConfiguration();
-    canRangeConfig.ProximityParams.MinSignalStrengthForValidMeasurement = 2000;
-    canRangeConfig.ProximityParams.ProximityThreshold = 0.1;
+    canRangeConfig.ProximityParams.MinSignalStrengthForValidMeasurement = 10000;
+    canRangeConfig.ProximityParams.ProximityThreshold = 0.02;
     canRangeConfig.ToFParams.UpdateMode = UpdateModeValue.ShortRange100Hz;
     return canRangeConfig;
-
   }
 }
