@@ -16,7 +16,7 @@ public abstract class IntakeIOTalonFX implements IntakeIO {
   protected final PositionVoltage pivotPositionVoltage;
   protected final VoltageOut rollerVoltage;
   protected final Follower followerRequest;
-  // protected final TorqueCurrentFOC torqueCurrentFOC;
+  protected final TorqueCurrentFOC torqueCurrentFOC;
   protected final VelocityTorqueCurrentFOC velocityTorqueCurrentFOC;
 
   // private TalonFXConfiguration rollerConfigs;
@@ -36,7 +36,7 @@ public abstract class IntakeIOTalonFX implements IntakeIO {
     pivotMotor =
         new PearadoxTalonFX(IntakeConstants.PIVOT_ID, IntakeConstants.getPivotConfigTalonFX());
     pivotPositionVoltage = new PositionVoltage(0);
-    // torqueCurrentFOC = new TorqueCurrentFOC(0);
+    torqueCurrentFOC = new TorqueCurrentFOC(0);
     velocityTorqueCurrentFOC = new VelocityTorqueCurrentFOC(0);
 
     rollerVoltage = new VoltageOut(0);
@@ -52,13 +52,13 @@ public abstract class IntakeIOTalonFX implements IntakeIO {
     inputs.pivotMotorData = pivotMotor.getData();
   }
 
-  // @Override
-  // public void runRollersAmps(double amps) {
-  //   // roller1Leader.setControl(rollerVoltage.withOutput(volts));
-  //   roller1Leader.setControl(velocityTorqueCurrentFOC.withOutput(amps).withMaxAbsDutyCycle(0.7));
+  @Override
+  public void runRollersAmps(double amps, double maxDutyOut) {
+    // roller1Leader.setControl(rollerVoltage.withOutput(volts));
+    roller1Leader.setControl(torqueCurrentFOC.withOutput(amps).withMaxAbsDutyCycle(maxDutyOut));
 
-  //   roller2Follower.setControl(followerRequest);
-  // }
+    roller2Follower.setControl(followerRequest);
+  }
 
   @Override
   public void runRollersVelocityTorqueCurrentFOC(double velocity) {
@@ -66,6 +66,11 @@ public abstract class IntakeIOTalonFX implements IntakeIO {
     roller1Leader.setControl(velocityTorqueCurrentFOC.withVelocity(velocity));
 
     roller2Follower.setControl(followerRequest);
+  }
+
+  @Override
+  public void runRollersVolts(double volts) {
+    roller1Leader.setControl(rollerVoltage.withOutput(volts));
   }
 
   @Override

@@ -19,11 +19,12 @@ public class Intake extends SubsystemBase {
 
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
-  private static LoggedTunableNumber loggedIntakeRollerVoltage =
-      new LoggedTunableNumber("Intake/Voltage", 4.0);
+  // private static LoggedTunableNumber loggedIntakeRollerVoltage =
+  //     new LoggedTunableNumber("Intake/Voltage", 4.0);
 
   private static LoggedTunableNumber loggedIntakeStatorCurrent =
-      new LoggedTunableNumber("Intake/StatorCurrent", 60.0);
+      new LoggedTunableNumber("Intake/StatorCurrent", 45.0);
+  private static LoggedTunableNumber maxDuty = new LoggedTunableNumber("Intake/Maxduty", 0.4);
 
   @Override
   public void periodic() {
@@ -33,7 +34,7 @@ public class Intake extends SubsystemBase {
 
     Logger.recordOutput("Intake/State", intakeState.toString());
 
-    io.runRollersAmps(loggedIntakeStatorCurrent.get());
+    io.runRollersAmps(loggedIntakeStatorCurrent.get(), maxDuty.get());
 
     io.runPositionDegrees(StateConfig.INTAKE_STATE_MAP.get(intakeState).angleDeg());
     MechVisualizer.getInstance()
