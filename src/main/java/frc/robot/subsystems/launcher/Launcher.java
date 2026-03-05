@@ -47,7 +47,7 @@ public class Launcher extends SubsystemBase {
         desiredVelocity = RobotContainer.getShotSolution().getShooterSpeedRPS();
 
     }
-    else if(currentScoringMode == ScoringMode.PARTIAL_MANUAL) {
+    else if(currentScoringMode == ScoringMode.PARTIAL_AUTO) {
 
         desiredVelocity = RobotContainer.getShouldSOTM() ? RobotContainer.getShotSolution().getShooterSpeedRPS() : 0;
 

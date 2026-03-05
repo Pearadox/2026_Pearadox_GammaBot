@@ -94,7 +94,7 @@ public class Turret extends SubsystemBase {
 
     ScoringMode currentScoringMode = RobotContainer.getScoringMode();
 
-    if(currentScoringMode == ScoringMode.FULLY_AUTO || currentScoringMode == ScoringMode.PARTIAL_MANUAL) {
+    if(currentScoringMode == ScoringMode.FULLY_AUTO || currentScoringMode == ScoringMode.PARTIAL_AUTO) {
 
         followFieldCentricTarget(() -> 
               RobotContainer.getShotSolution().getTurretAngleRot2d().plus(new Rotation2d(turretRotationAdjust)));
@@ -107,8 +107,6 @@ public class Turret extends SubsystemBase {
               getFieldRelativeTurretAngleRotation2d().plus(new Rotation2d(turretRotationAdjust)));
 
     }
-
-
   }
 
   /** Follows a robot-centric angle. */

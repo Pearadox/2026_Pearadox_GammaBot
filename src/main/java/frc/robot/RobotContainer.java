@@ -84,11 +84,11 @@ public class RobotContainer {
 
   public enum ScoringMode {
     FULLY_AUTO,
-    PARTIAL_MANUAL,
+    PARTIAL_AUTO,
     FULLY_MANUAL
   }
 
-  @Getter @Setter private static ScoringMode scoringMode = ScoringMode.PARTIAL_MANUAL;
+  @Getter @Setter private static ScoringMode scoringMode = ScoringMode.PARTIAL_AUTO;
 
   @Setter private static boolean shouldSOTM = false;
 
@@ -268,7 +268,7 @@ public class RobotContainer {
     Trigger shouldCalculateShotSolutionTrigger =
         new Trigger(() ->
             scoringMode == ScoringMode.FULLY_AUTO ||
-            scoringMode == ScoringMode.PARTIAL_MANUAL);
+            scoringMode == ScoringMode.PARTIAL_AUTO);
 
     shouldCalculateShotSolutionTrigger.whileTrue(
         new RunCommand(() ->
@@ -284,7 +284,7 @@ public class RobotContainer {
     Trigger shouldShootOnTheMoveTrigger =
         new Trigger(() ->
             scoringMode == ScoringMode.FULLY_AUTO ||
-            (scoringMode == ScoringMode.PARTIAL_MANUAL &&
+            (scoringMode == ScoringMode.PARTIAL_AUTO &&
             drivercontroller.rightBumper().getAsBoolean())
         );
 
@@ -301,7 +301,7 @@ public class RobotContainer {
     );
 
     opController.a().onTrue(new InstantCommand(() -> setScoringMode(ScoringMode.FULLY_AUTO)));
-    opController.b().onTrue(new InstantCommand(() -> setScoringMode(ScoringMode.PARTIAL_MANUAL)));
+    opController.b().onTrue(new InstantCommand(() -> setScoringMode(ScoringMode.PARTIAL_AUTO)));
     opController.y().onTrue(new InstantCommand(() -> setScoringMode(ScoringMode.FULLY_MANUAL)));
 
     opController.povLeft().whileTrue(new RunCommand(() -> turret.adjustRotation(+0.01)));
