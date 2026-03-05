@@ -7,33 +7,13 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 
 public final class TurretConstants {
-  public static final TalonFXConfiguration getTurretConfig() {
-    TalonFXConfiguration config = new TalonFXConfiguration();
-
-    config.CurrentLimits.SupplyCurrentLimitEnable = true;
-    config.CurrentLimits.SupplyCurrentLimit = 50;
-    config.CurrentLimits.StatorCurrentLimitEnable = true;
-    config.CurrentLimits.StatorCurrentLimit = 50;
-
-    config.MotionMagic.MotionMagicCruiseVelocity = 67;
-    config.MotionMagic.MotionMagicAcceleration = 300;
-
-    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-
-    config.Slot0.kS = 0.0;
-    config.Slot0.kV = 0.0;
-    config.Slot0.kA = 0.0;
-    config.Slot0.kP = 0.1;
-    config.Slot0.kI = 0.0;
-    config.Slot0.kD = 0.0;
-
-    return config;
-  }
-
   public static final int TURRET_ID = 20;
   public static final double TURRET_GEAR_RATIO = 500. / 9.; // ~55.55:1, (100/9)(50/20)(32/16)
   public static final double TURRET_P_COEFFICIENT = 2 * Math.PI / TURRET_GEAR_RATIO;
+
+  public static final int TURRET_SUPPLY_CURRENT_LIMIT = 40; // changed to match the breaker
+  public static final int TURRET_STATOR_CURRENT_LIMIT =
+      35; // originally 50 on 3/3/2026 during testing
 
   public static final double TURRET_STARTING_ANGLE = Units.degreesToRadians(0);
   public static final double TURRET_MIN_ANGLE = Units.degreesToRadians(-270); // TODO: update
@@ -70,4 +50,28 @@ public final class TurretConstants {
   public static final int TURRET_CANCODER_OFFSET_ROTS = 0; // TODO
 
   public static final double TURRET_TO_CANCODER_RATIO = 1. / 3.;
+
+  public static final TalonFXConfiguration getTurretConfig() {
+    TalonFXConfiguration config = new TalonFXConfiguration();
+
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLimit = TURRET_SUPPLY_CURRENT_LIMIT;
+    config.CurrentLimits.StatorCurrentLimitEnable = true;
+    config.CurrentLimits.StatorCurrentLimit = TURRET_STATOR_CURRENT_LIMIT;
+
+    config.MotionMagic.MotionMagicCruiseVelocity = 67;
+    config.MotionMagic.MotionMagicAcceleration = 300;
+
+    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+    config.Slot0.kS = 0.0;
+    config.Slot0.kV = 0.0;
+    config.Slot0.kA = 0.0;
+    config.Slot0.kP = 0.1;
+    config.Slot0.kI = 0.0;
+    config.Slot0.kD = 0.0;
+
+    return config;
+  }
 }

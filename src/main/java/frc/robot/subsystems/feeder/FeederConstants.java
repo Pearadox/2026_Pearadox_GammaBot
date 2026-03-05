@@ -30,7 +30,11 @@ public class FeederConstants {
 
   // feeder constants
   public static final int FEEDER_CAN_ID = 41;
-  public static final int FEEDER_CURRENT_LIMIT = 50;
+
+  public static final int FEEDER_SUPPLY_CURRENT_LIMIT = 40; // changed to match the breaker
+  public static final int FEEDER_STATOR_CURRENT_LIMIT =
+      35; // originally 40 on 3/3/2026 during testing
+
   public static final double FEEDER_GEARING =
       12.0 / 20.0; // ratio of teeth on motor to teeth on pulley (originally 11/24)
 
@@ -42,10 +46,10 @@ public class FeederConstants {
 
   public static final TalonFXConfiguration FEEDER_MOTOR_CONFIG() {
     FEEDER_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
-    FEEDER_CONFIG.CurrentLimits.StatorCurrentLimit = FEEDER_CURRENT_LIMIT;
+    FEEDER_CONFIG.CurrentLimits.StatorCurrentLimit = FEEDER_STATOR_CURRENT_LIMIT;
 
     FEEDER_CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
-    FEEDER_CONFIG.CurrentLimits.SupplyCurrentLimit = FEEDER_CURRENT_LIMIT;
+    FEEDER_CONFIG.CurrentLimits.SupplyCurrentLimit = FEEDER_SUPPLY_CURRENT_LIMIT;
 
     FEEDER_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     FEEDER_CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
@@ -60,13 +64,6 @@ public class FeederConstants {
 
   // canRange constants
   public static final int CANRANGE_CAN_ID = 25;
-  // public static final CANrangeConfiguration canRangeConfig = new CANrangeConfiguration();
-
-  // public static final void getCanRangeConfig() {
-  //   canRangeConfig.ProximityParams.MinSignalStrengthForValidMeasurement = 2000;
-  //   canRangeConfig.ProximityParams.ProximityThreshold = 0.1;
-  //   canRangeConfig.ToFParams.UpdateMode = UpdateModeValue.ShortRange100Hz;
-  // }
 
   public static CANrangeConfiguration createCANrangeConfig() {
     CANrangeConfiguration canRangeConfig = new CANrangeConfiguration();

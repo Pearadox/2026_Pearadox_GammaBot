@@ -35,8 +35,16 @@ public class IntakeConstants {
   public static final int ROLLER_1_LEADER_ID = 31;
   public static final int ROLLER_2_FOLLOWER_ID = 32;
 
+  public static final int ROLLER_SUPPLY_CURRENT_LIMIT = 40; // changed to match the breaker
+  public static final int ROLLER_STATOR_CURRENT_LIMIT =
+      35; // originally 60 on 3/3/2026 during testing
+
   // pivot constants
   public static final int PIVOT_ID = 30;
+
+  public static final int PIVOT_SUPPLY_CURRENT_LIMIT = 40; // changed to match the breaker
+  public static final int PIVOT_STATOR_CURRENT_LIMIT = 20;
+
   public static final double GEARING = (44.0 / 12.0) * (60.0 / 16.0) * (44.0 / 14.0);
   public static final double LENGTH_METERS = Units.inchesToMeters(15.114);
   public static final double MASS_KG = 11.246;
@@ -53,9 +61,9 @@ public class IntakeConstants {
   public static final TalonFXConfiguration getRollerConfigTalonFX() {
 
     ROLLER_CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
-    ROLLER_CONFIG.CurrentLimits.SupplyCurrentLimit = 60;
+    ROLLER_CONFIG.CurrentLimits.SupplyCurrentLimit = ROLLER_SUPPLY_CURRENT_LIMIT;
     ROLLER_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
-    ROLLER_CONFIG.CurrentLimits.StatorCurrentLimit = 60;
+    ROLLER_CONFIG.CurrentLimits.StatorCurrentLimit = ROLLER_STATOR_CURRENT_LIMIT;
 
     ROLLER_SLOT0_CONFIGS.kP = 0.1;
     ROLLER_SLOT0_CONFIGS.kI = 0.0;
@@ -74,9 +82,9 @@ public class IntakeConstants {
   public static final TalonFXConfiguration getPivotConfigTalonFX() {
 
     PIVOT_CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
-    PIVOT_CONFIG.CurrentLimits.SupplyCurrentLimit = 20;
+    PIVOT_CONFIG.CurrentLimits.SupplyCurrentLimit = PIVOT_SUPPLY_CURRENT_LIMIT;
     PIVOT_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
-    PIVOT_CONFIG.CurrentLimits.StatorCurrentLimit = 20;
+    PIVOT_CONFIG.CurrentLimits.StatorCurrentLimit = PIVOT_STATOR_CURRENT_LIMIT;
 
     PIVOT_SLOT0_CONFIGS.kP = 0.3;
     PIVOT_SLOT0_CONFIGS.kI = 0.0;

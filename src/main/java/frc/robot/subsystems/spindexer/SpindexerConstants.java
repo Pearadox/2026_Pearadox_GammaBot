@@ -24,8 +24,10 @@ public class SpindexerConstants {
   public static final Slot0Configs SPINDEXER_SLOT0_CONFIGS = SPINDEXER_CONFIG.Slot0;
 
   public static final int SPINDEXER_MOTOR_ID = 42;
-  public static final int LAUNCHER_CURRENT_LIMIT = 20;
-  public static final int SPINDEXER_CURRENT_LIMIT = 40;
+
+  public static final int SPINDEXER_SUPPLY_CURRENT_LIMIT = 40; // changed to match the breaker
+  public static final int SPINDEXER_STATOR_CURRENT_LIMIT =
+      35; // originally 40 on 3/3/2026 during testing
 
   public static final double SPINDEXER_GEARING = 1.0 / 15.0;
   public static final double SPINDEXER_RADIUS_METERS = Units.inchesToMeters(4);
@@ -35,10 +37,10 @@ public class SpindexerConstants {
 
   public static final TalonFXConfiguration spindexerConfig() {
     SPINDEXER_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
-    SPINDEXER_CONFIG.CurrentLimits.StatorCurrentLimit = SPINDEXER_CURRENT_LIMIT;
+    SPINDEXER_CONFIG.CurrentLimits.StatorCurrentLimit = SPINDEXER_STATOR_CURRENT_LIMIT;
 
     SPINDEXER_CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
-    SPINDEXER_CONFIG.CurrentLimits.SupplyCurrentLimit = SPINDEXER_CURRENT_LIMIT;
+    SPINDEXER_CONFIG.CurrentLimits.SupplyCurrentLimit = SPINDEXER_SUPPLY_CURRENT_LIMIT;
 
     SPINDEXER_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 

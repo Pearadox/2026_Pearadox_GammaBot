@@ -31,7 +31,10 @@ public class LauncherConstants {
   public static final int LAUNCHER_1_CAN_ID = 21; // TODO: double check
   public static final int LAUNCHER_2_CAN_ID = 22; // TODO: double check
 
-  public static final double LAUNCHER_CURRENT_LIMIT = 40.0;
+  public static final int LAUNCHER_SUPPLY_CURRENT_LIMIT = 40; // changed to match the breaker
+  public static final int LAUNCHER_STATOR_CURRENT_LIMIT =
+      35; // originally 40 on 3/3/2026 during testing
+
   public static final double LAUNCHER_GEARING = 1.0;
   public static final double DEFAULT_VELOCITY_SETPOINT_RPS = 60.0;
 
@@ -40,10 +43,10 @@ public class LauncherConstants {
 
   public static final TalonFXConfiguration LAUNCHER_MOTOR_CONFIG() {
     LAUNCHER_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
-    LAUNCHER_CONFIG.CurrentLimits.StatorCurrentLimit = LAUNCHER_CURRENT_LIMIT;
+    LAUNCHER_CONFIG.CurrentLimits.StatorCurrentLimit = LAUNCHER_STATOR_CURRENT_LIMIT;
 
     LAUNCHER_CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
-    LAUNCHER_CONFIG.CurrentLimits.SupplyCurrentLimit = LAUNCHER_CURRENT_LIMIT;
+    LAUNCHER_CONFIG.CurrentLimits.SupplyCurrentLimit = LAUNCHER_SUPPLY_CURRENT_LIMIT;
 
     LAUNCHER_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
