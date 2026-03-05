@@ -6,9 +6,9 @@ package frc.robot.subsystems.launcher;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
+import frc.robot.RobotContainer.ScoringMode;
 import frc.robot.subsystems.launcher.LauncherConstants.LauncherState;
-import lombok.Getter;
-import lombok.Setter;
 import org.littletonrobotics.junction.Logger;
 
 public class Launcher extends SubsystemBase {
@@ -18,7 +18,14 @@ public class Launcher extends SubsystemBase {
   public final LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
 
   private static LauncherState launcherState = LauncherState.SCORING;
-  @Getter @Setter private double adjust = 0.0;
+
+  private double rpsAdjust = 0.0;
+
+  public void adjustRPS(double adj) {
+    rpsAdjust += adj;
+  }
+
+  private double fullyManualInitialVelocity = 60;
 
   public Launcher(LauncherIO io) {
     this.io = io;
@@ -29,8 +36,31 @@ public class Launcher extends SubsystemBase {
     // This method will be called once per scheduler run
     io.updateInputs(inputs);
     // io.runLauncherVelocity((launcherState == LauncherState.SCORING ? 60 : 0));
-    io.setHoodAngleRads(launcherState.getHoodAngleRads());
+    // io.setHoodAngleRads(launcherState.getHoodAngleRads());
     Logger.recordOutput("Launcher/State", getState());
+
+    double desiredVelocity = 0;
+    ScoringMode currentScoringMode = RobotContainer.getScoringMode();
+
+    if(currentScoringMode == ScoringMode.FULLY_AUTO) {
+
+        desiredVelocity = RobotContainer.getShotSolution().getShooterSpeedRPS();
+
+    }
+    else if(currentScoringMode == ScoringMode.PARTIAL_MANUAL) {
+
+        desiredVelocity = RobotContainer.getShouldSOTM() ? RobotContainer.getShotSolution().getShooterSpeedRPS() : 0;
+
+    }
+
+    else if(currentScoringMode == ScoringMode.FULLY_MANUAL) {
+
+        desiredVelocity = fullyManualInitialVelocity;
+
+    }
+
+    if(Math.abs(desiredVelocity + rpsAdjust) > 1.0) setVelocity(desiredVelocity + rpsAdjust);
+    else turnLauncherOff();
 
     LauncherVisualizer.getInstance()
         .updateFlywheelPositionDeg(Units.rotationsToDegrees(inputs.launcher1Data.position()));
@@ -39,19 +69,23 @@ public class Launcher extends SubsystemBase {
             Units.rotationsToDegrees(
                 LauncherConstants.angularPositiontoRotations(inputs.hoodServo1Position)));
 
-    Logger.recordOutput("Hood/Desired-Angle", launcherState.getHoodAngleRads());
-    Logger.recordOutput("Hood/Servo-Position", inputs.hoodServo1Position);
-    Logger.recordOutput(
-        "Hood/Current-Angle",
-        LauncherConstants.angularPositiontoRotations(inputs.hoodServo1Position)
-            / LauncherConstants.HOOD_GEARING); // 5 because 1.0 position -> 5 rotations
+    // Logger.recordOutput("Hood/Desired-Angle", launcherState.getHoodAngleRads());
+    // Logger.recordOutput("Hood/Servo-Position", inputs.hoodServo1Position);
+    // Logger.recordOutput(
+    //     "Hood/Current-Angle",
+    //     LauncherConstants.angularPositiontoRotations(inputs.hoodServo1Position)
+    //         / LauncherConstants.HOOD_GEARING); // 5 because 1.0 position -> 5 rotations
 
     // setVelocity(67);
   }
 
   /** velocity will be calculated from aim assist command factory */
   public void setVelocity(double velocityRPS) {
-    io.runLauncherVelocity(velocityRPS + (launcherState == LauncherState.OFF ? 0.0 : adjust));
+    io.runLauncherVelocity(velocityRPS + (launcherState == LauncherState.OFF ? 0.0 : rpsAdjust));
+  }
+
+  public void turnLauncherOff() {
+    io.stopLauncher();
   }
 
   public void setOff() {

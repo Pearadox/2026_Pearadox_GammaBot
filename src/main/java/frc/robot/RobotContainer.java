@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.drivers.MovingShotSolver;
 import frc.lib.drivers.MovingShotSolver.ShotSolution;
@@ -54,6 +55,9 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.DriveHelpers;
+import lombok.Getter;
+import lombok.Setter;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
@@ -77,6 +81,22 @@ public class RobotContainer {
   private final LoggedDashboardChooser<Command> autoChooser;
 
   private static ShotSolution shotSolution = new ShotSolution(0., 0, new Rotation2d(), false);
+
+  public enum ScoringMode {
+    FULLY_AUTO,
+    PARTIAL_MANUAL,
+    FULLY_MANUAL
+  }
+
+  @Getter @Setter private static ScoringMode scoringMode = ScoringMode.PARTIAL_MANUAL;
+
+  @Setter private static boolean shouldSOTM = false;
+
+  public static boolean getShouldSOTM() {
+    return shouldSOTM;
+  }
+
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -228,10 +248,10 @@ public class RobotContainer {
                 () -> -drivercontroller.getLeftX(),
                 () -> DriveHelpers.findClosestCorner(drive::getPose)));
 
-    drivercontroller
-        .rightBumper()
-        .whileTrue(
-            new ShootOnTheMove(launcher, feeder, turret::getFieldRelativeTurretAngleRotation2d));
+    // drivercontroller
+    //     .rightBumper()
+    //     .whileTrue(
+    //         new ShootOnTheMove(launcher, feeder, turret::getFieldRelativeTurretAngleRotation2d));
 
     // drivercontroller.leftBumper().whileTrue(new RunCommand(() -> launcher.setVelocity(40)));
 
@@ -244,9 +264,56 @@ public class RobotContainer {
     // opController.b().whileTrue(turret.sysIdDynamic(SysIdRoutine.Direction.kForward));
     // opController.x().whileTrue(turret.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    opController.a().onTrue(new InstantCommand(() -> turret.goToZero(), turret));
-    opController.b().onTrue(new InstantCommand(() -> turret.goToPlus180(), turret));
+
+    Trigger shouldCalculateShotSolutionTrigger =
+        new Trigger(() ->
+            scoringMode == ScoringMode.FULLY_AUTO ||
+            scoringMode == ScoringMode.PARTIAL_MANUAL);
+
+    shouldCalculateShotSolutionTrigger.whileTrue(
+        new RunCommand(() ->
+            setShotSolution(
+                MovingShotSolver.solve(
+                    drive::getPose,
+                    drive::getChassisSpeeds
+                )
+            )
+        )
+    );
+
+    Trigger shouldShootOnTheMoveTrigger =
+        new Trigger(() ->
+            scoringMode == ScoringMode.FULLY_AUTO ||
+            (scoringMode == ScoringMode.PARTIAL_MANUAL &&
+            drivercontroller.rightBumper().getAsBoolean())
+        );
+
+    shouldShootOnTheMoveTrigger.onTrue(
+        new InstantCommand(() -> setShouldSOTM(true))).
+              onFalse(new InstantCommand(() -> setShouldSOTM(false)));
+
+    shouldShootOnTheMoveTrigger.whileTrue(
+        new ShootOnTheMove(
+            launcher,
+            feeder,
+            turret::getFieldRelativeTurretAngleRotation2d
+        )
+    );
+
+    opController.a().onTrue(new InstantCommand(() -> setScoringMode(ScoringMode.FULLY_AUTO)));
+    opController.b().onTrue(new InstantCommand(() -> setScoringMode(ScoringMode.PARTIAL_MANUAL)));
+    opController.y().onTrue(new InstantCommand(() -> setScoringMode(ScoringMode.FULLY_MANUAL)));
+
+    opController.povLeft().whileTrue(new RunCommand(() -> turret.adjustRotation(+0.01)));
+    opController.povRight().whileTrue(new RunCommand(() -> turret.adjustRotation(-0.01)));
+
+    opController.povUp().whileTrue(new RunCommand(() -> launcher.adjustRPS(+0.05)));
+    opController.povDown().whileTrue(new RunCommand(() -> launcher.adjustRPS(-0.05)));
+
+    // opController.a().onTrue(new InstantCommand(() -> turret.goToZero(), turret));
+    // opController.b().onTrue(new InstantCommand(() -> turret.goToPlus180(), turret));
     // opController.x().onTrue(new InstantCommand(() -> turret.goToMinus180(), turret));
+    
     opController
         .y()
         .onTrue(

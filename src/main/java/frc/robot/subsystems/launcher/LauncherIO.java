@@ -28,6 +28,8 @@ public interface LauncherIO {
 
   public default void updateInputs(LauncherIOInputs inputs) {}
 
+  public default void stopLauncher() {}
+
   /**
    * @param velocityRPS the rotor velocity setpoint in Rotations per Second
    */

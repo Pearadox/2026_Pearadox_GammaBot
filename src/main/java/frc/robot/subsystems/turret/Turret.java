@@ -10,6 +10,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.RobotContainer;
+import frc.robot.RobotContainer.ScoringMode;
 import frc.robot.util.LoggedTunableNumber;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -23,6 +25,12 @@ public class Turret extends SubsystemBase {
   private Supplier<Rotation2d> robotRotationSupplier;
 
   private boolean hasZeroed = false;
+
+  private double turretRotationAdjust = 0;
+
+  public void adjustRotation(double adj) {
+    turretRotationAdjust += adj;
+  }
 
   private final LoggedTunableNumber kP = new LoggedTunableNumber("Turret/kP", 6.7); // 4
   private final LoggedTunableNumber kI = new LoggedTunableNumber("Turret/kI", 0.0);
@@ -83,6 +91,24 @@ public class Turret extends SubsystemBase {
     if (mmCruiseVel.hasChanged(hashCode()) || mmAcceleration.hasChanged(hashCode())) {
       io.setMotionMagicLimits(mmCruiseVel.get(), mmAcceleration.get());
     }
+
+    ScoringMode currentScoringMode = RobotContainer.getScoringMode();
+
+    if(currentScoringMode == ScoringMode.FULLY_AUTO || currentScoringMode == ScoringMode.PARTIAL_MANUAL) {
+
+        followFieldCentricTarget(() -> 
+              RobotContainer.getShotSolution().getTurretAngleRot2d().plus(new Rotation2d(turretRotationAdjust)));
+
+    }
+
+    else if(currentScoringMode == ScoringMode.FULLY_MANUAL) {
+
+        followFieldCentricTarget(() -> 
+              getFieldRelativeTurretAngleRotation2d().plus(new Rotation2d(turretRotationAdjust)));
+
+    }
+
+
   }
 
   /** Follows a robot-centric angle. */

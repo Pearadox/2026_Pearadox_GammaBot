@@ -5,6 +5,7 @@
 package frc.robot.subsystems.launcher;
 
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.revrobotics.servohub.ServoChannel;
@@ -19,7 +20,8 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
   protected final PearadoxTalonFX launcher1Leader;
   protected final PearadoxTalonFX launcher2Follower;
 
-  protected final VelocityVoltage launcher1Control;
+  // protected final VelocityVoltage launcher1Control;
+  protected final VelocityTorqueCurrentFOC launcher1Control;
   protected final Follower launcher2Control;
 
   protected final ServoHub hoodServoHub;
@@ -35,7 +37,8 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
         new PearadoxTalonFX(
             LauncherConstants.LAUNCHER_2_CAN_ID, LauncherConstants.LAUNCHER_MOTOR_CONFIG());
 
-    launcher1Control = new VelocityVoltage(0);
+    // launcher1Control = new VelocityVoltage(0);
+    launcher1Control = new VelocityTorqueCurrentFOC(0);
     launcher2Control = new Follower(launcher1Leader.getDeviceID(), MotorAlignmentValue.Opposed);
 
     hoodServoHub = new ServoHub(LauncherConstants.HOOD_SERVO_HUB_CAN_ID);
@@ -64,6 +67,11 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
   public void runLauncherVelocity(double velocityRPS) {
     launcher1Leader.setControl(launcher1Control.withVelocity(velocityRPS));
     launcher2Follower.setControl(launcher2Control);
+  }
+
+  public void stopLauncher() {
+    launcher1Leader.stopMotor();
+    launcher2Follower.stopMotor();
   }
 
   public void setHoodAngleRads(double angleRads) {
