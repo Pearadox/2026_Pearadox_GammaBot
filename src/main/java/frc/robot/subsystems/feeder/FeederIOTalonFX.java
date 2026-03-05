@@ -4,9 +4,14 @@
 
 package frc.robot.subsystems.feeder;
 
+import org.littletonrobotics.junction.Logger;
+
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANrange;
+
+import edu.wpi.first.units.measure.Distance;
 import frc.lib.drivers.PearadoxTalonFX;
 
 /** Add your docs here. */
@@ -27,14 +32,27 @@ public abstract class FeederIOTalonFX implements FeederIO {
     canRange = new CANrange(FeederConstants.CANRANGE_CAN_ID);
 
     canRange.getConfigurator().apply(CAN_RANGE_CONFIG);
+
   }
 
   @Override
   public void updateInputs(FeederIOInputsAutoLogged inputs) {
     inputs.feederData = feeder.getData();
 
-    inputs.canRangeDistanceMeters = canRange.getDistance().getValueAsDouble();
-    inputs.canRangeIsDetected = canRange.getIsDetected().getValue();
+    StatusSignal<Distance> dist = canRange.getDistance();
+    if (dist.getStatus().isOK()) {
+      inputs.canRangeDistanceMeters = canRange.getDistance().getValueAsDouble();
+    } else {
+      Logger.recordOutput("Feeder/CanRange/StatusCode CanRange Distance Error", dist.getStatus().getName());
+    }
+
+    StatusSignal<Boolean> isDetected = canRange.getIsDetected();
+    if (isDetected.getStatus().isOK()) {
+      inputs.canRangeIsDetected = canRange.getIsDetected().getValue();
+    } else {
+      Logger.recordOutput("Feeder/CanRange/StatusCode CanRange IsDetected Error", isDetected.getStatus().getName());
+    }
+
   }
 
   @Override
