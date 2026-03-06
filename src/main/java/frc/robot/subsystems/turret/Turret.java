@@ -94,9 +94,7 @@ public class Turret extends SubsystemBase {
 
     ScoringMode currentScoringMode = RobotContainer.getScoringMode();
 
-    if (currentScoringMode == ScoringMode.FULLY_AUTO
-        || currentScoringMode == ScoringMode.PARTIAL_AUTO
-        || currentScoringMode == ScoringMode.PASSING) {
+    if (currentScoringMode != ScoringMode.FULLY_MANUAL) {
 
       followFieldCentricTarget(
           () ->

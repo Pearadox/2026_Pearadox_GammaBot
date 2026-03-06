@@ -263,20 +263,19 @@ public class RobotContainer {
     // opController.x().whileTrue(turret.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     Trigger shouldCalculateShotSolutionTrigger =
-        new Trigger(
-            () -> scoringMode != ScoringMode.FULLY_MANUAL);
+        new Trigger(() -> scoringMode != ScoringMode.FULLY_MANUAL);
 
     shouldCalculateShotSolutionTrigger.whileTrue(
-        new RunCommand(
+        Commands.run(
             () ->
                 setShotSolution(MovingShotSolver.solve(drive::getPose, drive::getChassisSpeeds))));
 
     Trigger shouldShootOnTheMoveTrigger =
-        new Trigger(
-            () ->
-                (scoringMode == ScoringMode.FULLY_AUTO && Robot.isHubCurrentlyActive())
-                    || ((scoringMode == ScoringMode.PARTIAL_AUTO || scoringMode == ScoringMode.PASSING)
-                        && drivercontroller.rightBumper().getAsBoolean()));
+        new Trigger(() -> (scoringMode == ScoringMode.FULLY_AUTO && Robot.isHubCurrentlyActive()))
+            .or(drivercontroller.rightBumper())
+            .and(
+                () ->
+                    scoringMode == ScoringMode.PARTIAL_AUTO || scoringMode == ScoringMode.PASSING);
 
     shouldShootOnTheMoveTrigger
         .onTrue(new InstantCommand(() -> setShouldSOTM(true)))
@@ -289,7 +288,8 @@ public class RobotContainer {
     opController.b().onTrue(new InstantCommand(() -> setScoringMode(ScoringMode.PARTIAL_AUTO)));
     opController.y().onTrue(new InstantCommand(() -> setScoringMode(ScoringMode.FULLY_MANUAL)));
     Trigger isPassing = new Trigger(() -> shotSolution.isInsideNeutralZone);
-    isPassing.onTrue(new InstantCommand(() -> setScoringMode(ScoringMode.PASSING)));
+    isPassing.onTrue(new InstantCommand(() -> setScoringMode(ScoringMode.PASSING)))
+             .onFalse(new InstantCommand(() -> setScoringMode(ScoringMode.PARTIAL_AUTO)));
 
     opController.povLeft().whileTrue(new RunCommand(() -> turret.adjustRotationBy(+0.01)));
     opController.povRight().whileTrue(new RunCommand(() -> turret.adjustRotationBy(-0.01)));
