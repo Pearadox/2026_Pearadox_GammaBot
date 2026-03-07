@@ -28,7 +28,7 @@ public class Intake extends SubsystemBase {
   //     new LoggedTunableNumber("Intake/Voltage", 4.0);
 
   private static LoggedTunableNumber rps = new LoggedTunableNumber("Intake/rps", 45.0);
-  private static LoggedTunableNumber maxDuty = new LoggedTunableNumber("Intake/Maxduty", 0.5);
+  private static LoggedTunableNumber ffamps = new LoggedTunableNumber("Intake/ffamps", 0);
 
   @Override
   public void periodic() {
@@ -42,7 +42,7 @@ public class Intake extends SubsystemBase {
     // io.runRollersVolts(StateConfig.INTAKE_STATE_MAP.get(intakeState).voltage());
 
     if (intakeState == IntakeState.INTAKING) {
-      io.runRollersVelocityTorqueCurrentFOC(rps.get());
+      io.runRollersVelocityTorqueCurrentFOC(rps.get(), ffamps.get());
     } else {
       io.runRollersAmps(
           StateConfig.INTAKE_STATE_MAP.get(intakeState).amps(),
