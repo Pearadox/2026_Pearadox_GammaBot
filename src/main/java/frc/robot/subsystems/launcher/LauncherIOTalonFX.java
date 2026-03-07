@@ -51,7 +51,7 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
     hoodServo2.setPowered(true);
   }
 
-  public void updateInputs(LauncherIOInputsAutoLogged inputs) {
+  public void updateInputs(LauncherIOInputs inputs) {
     inputs.launcher1Data = launcher1Leader.getData();
     inputs.launcher2Data = launcher2Follower.getData();
 

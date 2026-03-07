@@ -20,6 +20,7 @@ public class Intake extends SubsystemBase {
 
   public Intake(IntakeIO io) {
     this.io = io;
+    io.setPIDFF(kp.get(), kv.get(), pivotkp.get(), pivotkd.get());
   }
 
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
@@ -27,9 +28,17 @@ public class Intake extends SubsystemBase {
   // private static LoggedTunableNumber loggedIntakeRollerVoltage =
   //     new LoggedTunableNumber("Intake/Voltage", 4.0);
 
-  private static LoggedTunableNumber loggedIntakeStatorCurrent =
-      new LoggedTunableNumber("Intake/StatorCurrent", 45.0);
-  private static LoggedTunableNumber maxDuty = new LoggedTunableNumber("Intake/Maxduty", 0.4);
+  private static LoggedTunableNumber rps = new LoggedTunableNumber("Intake/rps", 100.0);
+  private static LoggedTunableNumber ffamps = new LoggedTunableNumber("Intake/ffamps", 30.0);
+
+  private static LoggedTunableNumber kp = new LoggedTunableNumber("Intake/roller kp", 0.05);
+  private static LoggedTunableNumber kv = new LoggedTunableNumber("Intake/roller kv", 0.05);
+  private static LoggedTunableNumber pivotkp = new LoggedTunableNumber("Intake/pivot kp", 0.5);
+  private static LoggedTunableNumber pivotkd = new LoggedTunableNumber("Intake/pivotkd", 0.0);
+  private static LoggedTunableNumber pivotkg = new LoggedTunableNumber("Intake/pivot kg", -0.5);
+
+  // max duty 0.5
+  // amps 45
 
   @Override
   public void periodic() {
@@ -42,11 +51,16 @@ public class Intake extends SubsystemBase {
     // io.runRollersAmps(loggedIntakeStatorCurrent.get(), maxDuty.get());
     // io.runRollersVolts(StateConfig.INTAKE_STATE_MAP.get(intakeState).voltage());
 
-    io.runRollersAmps(
-        StateConfig.INTAKE_STATE_MAP.get(intakeState).amps(),
-        StateConfig.INTAKE_STATE_MAP.get(intakeState).maxDuty());
+    if (intakeState == IntakeState.INTAKING) {
+      io.runRollersVelocityTorqueCurrentFOC(rps.get(), ffamps.get());
+    } else {
+      io.runRollersAmps(
+          StateConfig.INTAKE_STATE_MAP.get(intakeState).amps(),
+          StateConfig.INTAKE_STATE_MAP.get(intakeState).maxDuty());
+    }
     io.runPositionDegrees(
-        StateConfig.INTAKE_STATE_MAP.get(intakeState).angleDeg() + pivotDegreesAdjust);
+        StateConfig.INTAKE_STATE_MAP.get(intakeState).angleDeg() + pivotDegreesAdjust,
+        getFFVolts());
 
     MechVisualizer.getInstance()
         .updatePositionDegrees(Units.rotationsToDegrees(inputs.pivotMotorData.position()));
@@ -58,6 +72,13 @@ public class Intake extends SubsystemBase {
         "Intake/Current Position Degrees",
         Units.rotationsToDegrees(inputs.pivotMotorData.position()) / IntakeConstants.GEARING);
 
+    if (kp.hasChanged(hashCode())
+        || kv.hasChanged(hashCode())
+        || pivotkp.hasChanged(hashCode())
+        || pivotkd.hasChanged(hashCode())) {
+      io.setPIDFF(kp.get(), kv.get(), pivotkp.get(), pivotkd.get());
+    }
+
     // UNCOMMENT WHEN TESTING INTAKE TO TUNE VOLTAGE!
     // if(loggedIntakeRollerVoltage.hasChanged(hashCode())) { inputs.rollerVoltage =
     // loggedIntakeRollerVoltage.get(); }
@@ -67,6 +88,14 @@ public class Intake extends SubsystemBase {
     // } else {
     //     io.runRollersVolts(0);
     // }
+  }
+
+  private double getFFVolts() {
+    return Math.sin(Math.toRadians(getAngleDegs())) * pivotkg.get();
+  }
+
+  public double getAngleDegs() {
+    return Units.rotationsToDegrees(inputs.pivotMotorData.position()) / IntakeConstants.GEARING;
   }
 
   public void setStowed() {

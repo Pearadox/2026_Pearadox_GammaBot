@@ -15,9 +15,11 @@ public interface IntakeIO {
 
   public default void runRollersAmps(double amps, double maxDutyOut) {}
 
-  public default void runRollersVelocityTorqueCurrentFOC(double velocity) {}
+  public default void runRollersVelocityTorqueCurrentFOC(double velocity, double ffAmps) {}
 
   public default void runRollersVolts(double volts) {}
 
-  public default void runPositionDegrees(double degrees) {}
+  public default void runPositionDegrees(double degrees, double ffvolts) {}
+
+  public default void setPIDFF(double rollerkp, double kv, double pivotkp, double pivotkd) {}
 }

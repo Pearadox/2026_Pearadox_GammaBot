@@ -12,5 +12,5 @@ public interface SpindexerIO {
 
   public default void updateInputs(SpindexerIOInputsAutoLogged inputs) {}
 
-  public default void runSpindexerVoltage(double voltage) {}
+  public default void runSpindexerTorqueCurrent(double amps, double maxDutyCycle) {}
 }

@@ -32,7 +32,7 @@ public class LauncherIOSim extends LauncherIOTalonFX {
     hoodServoHubSim.enable();
   }
 
-  public void updateInputs(LauncherIOInputsAutoLogged inputs) {
+  public void updateInputs(LauncherIOInputs inputs) {
     super.updateInputs(inputs);
 
     updateSim();

@@ -1,17 +1,21 @@
 package frc.robot.subsystems.spindexer;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.VoltageOut;
+// import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import frc.lib.drivers.PearadoxTalonFX;
 
 public abstract class SpindexerIOTalonFX implements SpindexerIO {
   protected PearadoxTalonFX spindexer;
   private TalonFXConfiguration spindexerConfig;
+  private TorqueCurrentFOC spindexerControl;
 
   public SpindexerIOTalonFX() {
     spindexerConfig = SpindexerConstants.spindexerConfig();
 
     spindexer = new PearadoxTalonFX(SpindexerConstants.SPINDEXER_MOTOR_ID, spindexerConfig);
+
+    spindexerControl = new TorqueCurrentFOC(0);
   }
 
   @Override
@@ -20,7 +24,7 @@ public abstract class SpindexerIOTalonFX implements SpindexerIO {
   }
 
   @Override
-  public void runSpindexerVoltage(double voltage) {
-    spindexer.setControl(new VoltageOut(voltage));
+  public void runSpindexerTorqueCurrent(double amps, double maxDutyCycle) {
+    spindexer.setControl(spindexerControl.withOutput(amps).withMaxAbsDutyCycle(maxDutyCycle));
   }
 }

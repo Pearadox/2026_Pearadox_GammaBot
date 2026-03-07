@@ -20,10 +20,12 @@ import java.util.function.Supplier;
 public final class PhoenixUtil {
   /** Attempts to run the command until no error is produced. */
   public static void tryUntilOk(int maxAttempts, Supplier<StatusCode> command) {
+    StatusCode error = StatusCode.ApiTooOld;
     for (int i = 0; i < maxAttempts; i++) {
-      var error = command.get();
+      error = command.get();
       if (error.isOK()) break;
     }
+    System.out.println(error.toString());
   }
 
   /** Signals for synchronized refresh. */

@@ -1,5 +1,6 @@
 package frc.robot.subsystems.intake;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
@@ -8,6 +9,7 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import edu.wpi.first.math.util.Units;
 import frc.lib.drivers.PearadoxTalonFX;
+import frc.robot.util.PhoenixUtil;
 
 public abstract class IntakeIOTalonFX implements IntakeIO {
   protected final PearadoxTalonFX roller1Leader;
@@ -19,22 +21,17 @@ public abstract class IntakeIOTalonFX implements IntakeIO {
   protected final TorqueCurrentFOC torqueCurrentFOC;
   protected final VelocityTorqueCurrentFOC velocityTorqueCurrentFOC;
 
-  // private TalonFXConfiguration rollerConfigs;
-  // private TalonFXConfiguration pivotConfigs;
+  private TalonFXConfiguration rollerConfigs;
+  private TalonFXConfiguration pivotConfigs;
 
   protected IntakeIOTalonFX() {
 
-    // pivotConfigs = IntakeConstants.getPivotConfigTalonFX();
-    // rollerConfigs = IntakeConstants.getRollerConfigTalonFX();
+    pivotConfigs = IntakeConstants.getPivotConfigTalonFX();
+    rollerConfigs = IntakeConstants.getRollerConfigTalonFX();
 
-    roller1Leader =
-        new PearadoxTalonFX(
-            IntakeConstants.ROLLER_1_LEADER_ID, IntakeConstants.getRollerConfigTalonFX());
-    roller2Follower =
-        new PearadoxTalonFX(
-            IntakeConstants.ROLLER_2_FOLLOWER_ID, IntakeConstants.getRollerConfigTalonFX());
-    pivotMotor =
-        new PearadoxTalonFX(IntakeConstants.PIVOT_ID, IntakeConstants.getPivotConfigTalonFX());
+    roller1Leader = new PearadoxTalonFX(IntakeConstants.ROLLER_1_LEADER_ID, rollerConfigs);
+    roller2Follower = new PearadoxTalonFX(IntakeConstants.ROLLER_2_FOLLOWER_ID, rollerConfigs);
+    pivotMotor = new PearadoxTalonFX(IntakeConstants.PIVOT_ID, pivotConfigs);
     pivotPositionVoltage = new PositionVoltage(0);
     torqueCurrentFOC = new TorqueCurrentFOC(0);
     velocityTorqueCurrentFOC = new VelocityTorqueCurrentFOC(0);
@@ -61,9 +58,10 @@ public abstract class IntakeIOTalonFX implements IntakeIO {
   }
 
   @Override
-  public void runRollersVelocityTorqueCurrentFOC(double velocity) {
+  public void runRollersVelocityTorqueCurrentFOC(double velocity, double ffAmps) {
     // roller1Leader.setControl(rollerVoltage.withOutput(volts));
-    roller1Leader.setControl(velocityTorqueCurrentFOC.withVelocity(velocity));
+    roller1Leader.setControl(
+        velocityTorqueCurrentFOC.withVelocity(velocity).withFeedForward(ffAmps));
 
     roller2Follower.setControl(followerRequest);
   }
@@ -74,10 +72,24 @@ public abstract class IntakeIOTalonFX implements IntakeIO {
   }
 
   @Override
-  public void runPositionDegrees(double degrees) {
+  public void runPositionDegrees(double degrees, double ffvolts) {
     pivotMotor.setControl(
-        pivotPositionVoltage.withPosition(
-            Units.degreesToRotations(degrees) * IntakeConstants.GEARING));
+        pivotPositionVoltage
+            .withPosition(Units.degreesToRotations(degrees) * IntakeConstants.GEARING)
+            .withFeedForward(ffvolts));
     // pivotMotor.setControl(new PositionVoltage(Units.degreesToRotations(degrees)));
+  }
+
+  @Override
+  public void setPIDFF(double kp, double kv, double pivotkp, double pivotkd) {
+    rollerConfigs.Slot0.kP = kp;
+    rollerConfigs.Slot0.kV = kv;
+
+    pivotConfigs.Slot0.kP = pivotkp;
+    pivotConfigs.Slot0.kD = pivotkd;
+
+    PhoenixUtil.tryUntilOk(5, () -> roller1Leader.getConfigurator().apply(rollerConfigs));
+    PhoenixUtil.tryUntilOk(5, () -> roller2Follower.getConfigurator().apply(rollerConfigs));
+    PhoenixUtil.tryUntilOk(5, () -> pivotMotor.getConfigurator().apply(pivotConfigs));
   }
 }

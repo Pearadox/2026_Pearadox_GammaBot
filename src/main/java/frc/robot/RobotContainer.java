@@ -290,26 +290,36 @@ public class RobotContainer {
     //     new ShootOnTheMove(
     //         launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d));
 
-    drivercontroller.leftBumper().whileTrue(new InstantCommand(() -> intake.setIntaking()));
-    drivercontroller.leftBumper().onFalse(new InstantCommand(() -> intake.setDeployed()));
+    drivercontroller
+        .leftBumper()
+        .whileTrue(new InstantCommand(() -> intake.setIntaking()))
+        .onFalse(new InstantCommand(() -> intake.setDeployed()));
     drivercontroller.povUp().onTrue(new InstantCommand(() -> intake.setStowed()));
     drivercontroller.povDown().onTrue(new InstantCommand(() -> intake.setDeployed()));
-    drivercontroller.b().onTrue(new InstantCommand(() -> intake.setOuttaking()));
+    drivercontroller
+        .povLeft()
+        .onTrue(new InstantCommand(() -> intake.setOuttaking()))
+        .onFalse(new InstantCommand(() -> intake.setDeployed()));
     drivercontroller
         .rightBumper()
         .onTrue(
             new InstantCommand(() -> launcher.setScoring())
-                .andThen(new WaitCommand(0.2))
+                .andThen(new WaitCommand(0.1))
                 .andThen(new InstantCommand(() -> feeder.setRunning()))
-                .andThen(new WaitCommand(0.2))
-                .andThen((new InstantCommand(() -> spindexer.setRunning()))));
+                .andThen(new WaitCommand(0.1))
+                .andThen(new InstantCommand(() -> spindexer.setRunning())))
 
-    drivercontroller
-        .rightBumper()
-        .onFalse(
+        // drivercontroller
+        // .rightBumper()
+        .whileFalse(
             new InstantCommand(() -> launcher.setOff()) // THIS IS WRONG!!!
                 .andThen(new InstantCommand(() -> feeder.setStopped()))
-                .andThen((new InstantCommand(() -> spindexer.setStopped()))));
+                .andThen(new InstantCommand(() -> spindexer.setStopped())));
+
+    drivercontroller
+        .b()
+        .onTrue(new InstantCommand(() -> spindexer.setReverse()))
+        .onFalse(new InstantCommand(() -> spindexer.setStopped()));
 
     // Op Bindings
     opController.a().onTrue(new InstantCommand(() -> setScoringMode(ScoringMode.FULLY_AUTO)));

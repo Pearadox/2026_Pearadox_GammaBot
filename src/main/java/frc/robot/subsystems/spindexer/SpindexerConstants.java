@@ -10,14 +10,16 @@ import java.util.Map;
 public class SpindexerConstants {
   public static enum SpindexerState {
     STOPPED,
-    RUNNING
+    RUNNING,
+    REVERSE
   }
 
   public static record StateConfig(double voltage) {
     public static final Map<SpindexerState, StateConfig> SPINDEXER_STATE_MAP =
         Map.of(
             SpindexerState.STOPPED, new StateConfig(0),
-            SpindexerState.RUNNING, new StateConfig(8));
+            SpindexerState.RUNNING, new StateConfig(8),
+            SpindexerState.REVERSE, new StateConfig(-12));
   }
 
   public static final TalonFXConfiguration SPINDEXER_CONFIG = new TalonFXConfiguration();

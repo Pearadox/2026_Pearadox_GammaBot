@@ -36,7 +36,7 @@ public class IntakeConstants {
         Map.of(
             IntakeState.STOWED, new StateConfig(0, 0, 0),
             IntakeState.DEPLOYED, new StateConfig(90, 0, 0),
-            IntakeState.INTAKING, new StateConfig(90, 40, 0.4),
+            IntakeState.INTAKING, new StateConfig(90, 45, 0.5),
             IntakeState.OUTTAKING, new StateConfig(90, -40, 0.4));
   }
 
@@ -51,8 +51,8 @@ public class IntakeConstants {
   // pivot constants
   public static final int PIVOT_ID = 30;
 
-  public static final int PIVOT_SUPPLY_CURRENT_LIMIT = 40; // changed to match the breaker
-  public static final int PIVOT_STATOR_CURRENT_LIMIT = 20;
+  public static final int PIVOT_SUPPLY_CURRENT_LIMIT = 60; // changed to match the breaker
+  public static final int PIVOT_STATOR_CURRENT_LIMIT = 40;
 
   public static final double GEARING = (44.0 / 12.0) * (60.0 / 16.0) * (44.0 / 14.0);
   public static final double LENGTH_METERS = Units.inchesToMeters(15.114);
@@ -79,6 +79,7 @@ public class IntakeConstants {
     ROLLER_SLOT0_CONFIGS.kP = 0.1;
     ROLLER_SLOT0_CONFIGS.kI = 0.0;
     ROLLER_SLOT0_CONFIGS.kD = 0.0;
+    // ROLLER_SLOT0_CONFIGS.kV = 0.12;
 
     ROLLER_CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     ROLLER_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -97,12 +98,15 @@ public class IntakeConstants {
     PIVOT_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
     PIVOT_CONFIG.CurrentLimits.StatorCurrentLimit = PIVOT_STATOR_CURRENT_LIMIT;
 
-    PIVOT_SLOT0_CONFIGS.kP = 0.6;
+    PIVOT_SLOT0_CONFIGS.kP = 1.0;
     PIVOT_SLOT0_CONFIGS.kI = 0.0;
-    PIVOT_SLOT0_CONFIGS.kD = 0.0;
+    PIVOT_SLOT0_CONFIGS.kD = 0.03;
 
     PIVOT_CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     PIVOT_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+    // PIVOT_CONFIG.MotorOutput.PeakReverseDutyCycle = -0.5;
+    // PIVOT_CONFIG.MotorOutput.PeakForwardDutyCycle = 0.5;
 
     return PIVOT_CONFIG;
   }

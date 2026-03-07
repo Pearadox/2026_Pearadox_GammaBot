@@ -2,6 +2,7 @@ package frc.robot.subsystems.spindexer;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.spindexer.SpindexerConstants.*;
+import frc.robot.util.LoggedTunableNumber;
 import frc.robot.util.SmarterDashboard;
 import org.littletonrobotics.junction.Logger;
 
@@ -16,6 +17,11 @@ public class Spindexer extends SubsystemBase {
     this.io = io;
   }
 
+  private final LoggedTunableNumber spindexerCurrentAmps =
+      new LoggedTunableNumber("Spindexer/Current-Amps", 50.0);
+  private final LoggedTunableNumber spindexerMaxDutyCycle =
+      new LoggedTunableNumber("Spindexer/Max-Duty-Cycle", 0.8);
+
   @Override
   public void periodic() {
     io.updateInputs(inputs);
@@ -28,7 +34,14 @@ public class Spindexer extends SubsystemBase {
     SmarterDashboard.putNumber(
         "Spindexer/SupplyCurrent", inputs.spindexerMotorData.supplyCurrent());
 
-    io.runSpindexerVoltage(StateConfig.SPINDEXER_STATE_MAP.get(spindexerState).voltage());
+    if (spindexerState.equals(SpindexerState.RUNNING)) {
+      io.runSpindexerTorqueCurrent(spindexerCurrentAmps.get(), spindexerMaxDutyCycle.get());
+
+    } else if (spindexerState.equals(SpindexerState.REVERSE)) {
+      io.runSpindexerTorqueCurrent(-spindexerCurrentAmps.get(), spindexerMaxDutyCycle.get());
+    } else {
+      io.runSpindexerTorqueCurrent(0, 0);
+    }
   }
 
   public void setStopped() {
@@ -37,6 +50,10 @@ public class Spindexer extends SubsystemBase {
 
   public void setRunning() {
     spindexerState = SpindexerState.RUNNING;
+  }
+
+  public void setReverse() {
+    spindexerState = SpindexerState.REVERSE;
   }
 
   public void adjustVoltage(double adjustBy) {
