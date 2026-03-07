@@ -17,7 +17,7 @@ public class Launcher extends SubsystemBase {
 
   private final LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
 
-  private static LauncherState launcherState = LauncherState.SCORING;
+  private static LauncherState launcherState = LauncherState.OFF;
 
   private double rpsAdjust = 0.0;
 
@@ -43,7 +43,6 @@ public class Launcher extends SubsystemBase {
 
     double desiredVelocity = 0;
     ScoringMode currentScoringMode = RobotContainer.getScoringMode();
-
     if (currentScoringMode == ScoringMode.FULLY_AUTO) {
 
       desiredVelocity = RobotContainer.getShotSolution().getShooterSpeedRPS();
@@ -63,7 +62,8 @@ public class Launcher extends SubsystemBase {
 
     double launcherRPS = Math.abs(desiredVelocity + rpsAdjust);
 
-    if (launcherRPS > LauncherConstants.SHOOTER_VELOCITY_DEADBAND) {
+    if (launcherState != LauncherState.OFF
+        && launcherRPS > LauncherConstants.SHOOTER_VELOCITY_DEADBAND) {
       setVelocity(Math.min(launcherRPS, LauncherConstants.SHOOTER_MAX_VELOCITY));
     } else {
       turnLauncherOff();
@@ -75,6 +75,8 @@ public class Launcher extends SubsystemBase {
         .updateHoodPositionDeg(
             Units.rotationsToDegrees(
                 LauncherConstants.angularPositiontoRotations(inputs.hoodServo1Position)));
+
+    Logger.recordOutput("Launcher/adjust", launcherRPS);
 
     // Logger.recordOutput("Hood/Desired-Angle", launcherState.getHoodAngleRads());
     // Logger.recordOutput("Hood/Servo-Position", inputs.hoodServo1Position);
@@ -94,10 +96,12 @@ public class Launcher extends SubsystemBase {
     return inputs.launcher1Data.velocity();
   }
 
+  // this is the CORRECT method to turn launcher off
   public void turnLauncherOff() {
     io.stopLauncher();
   }
 
+  // this is for the hood
   public void setOff() {
     launcherState = LauncherState.OFF;
   }

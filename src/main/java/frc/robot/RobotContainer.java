@@ -17,13 +17,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.lib.drivers.MovingShotSolver;
 import frc.lib.drivers.MovingShotSolver.ShotSolution;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.ShootOnTheMove;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -89,7 +88,7 @@ public class RobotContainer {
     PASSING
   }
 
-  @Getter @Setter private static ScoringMode scoringMode = ScoringMode.PARTIAL_AUTO;
+  @Getter @Setter private static ScoringMode scoringMode = ScoringMode.FULLY_MANUAL;
 
   @Setter private static boolean shouldSOTM = false;
 
@@ -205,7 +204,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    //Driver Bindings
+    // Driver Bindings
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
@@ -262,34 +261,51 @@ public class RobotContainer {
     // opController.b().whileTrue(turret.sysIdDynamic(SysIdRoutine.Direction.kForward));
     // opController.x().whileTrue(turret.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    Trigger shouldCalculateShotSolutionTrigger =
-        new Trigger(() -> scoringMode != ScoringMode.FULLY_MANUAL);
+    // Trigger shouldCalculateShotSolutionTrigger =
+    //     new Trigger(() -> scoringMode != ScoringMode.FULLY_MANUAL);
 
-    shouldCalculateShotSolutionTrigger.whileTrue(
-        Commands.run(
-            () ->
-                setShotSolution(MovingShotSolver.solve(drive::getPose, drive::getChassisSpeeds))));
+    // shouldCalculateShotSolutionTrigger.whileTrue(
+    //     Commands.run(
+    //         () ->
+    //             setShotSolution(MovingShotSolver.solve(drive::getPose,
+    // drive::getChassisSpeeds))));
 
-    Trigger shouldShootOnTheMoveTrigger =
-        new Trigger(
-            () ->
-                (scoringMode == ScoringMode.FULLY_AUTO && Robot.isHubCurrentlyActive())
-                    || ((scoringMode == ScoringMode.PARTIAL_AUTO
-                            || scoringMode == ScoringMode.PASSING)
-                        && drivercontroller.rightBumper().getAsBoolean()));
+    // Trigger shouldShootOnTheMoveTrigger =
+    //     new Trigger(
+    //         () ->
+    //             (scoringMode == ScoringMode.FULLY_AUTO && Robot.isHubCurrentlyActive())
+    //                 || ((scoringMode == ScoringMode.PARTIAL_AUTO
+    //                         || scoringMode == ScoringMode.PASSING)
+    //                     && drivercontroller.rightBumper().getAsBoolean()));
 
-    shouldShootOnTheMoveTrigger
-        .onTrue(new InstantCommand(() -> setShouldSOTM(true)))
-        .onFalse(new InstantCommand(() -> setShouldSOTM(false)));
+    // shouldShootOnTheMoveTrigger
+    //     .onTrue(new InstantCommand(() -> setShouldSOTM(true)))
+    //     .onFalse(new InstantCommand(() -> setShouldSOTM(false)));
 
-    shouldShootOnTheMoveTrigger.whileTrue(
-        new ShootOnTheMove(launcher, feeder, turret::getFieldRelativeTurretAngleRotation2d));
+    // shouldShootOnTheMoveTrigger.whileTrue(
+    //     new ShootOnTheMove(
+    //         launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d));
 
     // driverController.leftBumper().whileTrue(new InstantCommand(() -> intake.setIntaking()));
     // drivercontroller.povUp().onTrue(new InstantCommand(() -> intake.setDeployed()));
     // drivercontroller.povDown().onTrue(new InstantCommand(() -> intake.setStowed()));
+    opController
+        .rightBumper()
+        .onTrue(
+            new InstantCommand(() -> launcher.setScoring())
+                .andThen(new WaitCommand(1))
+                .andThen(new InstantCommand(() -> feeder.setRunning()))
+                .andThen(new WaitCommand(1))
+                .andThen((new InstantCommand(() -> spindexer.setRunning()))));
 
-    
+
+    opController
+        .rightBumper()
+        .onFalse(
+            new InstantCommand(() -> launcher.setOff()) // THIS IS WRONG!!!
+                .andThen(new InstantCommand(() -> feeder.setStopped()))
+                .andThen((new InstantCommand(() -> spindexer.setStopped()))));
+
     // Op Bindings
     opController.a().onTrue(new InstantCommand(() -> setScoringMode(ScoringMode.FULLY_AUTO)));
     opController.x().onTrue(new InstantCommand(() -> setScoringMode(ScoringMode.PARTIAL_AUTO)));
@@ -306,8 +322,12 @@ public class RobotContainer {
     opController.povDown().whileTrue(new RunCommand(() -> launcher.adjustRPSBy(-0.05)));
 
     Trigger intakeAdjust = new Trigger(() -> Math.abs(opController.getLeftY()) > 0.9);
-    intakeAdjust.whileTrue(new RunCommand(() -> intake.adjustPivotAngleBy(
-        Math.signum(-opController.getLeftY()) * IntakeConstants.OP_ADJUST_INCREMENT_DEGREES)));
+    intakeAdjust.whileTrue(
+        new RunCommand(
+            () ->
+                intake.adjustPivotAngleBy(
+                    Math.signum(-opController.getLeftY())
+                        * IntakeConstants.OP_ADJUST_INCREMENT_DEGREES)));
 
     // opController.a().onTrue(new InstantCommand(() -> turret.goToZero(), turret));
     // opController.b().onTrue(new InstantCommand(() -> turret.goToPlus180(), turret));
@@ -348,10 +368,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Stop Launching", new InstantCommand(() -> feeder.setStopped()));
 
     // Intake Commands
-    NamedCommands.registerCommand("Set Intaking", new InstantCommand(() ->
-    intake.setIntaking()));
-    NamedCommands.registerCommand("Stop Intaking", new InstantCommand(() ->
-    intake.setDeployed()));
+    NamedCommands.registerCommand("Set Intaking", new InstantCommand(() -> intake.setIntaking()));
+    NamedCommands.registerCommand("Stop Intaking", new InstantCommand(() -> intake.setDeployed()));
   }
 
   public void setShotSolution(ShotSolution sol) {

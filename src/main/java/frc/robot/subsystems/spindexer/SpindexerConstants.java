@@ -25,11 +25,12 @@ public class SpindexerConstants {
 
   public static final int SPINDEXER_MOTOR_ID = 42;
 
-  public static final int SPINDEXER_SUPPLY_CURRENT_LIMIT = 40; // changed to match the breaker
+  public static final int SPINDEXER_SUPPLY_CURRENT_LIMIT = 80; // changed to match the breaker
   public static final int SPINDEXER_STATOR_CURRENT_LIMIT =
-      35; // originally 40 on 3/3/2026 during testing
+      60; // originally 40 on 3/3/2026 during testing
 
-  public static final double SPINDEXER_GEARING = 1.0 / 15.0; // technically 1/18 (according to Hitesh)
+  public static final double SPINDEXER_GEARING =
+      1.0 / 15.0; // technically 1/18 (according to Hitesh)
   public static final double SPINDEXER_RADIUS_METERS = Units.inchesToMeters(4);
   public static final double SPINDEXER_MASS_KG = Units.lbsToKilograms(5);
   public static final double SPINDEXER_MOI =

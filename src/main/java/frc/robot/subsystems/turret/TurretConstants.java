@@ -11,9 +11,9 @@ public final class TurretConstants {
   public static final double TURRET_GEAR_RATIO = 500. / 9.; // ~55.55:1, (100/9)(50/20)(32/16)
   public static final double TURRET_P_COEFFICIENT = 2 * Math.PI / TURRET_GEAR_RATIO;
 
-  public static final int TURRET_SUPPLY_CURRENT_LIMIT = 40; // changed to match the breaker
+  public static final int TURRET_SUPPLY_CURRENT_LIMIT = 80; // changed to match the breaker
   public static final int TURRET_STATOR_CURRENT_LIMIT =
-      35; // originally 50 on 3/3/2026 during testing
+      60; // originally 50 on 3/3/2026 during testing
 
   public static final double TURRET_STARTING_ANGLE = Units.degreesToRadians(0);
   public static final double TURRET_MIN_ANGLE = Units.degreesToRadians(-270); // TODO: update
@@ -47,9 +47,9 @@ public final class TurretConstants {
   public static final double FF_CHASSIS_ROT_VELOCITY_LIMIT = 1.5 * Math.PI; // rad/s
 
   public static final int TURRET_CANCODER_ID = 26;
-  public static final int TURRET_CANCODER_OFFSET_ROTS = 0; // TODO
+  public static final double TURRET_CANCODER_OFFSET_ROTS = 0.390869; // TODO
 
-  public static final double TURRET_TO_CANCODER_RATIO = 1. / 3.;
+  public static final double TURRET_TO_CANCODER_RATIO = 3. / 10.;
 
   public static final TalonFXConfiguration getTurretConfig() {
     TalonFXConfiguration config = new TalonFXConfiguration();
@@ -63,7 +63,7 @@ public final class TurretConstants {
     config.MotionMagic.MotionMagicAcceleration = 300;
 
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     config.Slot0.kS = 0.0;
     config.Slot0.kV = 0.0;

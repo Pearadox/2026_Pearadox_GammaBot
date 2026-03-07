@@ -8,13 +8,14 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.feeder.FeederConstants.FeederState;
+import frc.robot.subsystems.feeder.FeederConstants.StateConfig;
 import org.littletonrobotics.junction.Logger;
 
 public class Feeder extends SubsystemBase {
 
   private final FeederIO io;
   private final FeederIOInputsAutoLogged inputs = new FeederIOInputsAutoLogged();
-  private FeederState feederState = FeederState.RUNNING;
+  private FeederState feederState = FeederState.STOPPED;
 
   private Debouncer canRangeDebouncer = new Debouncer(0.06, DebounceType.kFalling);
   private int fuelCount = 0;
@@ -34,7 +35,8 @@ public class Feeder extends SubsystemBase {
     Logger.recordOutput("Feeder/CanRange/Distance from Fuel", canRangeGetDistanceMeters());
     Logger.recordOutput("Feeder/CanRange/FuelIsDetected", isDetectedDebounced());
     Logger.recordOutput("Feeder/CanRange/Number of Fuel", getFuelCount());
-    // io.runFeederVoltage(StateConfig.FEEDER_STATE_MAP.get(feederState).voltage());
+    Logger.recordOutput("Feeder/CanRange/Signal", canRangeGetSignalStrength());
+    io.runFeederVoltage(StateConfig.FEEDER_STATE_MAP.get(feederState).voltage());
     updateFuelCount();
   }
 
@@ -52,6 +54,10 @@ public class Feeder extends SubsystemBase {
 
   public double canRangeGetDistanceMeters() {
     return inputs.canRangeDistanceMeters;
+  }
+
+  public double canRangeGetSignalStrength() {
+    return inputs.canRangeSignal;
   }
 
   public void updateFuelCount() {

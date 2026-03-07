@@ -51,6 +51,14 @@ public abstract class FeederIOTalonFX implements FeederIO {
       Logger.recordOutput(
           "Feeder/CanRange/StatusCode CanRange IsDetected Error", isDetected.getStatus().getName());
     }
+
+    StatusSignal<Double> signal = canRange.getSignalStrength();
+    if (signal.getStatus().isOK()) {
+      inputs.canRangeSignal = canRange.getSignalStrength().getValueAsDouble();
+    } else {
+      Logger.recordOutput(
+          "Feeder/CanRange/StatusCode CanRange Signal Error", signal.getStatus().getName());
+    }
   }
 
   @Override

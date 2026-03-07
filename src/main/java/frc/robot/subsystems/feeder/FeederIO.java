@@ -15,6 +15,7 @@ public interface FeederIO {
     public MotorData feederData = new MotorData();
     public double canRangeDistanceMeters = 0.0;
     public boolean canRangeIsDetected = false;
+    public double canRangeSignal = 0.0;
   }
 
   public default void updateInputs(FeederIOInputsAutoLogged inputs) {}

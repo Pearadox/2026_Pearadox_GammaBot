@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.launcher.Launcher;
+import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.util.SmarterDashboard;
 import java.util.function.Supplier;
 
@@ -18,6 +19,7 @@ public class ShootOnTheMove extends Command {
 
   private final Launcher launcher;
   private final Feeder feeder;
+  private final Spindexer spindexer;
 
   private Debouncer debouncer = new Debouncer(0.25, DebounceType.kFalling);
   private Debouncer turretRotationDebouncer = new Debouncer(0.1, DebounceType.kBoth);
@@ -28,11 +30,15 @@ public class ShootOnTheMove extends Command {
   private boolean readyToShoot = false;
 
   public ShootOnTheMove(
-      Launcher launcher, Feeder feeder, Supplier<Rotation2d> turretRotationSupplier) {
+      Launcher launcher,
+      Feeder feeder,
+      Spindexer spindexer,
+      Supplier<Rotation2d> turretRotationSupplier) {
     this.turretRotationSupplier = turretRotationSupplier;
     this.launcher = launcher;
     this.feeder = feeder;
-    addRequirements(launcher, feeder);
+    this.spindexer = spindexer;
+    addRequirements(launcher, feeder, spindexer);
   }
 
   @Override
@@ -58,8 +64,10 @@ public class ShootOnTheMove extends Command {
 
     if (readyToShoot) {
       feeder.setRunning();
+      spindexer.setRunning();
     } else {
       feeder.setStopped();
+      spindexer.setStopped();
     }
 
     SmarterDashboard.putBoolean("Launcher/SOTM/readyToShoot", readyToShoot);

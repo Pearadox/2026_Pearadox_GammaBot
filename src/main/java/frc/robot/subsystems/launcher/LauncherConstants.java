@@ -28,15 +28,15 @@ public class LauncherConstants {
     }
   }
 
-  public static final int LAUNCHER_1_CAN_ID = 21; // TODO: double check
-  public static final int LAUNCHER_2_CAN_ID = 22; // TODO: double check
+  public static final int LAUNCHER_1_CAN_ID = 22;
+  public static final int LAUNCHER_2_CAN_ID = 21;
 
   public static final double SHOOTER_VELOCITY_DEADBAND = 3.0; // in rps
   public static final double SHOOTER_MAX_VELOCITY = 100.0; // in rps
 
-  public static final int LAUNCHER_SUPPLY_CURRENT_LIMIT = 40; // changed to match the breaker
+  public static final int LAUNCHER_SUPPLY_CURRENT_LIMIT = 80; // changed to match the breaker
   public static final int LAUNCHER_STATOR_CURRENT_LIMIT =
-      35; // originally 40 on 3/3/2026 during testing
+      60; // originally 40 on 3/3/2026 during testing
 
   public static final double LAUNCHER_GEARING = 1.0;
   public static final double DEFAULT_VELOCITY_SETPOINT_RPS = 60.0;
@@ -55,11 +55,11 @@ public class LauncherConstants {
 
     LAUNCHER_CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-    LAUNCHER_CONFIG_SLOT0.kP = 0.1;
+    LAUNCHER_CONFIG_SLOT0.kP = 0.8;
     LAUNCHER_CONFIG_SLOT0.kI = 0.0;
     LAUNCHER_CONFIG_SLOT0.kD = 0.0;
     LAUNCHER_CONFIG_SLOT0.kS = 0.19;
-    LAUNCHER_CONFIG_SLOT0.kV = 0.1;
+    LAUNCHER_CONFIG_SLOT0.kV = 0.12;
     return LAUNCHER_CONFIG;
   }
 
