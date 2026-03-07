@@ -40,13 +40,14 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/State", intakeState.toString());
 
     // io.runRollersAmps(loggedIntakeStatorCurrent.get(), maxDuty.get());
-    io.runRollersAmps(
-        StateConfig.INTAKE_STATE_MAP.get(intakeState).amps(),
-        StateConfig.INTAKE_STATE_MAP.get(intakeState).maxDuty());
     // io.runRollersVolts(StateConfig.INTAKE_STATE_MAP.get(intakeState).voltage());
 
-    io.runPositionDegrees(
-        StateConfig.INTAKE_STATE_MAP.get(intakeState).angleDeg() + pivotDegreesAdjust);
+    // io.runRollersAmps( // TODO: UNCOMMENT
+    //     StateConfig.INTAKE_STATE_MAP.get(intakeState).amps(),
+    //     StateConfig.INTAKE_STATE_MAP.get(intakeState).maxDuty());
+    // io.runPositionDegrees(
+    //     StateConfig.INTAKE_STATE_MAP.get(intakeState).angleDeg() + pivotDegreesAdjust);
+
     MechVisualizer.getInstance()
         .updatePositionDegrees(Units.rotationsToDegrees(inputs.pivotMotorData.position()));
 

@@ -39,7 +39,7 @@ public class LauncherConstants {
       60; // originally 40 on 3/3/2026 during testing
 
   public static final double LAUNCHER_GEARING = 1.0;
-  public static final double DEFAULT_VELOCITY_SETPOINT_RPS = 60.0;
+  public static final double DEFAULT_VELOCITY_SETPOINT_RPS = 51.3;
 
   public static final TalonFXConfiguration LAUNCHER_CONFIG = new TalonFXConfiguration();
   public static final Slot0Configs LAUNCHER_CONFIG_SLOT0 = LAUNCHER_CONFIG.Slot0;
@@ -55,7 +55,11 @@ public class LauncherConstants {
 
     LAUNCHER_CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-    LAUNCHER_CONFIG_SLOT0.kP = 0.8;
+    LAUNCHER_CONFIG.TorqueCurrent.PeakForwardTorqueCurrent = 40.0; // added for bang-bang control
+
+    LAUNCHER_CONFIG.TorqueCurrent.PeakReverseTorqueCurrent = 0.0; // added for bang-bang control
+
+    LAUNCHER_CONFIG_SLOT0.kP = 99999.0; // 0.8
     LAUNCHER_CONFIG_SLOT0.kI = 0.0;
     LAUNCHER_CONFIG_SLOT0.kD = 0.0;
     LAUNCHER_CONFIG_SLOT0.kS = 0.19;
