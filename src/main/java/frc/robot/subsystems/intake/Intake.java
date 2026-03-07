@@ -29,7 +29,7 @@ public class Intake extends SubsystemBase {
 
   private static LoggedTunableNumber loggedIntakeStatorCurrent =
       new LoggedTunableNumber("Intake/StatorCurrent", 45.0);
-  private static LoggedTunableNumber maxDuty = new LoggedTunableNumber("Intake/Maxduty", 0.4);
+  private static LoggedTunableNumber maxDuty = new LoggedTunableNumber("Intake/Maxduty", 0.5);
 
   @Override
   public void periodic() {

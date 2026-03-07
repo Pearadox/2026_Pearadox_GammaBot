@@ -36,7 +36,7 @@ public class IntakeConstants {
         Map.of(
             IntakeState.STOWED, new StateConfig(0, 0, 0),
             IntakeState.DEPLOYED, new StateConfig(90, 0, 0),
-            IntakeState.INTAKING, new StateConfig(90, 40, 0.4),
+            IntakeState.INTAKING, new StateConfig(90, 45, 0.5),
             IntakeState.OUTTAKING, new StateConfig(90, -40, 0.4));
   }
 
