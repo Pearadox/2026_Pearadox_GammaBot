@@ -116,7 +116,6 @@ public class Robot extends LoggedRobot {
 
     Logger.recordOutput("Robot/isHubActive", isHubCurrentlyActive);
     Logger.recordOutput("Robot/ScoringMode", RobotContainer.getScoringMode());
-
   }
 
   /** This function is called once when the robot is disabled. */

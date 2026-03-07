@@ -41,7 +41,8 @@ public class Intake extends SubsystemBase {
 
     io.runRollersAmps(loggedIntakeStatorCurrent.get(), maxDuty.get());
 
-    io.runPositionDegrees(StateConfig.INTAKE_STATE_MAP.get(intakeState).angleDeg() + pivotDegreesAdjust);
+    io.runPositionDegrees(
+        StateConfig.INTAKE_STATE_MAP.get(intakeState).angleDeg() + pivotDegreesAdjust);
     MechVisualizer.getInstance()
         .updatePositionDegrees(Units.rotationsToDegrees(inputs.pivotMotorData.position()));
 
@@ -82,5 +83,4 @@ public class Intake extends SubsystemBase {
   public IntakeState getIntakeState() {
     return intakeState;
   }
-
 }

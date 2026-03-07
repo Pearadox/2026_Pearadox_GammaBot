@@ -9,7 +9,7 @@ public class Spindexer extends SubsystemBase {
   private SpindexerIO io;
   private final SpindexerIOInputsAutoLogged inputs = new SpindexerIOInputsAutoLogged();
 
-  private SpindexerState spindexerState = SpindexerState.RUNNING;
+  private SpindexerState spindexerState = SpindexerState.STOPPED;
   public static double adjust = 0;
 
   public Spindexer(SpindexerIO io) {
@@ -28,7 +28,7 @@ public class Spindexer extends SubsystemBase {
     SmarterDashboard.putNumber(
         "Spindexer/SupplyCurrent", inputs.spindexerMotorData.supplyCurrent());
 
-    // io.runSpindexerVoltage(StateConfig.SPINDEXER_STATE_MAP.get(spindexerState).voltage());
+    io.runSpindexerVoltage(StateConfig.SPINDEXER_STATE_MAP.get(spindexerState).voltage());
   }
 
   public void setStopped() {
