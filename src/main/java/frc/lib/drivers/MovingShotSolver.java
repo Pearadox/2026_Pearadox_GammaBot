@@ -44,7 +44,8 @@ public class MovingShotSolver {
   private static double shooterHeightMeters = Units.inchesToMeters(22.5);
   private static double hoodAngleRadians = Units.degreesToRadians(65);
 
-  private final LoggedTunableNumber rpsMultiplier = new LoggedTunableNumber("SOTM/Rps Multiplier", 1.85);
+  private final LoggedTunableNumber rpsMultiplier =
+      new LoggedTunableNumber("SOTM/Rps Multiplier", 1.85);
 
   private static final double MPSToRPSConversion =
       LauncherConstants.LAUNCHER_GEARING / LauncherConstants.ROLLER_CIRCUMFERENCE_METERS;

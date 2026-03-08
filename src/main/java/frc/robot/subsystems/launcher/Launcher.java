@@ -51,8 +51,6 @@ public class Launcher extends SubsystemBase {
     double desiredVelocity = 0;
     ScoringMode currentScoringMode = RobotContainer.getScoringMode();
     if (currentScoringMode == ScoringMode.FULLY_AUTO) {
-      if (DriverStation.isAutonomousEnabled() && launcherState != LauncherState.SCORING) return;
-
       desiredVelocity = RobotContainer.getShotSolution().getShooterSpeedRPS();
 
     } else if (currentScoringMode == ScoringMode.PARTIAL_AUTO
@@ -68,6 +66,9 @@ public class Launcher extends SubsystemBase {
     }
 
     double launcherRPS = Math.abs(desiredVelocity + rpsAdjust);
+
+    if (DriverStation.isAutonomousEnabled() && launcherState != LauncherState.SCORING)
+      launcherRPS = 0;
 
     if (launcherState != LauncherState.OFF
         && Math.abs(launcherRPS) > LauncherConstants.SHOOTER_VELOCITY_DEADBAND) {

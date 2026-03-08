@@ -131,7 +131,7 @@ public class Robot extends LoggedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    RobotContainer.setScoringMode(ScoringMode.FULLY_AUTO);
+    RobotContainer.setScoringMode(ScoringMode.PARTIAL_AUTO);
     autonomousCommand = robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
