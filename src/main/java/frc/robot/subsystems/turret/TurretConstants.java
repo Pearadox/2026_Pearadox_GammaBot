@@ -23,14 +23,15 @@ public final class TurretConstants {
   public static final double TURRET_SAFE_MIN = TURRET_MIN_ANGLE + SAFETY_LIMIT;
   public static final double TURRET_SAFE_MAX = TURRET_MAX_ANGLE - SAFETY_LIMIT;
 
-  public static final double TURRET_MASS = Units.lbsToKilograms(16);
-  public static final double TURRET_CG_RADIUS = Units.inchesToMeters(3.75);
+  // only used in sim
+  public static final double TURRET_MASS = Units.lbsToKilograms(9);
+  public static final double TURRET_CG_RADIUS = Units.inchesToMeters(1.67);
 
   // mass ≈ 9 lb, Lzz ≈ 218 in^2 lb for the turret in cad
   // center of mass ≈ 1.67 in from its axis of rotation
   // I = I_cm + md^2 = 218 + 9(1.67)^2 = 243 in^2 lb ≈ 0.071 kg m^2
   // irl the turret weighed 4.56 kg (>10 lbs), so rounded up to 0.08
-  public static final double TURRET_MOI = 0.08 * 1.5;
+  public static final double TURRET_MOI = 0.08;
 
   public static final DCMotor TURRET_MOTOR = DCMotor.getKrakenX60(1);
 
@@ -64,7 +65,7 @@ public final class TurretConstants {
     config.MotionMagic.MotionMagicAcceleration = 450;
 
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     config.Slot0.kS = 0.0;
     config.Slot0.kV = 0.0;

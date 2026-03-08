@@ -14,6 +14,7 @@ import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.ScoringMode;
 import frc.robot.util.LoggedTunableNumber;
 import java.util.function.Supplier;
+import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -24,12 +25,12 @@ public class Turret extends SubsystemBase {
   private Supplier<ChassisSpeeds> speedsSupplier;
   private Supplier<Rotation2d> robotRotationSupplier;
 
-  @AutoLogOutput private boolean hasZeroed = false;
+  @AutoLogOutput @Getter private boolean hasZeroed = false;
 
-  private double turretRotationAdjust = 0;
+  @AutoLogOutput private double turretRotationAdjust = 0;
 
   public void adjustRotationBy(double adj) {
-    turretRotationAdjust += adj;
+    turretRotationAdjust -= adj;
   }
 
   private final LoggedTunableNumber kP = new LoggedTunableNumber("Turret/kP", 6.7); // 4
@@ -42,7 +43,7 @@ public class Turret extends SubsystemBase {
   private final LoggedTunableNumber mmCruiseVel = new LoggedTunableNumber("Turret/mmCruiseVel", 85);
   private final LoggedTunableNumber mmAcceleration = new LoggedTunableNumber("Turret/mmAcc", 450);
   private final LoggedTunableNumber testSetpoint =
-      new LoggedTunableNumber("Turret/test Setpoint", -45);
+      new LoggedTunableNumber("Turret/test Setpoint", -90);
   private final LoggedTunableNumber fieldRelOffset =
       new LoggedTunableNumber("Turret/fieldreloffset", 0);
 
@@ -97,11 +98,7 @@ public class Turret extends SubsystemBase {
 
     if (currentScoringMode != ScoringMode.FULLY_MANUAL) {
 
-      followFieldCentricTarget(
-          () ->
-              RobotContainer.getShotSolution()
-                  .getTurretAngleRot2d()
-                  .plus(new Rotation2d(turretRotationAdjust)));
+      followFieldCentricTarget(() -> RobotContainer.getShotSolution().getTurretAngleRot2d());
 
     } else if (currentScoringMode == ScoringMode.FULLY_MANUAL) {
 
@@ -131,31 +128,26 @@ public class Turret extends SubsystemBase {
   }
 
   public void followFieldCentricTarget(Supplier<Rotation2d> fieldCentricAngleSupplier) {
+    Rotation2d offset =
+        Rotation2d.fromDegrees(fieldRelOffset.get() + Units.radiansToDegrees(turretRotationAdjust));
     followRobotCentricTarget(
-        () ->
-            robotRotationSupplier
-                .get()
-                .minus(fieldCentricAngleSupplier.get())
-                .plus(Rotation2d.fromDegrees(fieldRelOffset.get())));
+        () -> robotRotationSupplier.get().minus(fieldCentricAngleSupplier.get()).plus(offset));
   }
 
   public void goToZero() {
-    io.runPosition(0, 0);
+    if (RobotContainer.getScoringMode() != ScoringMode.FULLY_MANUAL) return;
+
+    double setpointDegs = Units.radiansToDegrees(turretRotationAdjust);
+    io.runPosition(Units.degreesToRadians(setpointDegs) / TurretConstants.TURRET_P_COEFFICIENT, 0);
+    Logger.recordOutput("Turret/Setpoint Turret Degrees", setpointDegs);
   }
 
-  public void goToPlus90() {
-    io.runPosition(
-        Units.degreesToRadians(testSetpoint.get()) / TurretConstants.TURRET_P_COEFFICIENT, 0);
-  }
+  public void goToTestSetpoint() {
+    if (RobotContainer.getScoringMode() != ScoringMode.FULLY_MANUAL) return;
 
-  public void goToPlus180() {
-    io.runPosition(
-        Units.degreesToRadians(testSetpoint.get()) / TurretConstants.TURRET_P_COEFFICIENT, 0);
-  }
-
-  public void goToMinus180() {
-    io.runPosition(
-        -Units.degreesToRadians(testSetpoint.get()) / TurretConstants.TURRET_P_COEFFICIENT, 0);
+    double setpointDegs = testSetpoint.get() + Units.radiansToDegrees(turretRotationAdjust);
+    io.runPosition(Units.degreesToRadians(setpointDegs) / TurretConstants.TURRET_P_COEFFICIENT, 0);
+    Logger.recordOutput("Turret/Setpoint Turret Degrees", setpointDegs);
   }
 
   /** Zeroes the turret */
@@ -166,7 +158,12 @@ public class Turret extends SubsystemBase {
                   * TurretConstants.TURRET_GEAR_RATIO
               + TurretConstants.TURRET_STARTING_ANGLE / TurretConstants.TURRET_P_COEFFICIENT);
       hasZeroed = true;
+      setBrakeMode(true);
     }
+  }
+
+  public void setBrakeMode(boolean brake) {
+    io.setBrakeMode(brake);
   }
 
   /** Returns a command to run a quasistatic test in the specified direction. */

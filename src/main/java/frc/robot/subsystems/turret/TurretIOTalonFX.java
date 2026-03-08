@@ -3,6 +3,7 @@ package frc.robot.subsystems.turret;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.lib.drivers.PearadoxTalonFX;
 import frc.robot.util.PhoenixUtil;
 
@@ -62,5 +63,10 @@ public abstract class TurretIOTalonFX implements TurretIO {
     configs.MotionMagic.MotionMagicAcceleration = mmAcceleration;
 
     PhoenixUtil.tryUntilOk(5, () -> turretMotor.getConfigurator().apply(configs));
+  }
+
+  @Override
+  public void setBrakeMode(boolean brake) {
+    configs.MotorOutput.NeutralMode = brake ? NeutralModeValue.Brake : NeutralModeValue.Coast;
   }
 }

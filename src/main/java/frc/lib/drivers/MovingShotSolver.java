@@ -75,13 +75,13 @@ public class MovingShotSolver {
 
     alliance = Robot.getAlliance();
 
-   double hubXMeters =
-      alliance == Alliance.Red ? Hub.topCenterPointRed.getX() : Hub.topCenterPointBlue.getX();
-   double hubYMeters =
-      alliance == Alliance.Red ? Hub.topCenterPointRed.getY() : Hub.topCenterPointBlue.getY();
+    double hubXMeters =
+        alliance == Alliance.Red ? Hub.topCenterPointRed.getX() : Hub.topCenterPointBlue.getX();
+    double hubYMeters =
+        alliance == Alliance.Red ? Hub.topCenterPointRed.getY() : Hub.topCenterPointBlue.getY();
 
-  double neutralZoneTargetX =
-      alliance == Alliance.Red ? LinesVertical.redHubCenterX : LinesVertical.blueHubCenterX;
+    double neutralZoneTargetX =
+        alliance == Alliance.Red ? LinesVertical.redHubCenterX : LinesVertical.blueHubCenterX;
 
     ChassisSpeeds robotRelative = robotRelativeSpeedSupplier.get();
     Pose2d curPose = poseSupplier.get();
