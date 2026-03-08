@@ -114,6 +114,7 @@ public class Turret extends SubsystemBase {
 
   /** Follows a robot-centric angle. */
   public void followRobotCentricTarget(Supplier<Rotation2d> robotCentricAngleSupplier) {
+    if (!hasZeroed) return;
     double setpointTurretRads = wrap(robotCentricAngleSupplier.get().getRadians());
     double setpointMotorRots = setpointTurretRads / TurretConstants.TURRET_P_COEFFICIENT;
 
@@ -128,6 +129,7 @@ public class Turret extends SubsystemBase {
   }
 
   public void followFieldCentricTarget(Supplier<Rotation2d> fieldCentricAngleSupplier) {
+    if (!hasZeroed) return;
     Rotation2d offset =
         Rotation2d.fromDegrees(fieldRelOffset.get() + Units.radiansToDegrees(turretRotationAdjust));
     followRobotCentricTarget(

@@ -68,5 +68,6 @@ public abstract class TurretIOTalonFX implements TurretIO {
   @Override
   public void setBrakeMode(boolean brake) {
     configs.MotorOutput.NeutralMode = brake ? NeutralModeValue.Brake : NeutralModeValue.Coast;
+    PhoenixUtil.tryUntilOk(5, () -> turretMotor.getConfigurator().apply(configs));
   }
 }
