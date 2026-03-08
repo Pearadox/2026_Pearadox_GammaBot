@@ -117,8 +117,8 @@ public class LauncherConstants {
   public static final double ROLLER_CIRCUMFERENCE_METERS = Units.inchesToMeters(4.0 * Math.PI);
   public static final double LAUNCHER_HEIGHT_METERS =
       Units.inchesToMeters(22.5); // TODO: double check
-  public static final double LAUNCHER_ROLLER_MOI =
-      0.5 * ROLLER_MASS_KG * Math.pow(ROLLER_RADIUS_METERS, 2);
+  public static final double LAUNCHER_ROLLER_MOI = 0.003;
+  // 0.5 * ROLLER_MASS_KG * Math.pow(ROLLER_RADIUS_METERS, 2);
   public static final int ROLLER_SEGMENT_COUNT = 60;
   public static final int SIM_LINE_WIDTH = 5;
 }

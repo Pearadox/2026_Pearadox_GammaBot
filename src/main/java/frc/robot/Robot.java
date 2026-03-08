@@ -18,6 +18,7 @@ import frc.robot.util.LoggedTracer;
 import frc.robot.util.PhoenixUtil;
 import java.util.Optional;
 import lombok.Getter;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -34,7 +35,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 public class Robot extends LoggedRobot {
   private Command autonomousCommand;
   private RobotContainer robotContainer;
-  @Getter private static Alliance alliance;
+  @AutoLogOutput @Getter private static Alliance alliance;
   @Getter private static boolean isHubCurrentlyActive = true;
 
   public Robot() {
@@ -151,6 +152,9 @@ public class Robot extends LoggedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
+
+    Optional<Alliance> allianceOptional = DriverStation.getAlliance();
+    alliance = allianceOptional.orElse(Alliance.Blue);
   }
 
   /** This function is called periodically during operator control. */

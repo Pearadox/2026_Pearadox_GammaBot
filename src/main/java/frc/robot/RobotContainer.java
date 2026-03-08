@@ -270,18 +270,26 @@ public class RobotContainer {
     // opController.b().whileTrue(turret.sysIdDynamic(SysIdRoutine.Direction.kForward));
     // opController.x().whileTrue(turret.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    Trigger shouldCalculateShotSolutionTrigger =
-        new Trigger(() -> scoringMode != ScoringMode.FULLY_MANUAL);
+    // Trigger shouldCalculateShotSolutionTrigger =
+    //     new Trigger(() -> scoringMode != ScoringMode.FULLY_MANUAL);
 
-    shouldCalculateShotSolutionTrigger.whileTrue(
-        Commands.run(
+    // shouldCalculateShotSolutionTrigger.whileTrue(
+    //     Commands.run(
+    //         () ->
+    //             setShotSolution(MovingShotSolver.solve(drive::getPose,
+    // drive::getChassisSpeeds))));
+
+    vision.setDefaultCommand(
+        new RunCommand(
             () ->
-                setShotSolution(MovingShotSolver.solve(drive::getPose, drive::getChassisSpeeds))));
+                setShotSolution(
+                    MovingShotSolver.getInstance().solve(drive::getPose, drive::getChassisSpeeds)),
+            vision));
 
     Trigger shouldShootOnTheMoveTrigger =
         new Trigger(
             () ->
-                (scoringMode == ScoringMode.FULLY_AUTO && Robot.isHubCurrentlyActive())
+                (scoringMode == ScoringMode.FULLY_AUTO) // && Robot.isHubCurrentlyActive()
                     || ((scoringMode == ScoringMode.PARTIAL_AUTO
                             || scoringMode == ScoringMode.PASSING)
                         && drivercontroller.rightBumper().getAsBoolean()));

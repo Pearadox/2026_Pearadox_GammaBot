@@ -122,9 +122,7 @@ public class Turret extends SubsystemBase {
 
     double ffVolts = getFF(setpointTurretRads);
 
-    if (shouldApplyFF) {
-      io.runPosition(setpointMotorRots, ffVolts);
-    }
+    io.runPosition(setpointMotorRots, ffVolts);
 
     Logger.recordOutput(
         "Turret/Setpoint Turret Degrees", Units.radiansToDegrees(setpointTurretRads));

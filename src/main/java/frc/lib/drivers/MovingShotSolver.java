@@ -19,17 +19,21 @@ import org.littletonrobotics.junction.Logger;
 
 public class MovingShotSolver {
 
-  private static final double g = 9.81; // gravity constant in m/s^2
+  private static MovingShotSolver INSTANCE;
+
+  public static MovingShotSolver getInstance() {
+    if (INSTANCE == null) {
+      INSTANCE = new MovingShotSolver();
+    }
+    return INSTANCE;
+  }
+
+  private MovingShotSolver() {}
+
+  private static final double g = Constants.g; // gravity constant in m/s^2
 
   private static Alliance alliance = Robot.getAlliance();
 
-  private static double hubXMeters =
-      alliance == Alliance.Red ? Hub.topCenterPointRed.getX() : Hub.topCenterPointBlue.getX();
-  private static double hubYMeters =
-      alliance == Alliance.Red ? Hub.topCenterPointRed.getY() : Hub.topCenterPointBlue.getY();
-
-  private static double neutralZoneTargetX =
-      alliance == Alliance.Red ? LinesVertical.redHubCenterX : LinesVertical.blueHubCenterX;
   private static double[] neutralZoneTargetYs = {
     LinesHorizontal.leftBumpStart - 0.25, LinesHorizontal.rightBumpEnd + 0.25
   };
@@ -64,10 +68,20 @@ public class MovingShotSolver {
         : neutralZoneTargetYs[1];
   }
 
-  public static ShotSolution solve(
+  public ShotSolution solve(
       Supplier<Pose2d> poseSupplier, Supplier<ChassisSpeeds> robotRelativeSpeedSupplier) {
 
     hoodAngleRadians = Launcher.getState().getHoodAngleRads();
+
+    alliance = Robot.getAlliance();
+
+   double hubXMeters =
+      alliance == Alliance.Red ? Hub.topCenterPointRed.getX() : Hub.topCenterPointBlue.getX();
+   double hubYMeters =
+      alliance == Alliance.Red ? Hub.topCenterPointRed.getY() : Hub.topCenterPointBlue.getY();
+
+  double neutralZoneTargetX =
+      alliance == Alliance.Red ? LinesVertical.redHubCenterX : LinesVertical.blueHubCenterX;
 
     ChassisSpeeds robotRelative = robotRelativeSpeedSupplier.get();
     Pose2d curPose = poseSupplier.get();
