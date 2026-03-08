@@ -23,8 +23,10 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.lib.drivers.MovingShotSolver;
 import frc.lib.drivers.MovingShotSolver.ShotSolution;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.ShootOnTheMove;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -56,6 +58,7 @@ import frc.robot.subsystems.turret.TurretIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.util.DriveHelpers;
 import lombok.Getter;
 import lombok.Setter;
@@ -124,7 +127,9 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation));
+                new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation),
+                new VisionIOPhotonVision(
+                    VisionConstants.camera1Name, VisionConstants.robotToCamera1));
 
         break;
 
@@ -265,30 +270,29 @@ public class RobotContainer {
     // opController.b().whileTrue(turret.sysIdDynamic(SysIdRoutine.Direction.kForward));
     // opController.x().whileTrue(turret.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    // Trigger shouldCalculateShotSolutionTrigger =
-    //     new Trigger(() -> scoringMode != ScoringMode.FULLY_MANUAL);
+    Trigger shouldCalculateShotSolutionTrigger =
+        new Trigger(() -> scoringMode != ScoringMode.FULLY_MANUAL);
 
-    // shouldCalculateShotSolutionTrigger.whileTrue(
-    //     Commands.run(
-    //         () ->
-    //             setShotSolution(MovingShotSolver.solve(drive::getPose,
-    // drive::getChassisSpeeds))));
+    shouldCalculateShotSolutionTrigger.whileTrue(
+        Commands.run(
+            () ->
+                setShotSolution(MovingShotSolver.solve(drive::getPose, drive::getChassisSpeeds))));
 
-    // Trigger shouldShootOnTheMoveTrigger =
-    //     new Trigger(
-    //         () ->
-    //             (scoringMode == ScoringMode.FULLY_AUTO && Robot.isHubCurrentlyActive())
-    //                 || ((scoringMode == ScoringMode.PARTIAL_AUTO
-    //                         || scoringMode == ScoringMode.PASSING)
-    //                     && drivercontroller.rightBumper().getAsBoolean()));
+    Trigger shouldShootOnTheMoveTrigger =
+        new Trigger(
+            () ->
+                (scoringMode == ScoringMode.FULLY_AUTO && Robot.isHubCurrentlyActive())
+                    || ((scoringMode == ScoringMode.PARTIAL_AUTO
+                            || scoringMode == ScoringMode.PASSING)
+                        && drivercontroller.rightBumper().getAsBoolean()));
 
-    // shouldShootOnTheMoveTrigger
-    //     .onTrue(new InstantCommand(() -> setShouldSOTM(true)))
-    //     .onFalse(new InstantCommand(() -> setShouldSOTM(false)));
+    shouldShootOnTheMoveTrigger
+        .onTrue(new InstantCommand(() -> setShouldSOTM(true)))
+        .onFalse(new InstantCommand(() -> setShouldSOTM(false)));
 
-    // shouldShootOnTheMoveTrigger.whileTrue(
-    //     new ShootOnTheMove(
-    //         launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d));
+    shouldShootOnTheMoveTrigger.whileTrue(
+        new ShootOnTheMove(
+            launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d));
 
     drivercontroller
         .leftBumper()
@@ -300,19 +304,21 @@ public class RobotContainer {
         .povLeft()
         .onTrue(new InstantCommand(() -> intake.setOuttaking()))
         .onFalse(new InstantCommand(() -> intake.setDeployed()));
-    drivercontroller
-        .rightBumper()
+
+    Trigger shouldRunSpindexerAndFeeder =
+        new Trigger(
+            () ->
+                scoringMode == ScoringMode.FULLY_MANUAL
+                    && drivercontroller.rightBumper().getAsBoolean());
+
+    shouldRunSpindexerAndFeeder
         .onTrue(
             new InstantCommand(() -> launcher.setScoring())
                 .andThen(new WaitCommand(0.1))
                 .andThen(new InstantCommand(() -> feeder.setRunning()))
-                .andThen(new WaitCommand(0.1))
                 .andThen(new InstantCommand(() -> spindexer.setRunning())))
-
-        // drivercontroller
-        // .rightBumper()
-        .whileFalse(
-            new InstantCommand(() -> launcher.setOff()) // THIS IS WRONG!!!
+        .onFalse(
+            new InstantCommand(() -> launcher.setOff())
                 .andThen(new InstantCommand(() -> feeder.setStopped()))
                 .andThen(new InstantCommand(() -> spindexer.setStopped())));
 
@@ -344,8 +350,9 @@ public class RobotContainer {
                     Math.signum(-opController.getLeftY())
                         * IntakeConstants.OP_ADJUST_INCREMENT_DEGREES)));
 
-    opController.start().onTrue(new InstantCommand(() -> turret.goToZero(), turret));
-    opController.back().onTrue(new InstantCommand(() -> turret.goToPlus180(), turret));
+    opController.leftBumper().onTrue(new InstantCommand(() -> turret.goToZero(), turret));
+    opController.rightBumper().onTrue(new InstantCommand(() -> turret.goToPlus180(), turret));
+    opController.start().onTrue(new InstantCommand(() -> turret.requestZero()));
     // opController.x().onTrue(new InstantCommand(() -> turret.goToMinus180(), turret));
 
     // opController

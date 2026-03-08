@@ -20,18 +20,22 @@ public class VisionConstants {
 
   // Camera names, must match names configured on coprocessor
   public static String camera0Name = "limelight-lemon";
-  //   public static String camera1Name = "camera_1";
+  public static String camera1Name = "OV9281";
 
   // Robot to camera transforms
   // (Not used by Limelight, configure in web UI instead)
-  public static Transform3d robotToCamera0 = // Transform3d.kZero;
+  public static Transform3d robotToCamera0 = Transform3d.kZero;
+  //   new Transform3d(
+  //       -Units.inchesToMeters(14 - 1.75),
+  //       Units.inchesToMeters(14 - 2.75),
+  //       Units.inchesToMeters(9.403),
+  //       new Rotation3d(0, -Units.degreesToRadians(20), Math.PI));
+  public static Transform3d robotToCamera1 =
       new Transform3d(
-          -Units.inchesToMeters(14 - 1.75),
-          Units.inchesToMeters(14 - 2.75),
-          Units.inchesToMeters(9.403),
-          new Rotation3d(0, -Units.degreesToRadians(20), Math.PI));
-  //   public static Transform3d robotToCamera1 =
-  //       new Transform3d(-0.2, 0.0, 0.2, new Rotation3d(0.0, -0.4, Math.PI));
+          -Units.inchesToMeters(10.547),
+          -Units.inchesToMeters(2.928),
+          Units.inchesToMeters(14.537),
+          new Rotation3d(0.0, 0.0, Math.PI));
 
   // Basic filtering thresholds
   public static double maxAmbiguity = 0.3;

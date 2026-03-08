@@ -4,13 +4,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.spindexer.SpindexerConstants.*;
 import frc.robot.util.LoggedTunableNumber;
 import frc.robot.util.SmarterDashboard;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Spindexer extends SubsystemBase {
   private SpindexerIO io;
   private final SpindexerIOInputsAutoLogged inputs = new SpindexerIOInputsAutoLogged();
 
-  private SpindexerState spindexerState = SpindexerState.STOPPED;
+  @AutoLogOutput private SpindexerState spindexerState = SpindexerState.STOPPED;
   public static double adjust = 0;
 
   public Spindexer(SpindexerIO io) {
@@ -40,7 +41,7 @@ public class Spindexer extends SubsystemBase {
     } else if (spindexerState.equals(SpindexerState.REVERSE)) {
       io.runSpindexerTorqueCurrent(-spindexerCurrentAmps.get(), spindexerMaxDutyCycle.get());
     } else {
-      io.runSpindexerTorqueCurrent(0, 0);
+      io.runSpindexerTorqueCurrent(0, spindexerMaxDutyCycle.get());
     }
   }
 

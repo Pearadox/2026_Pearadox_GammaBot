@@ -10,6 +10,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.RobotContainer;
+import frc.robot.RobotContainer.ScoringMode;
 import frc.robot.util.LoggedTunableNumber;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -22,7 +24,7 @@ public class Turret extends SubsystemBase {
   private Supplier<ChassisSpeeds> speedsSupplier;
   private Supplier<Rotation2d> robotRotationSupplier;
 
-  private boolean hasZeroed = false;
+  @AutoLogOutput private boolean hasZeroed = false;
 
   private double turretRotationAdjust = 0;
 
@@ -40,9 +42,11 @@ public class Turret extends SubsystemBase {
   private final LoggedTunableNumber mmCruiseVel = new LoggedTunableNumber("Turret/mmCruiseVel", 85);
   private final LoggedTunableNumber mmAcceleration = new LoggedTunableNumber("Turret/mmAcc", 450);
   private final LoggedTunableNumber testSetpoint =
-      new LoggedTunableNumber("Turret/test Setpoint", 350);
+      new LoggedTunableNumber("Turret/test Setpoint", -45);
   private final LoggedTunableNumber fieldRelOffset =
-      new LoggedTunableNumber("Turret/fieldreloffset", 45);
+      new LoggedTunableNumber("Turret/fieldreloffset", 0);
+
+  private boolean shouldApplyFF = true;
 
   private final SysIdRoutine sysId;
 
@@ -73,9 +77,9 @@ public class Turret extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Turret", inputs);
 
-    if (!hasZeroed && inputs.cancoderConnected) {
-      requestZero();
-    }
+    // if (!hasZeroed && inputs.cancoderConnected) {
+    //   requestZero();
+    // }
 
     if (kP.hasChanged(hashCode()) || kI.hasChanged(hashCode()) || kD.hasChanged(hashCode())) {
       io.setPID(kP.get(), kI.get(), kD.get());
@@ -89,22 +93,26 @@ public class Turret extends SubsystemBase {
       io.setMotionMagicLimits(mmCruiseVel.get(), mmAcceleration.get());
     }
 
-    // ScoringMode currentScoringMode = RobotContainer.getScoringMode();
+    ScoringMode currentScoringMode = RobotContainer.getScoringMode();
 
-    // if (currentScoringMode != ScoringMode.FULLY_MANUAL) {
+    if (currentScoringMode != ScoringMode.FULLY_MANUAL) {
 
-    //   followFieldCentricTarget(
-    //       () ->
-    //           RobotContainer.getShotSolution()
-    //               .getTurretAngleRot2d()
-    //               .plus(new Rotation2d(turretRotationAdjust)));
+      followFieldCentricTarget(
+          () ->
+              RobotContainer.getShotSolution()
+                  .getTurretAngleRot2d()
+                  .plus(new Rotation2d(turretRotationAdjust)));
 
-    // } else if (currentScoringMode == ScoringMode.FULLY_MANUAL) {
+    } else if (currentScoringMode == ScoringMode.FULLY_MANUAL) {
 
-    //   followFieldCentricTarget(
-    //       () -> getFieldRelativeTurretAngleRotation2d().plus(new
-    // Rotation2d(turretRotationAdjust)));
-    // }
+      // followFieldCentricTarget(
+      //     () -> getFieldRelativeTurretAngleRotation2d().plus(new
+      // Rotation2d(turretRotationAdjust)));
+
+      Logger.recordOutput(
+          "Turret/SOTM/shotSolutionDesiredRotation",
+          RobotContainer.getShotSolution().getTurretAngleRot2d());
+    }
   }
 
   /** Follows a robot-centric angle. */
@@ -114,7 +122,9 @@ public class Turret extends SubsystemBase {
 
     double ffVolts = getFF(setpointTurretRads);
 
-    io.runPosition(setpointMotorRots, ffVolts);
+    if (shouldApplyFF) {
+      io.runPosition(setpointMotorRots, ffVolts);
+    }
 
     Logger.recordOutput(
         "Turret/Setpoint Turret Degrees", Units.radiansToDegrees(setpointTurretRads));
@@ -220,7 +230,7 @@ public class Turret extends SubsystemBase {
   private double getFF(double setpointRads) {
     double chassisAngularVelocity = speedsSupplier.get().omegaRadiansPerSecond;
 
-    boolean shouldApplyFF =
+    shouldApplyFF =
         Math.abs(
                     Rotation2d.fromRadians(setpointRads)
                         .minus(Rotation2d.fromRadians(getTurretAngleRads()))

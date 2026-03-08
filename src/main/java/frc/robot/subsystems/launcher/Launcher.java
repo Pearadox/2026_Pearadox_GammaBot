@@ -17,7 +17,7 @@ public class Launcher extends SubsystemBase {
 
   private final LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
 
-  private static LauncherState launcherState = LauncherState.OFF;
+  private static LauncherState launcherState = LauncherState.SCORING;
 
   private double rpsAdjust = 0.0;
 
@@ -53,7 +53,7 @@ public class Launcher extends SubsystemBase {
       desiredVelocity =
           RobotContainer.getShouldSOTM()
               ? RobotContainer.getShotSolution().getShooterSpeedRPS()
-              : 0;
+              : 20;
 
     } else if (currentScoringMode == ScoringMode.FULLY_MANUAL) {
 
@@ -77,6 +77,12 @@ public class Launcher extends SubsystemBase {
                 LauncherConstants.angularPositiontoRotations(inputs.hoodServo1Position)));
 
     Logger.recordOutput("Launcher/adjust", launcherRPS);
+
+    Logger.recordOutput("Debug/ScoringMode", currentScoringMode);
+    Logger.recordOutput("Debug/desiredLauncherRPS", launcherRPS);
+    Logger.recordOutput("Debug/shouldSOTM", RobotContainer.getShouldSOTM());
+    Logger.recordOutput("Debug/ScoringMode", currentScoringMode);
+    Logger.recordOutput("Debug/getLauncherVelocity", getLauncherVelocity());
 
     // Logger.recordOutput("Hood/Desired-Angle", launcherState.getHoodAngleRads());
     // Logger.recordOutput("Hood/Servo-Position", inputs.hoodServo1Position);

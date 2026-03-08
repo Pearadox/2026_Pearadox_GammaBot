@@ -60,7 +60,7 @@ public class ShootOnTheMove extends Command {
     atDesiredVelocity = debouncer.calculate(Math.abs(shooterVelocityError) < 7.0);
     atDesiredRotation = turretRotationDebouncer.calculate(Math.abs(turretRotationError) < 8.0);
 
-    readyToShoot = atDesiredRotation && atDesiredVelocity;
+    readyToShoot = atDesiredVelocity; // && atDesiredRotation;
 
     if (readyToShoot) {
       feeder.setRunning();
@@ -83,6 +83,7 @@ public class ShootOnTheMove extends Command {
   @Override
   public void end(boolean interrupted) {
     feeder.setStopped();
+    spindexer.setStopped();
     atDesiredVelocity = false;
     atDesiredRotation = false;
     readyToShoot = false;

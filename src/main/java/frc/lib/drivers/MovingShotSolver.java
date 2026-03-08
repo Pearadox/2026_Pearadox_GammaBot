@@ -85,7 +85,7 @@ public class MovingShotSolver {
 
     // Robot-relative turret offset (meters)
 
-    double dxTurretRobotRelative = 0.135; // TODO: find real forward offset
+    double dxTurretRobotRelative = -0.135; // TODO: find real forward offset
     double dyTurretRobotRelative = -0.14; // TODO: find real sideways offset
 
     // Rotate offset into field coordinates using matrix multiplication done below
@@ -114,6 +114,8 @@ public class MovingShotSolver {
 
     double robotVx = fieldRelativeSpeeds.vxMetersPerSecond;
     double robotVy = fieldRelativeSpeeds.vyMetersPerSecond;
+
+    Logger.recordOutput("SOTM/distnace to target", Math.hypot(Dx, Dy));
 
     double ToF =
         1.0 + Math.hypot(Dx, Dy) / 15.0 * (3.0 - 1.0); // Initial guess of ToF for Newton's Method
@@ -184,6 +186,7 @@ public class MovingShotSolver {
     SmarterDashboard.putNumber("Launcher/SOTM/currentRotation", curPose.getRotation().getDegrees());
     Logger.recordOutput("Launcher/SOTM/targetPose", targetPose);
 
-    return new ShotSolution(ToF, shooterSpeedRPS, fieldRelativeTurretAngleRot2d, isInNeutralZone);
+    return new ShotSolution(
+        ToF, 1.85 * shooterSpeedRPS, fieldRelativeTurretAngleRot2d, isInNeutralZone);
   }
 }
