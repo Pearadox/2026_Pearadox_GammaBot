@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.515,
-        "y": 2.554
+        "x": 3.6178990610328654,
+        "y": 2.683016431924882
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.469666666666667,
-        "y": 2.8169444444444447
+        "x": 4.572565727699532,
+        "y": 2.945960876369327
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Outpost bump"
     },
     {
       "anchor": {
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 1.0,
-    "rotation": 0.0
+    "rotation": 90.0
   },
   "reversed": false,
   "folder": "To Neutral Zone",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }

@@ -48,26 +48,32 @@
     },
     {
       "anchor": {
-        "x": 2.813111111111111,
-        "y": 3.050811111111111
+        "x": 1.925,
+        "y": 1.5971713615023488
       },
       "prevControl": {
-        "x": 3.475733333333333,
-        "y": 2.466144444444444
+        "x": 2.638509389671362,
+        "y": 3.1409460093896735
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Outpost front space"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1.1726141078838135,
-      "rotationDegrees": 180.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
-  "pointTowardsZones": [],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 4.62,
+        "y": 4.0
+      },
+      "rotationOffset": 90.0,
+      "minWaypointRelativePos": 2.742547425474255,
+      "maxWaypointRelativePos": 3.0,
+      "name": "Point Towards Zone"
+    }
+  ],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
@@ -79,7 +85,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -179.27477570094086
+    "rotation": 90.0
   },
   "reversed": false,
   "folder": "To Alliance Zone",

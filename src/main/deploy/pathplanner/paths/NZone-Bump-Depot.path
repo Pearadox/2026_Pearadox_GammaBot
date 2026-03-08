@@ -48,16 +48,16 @@
     },
     {
       "anchor": {
-        "x": 1.448888888888889,
-        "y": 5.9351666666666665
+        "x": 1.62718309859155,
+        "y": 6.440892018779343
       },
       "prevControl": {
-        "x": 2.1115111111111116,
-        "y": 5.915677777777777
+        "x": 2.2898053208137727,
+        "y": 6.421403129890454
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Depot front space"
     }
   ],
   "rotationTargets": [
@@ -79,7 +79,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": "To Depot",

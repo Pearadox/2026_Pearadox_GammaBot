@@ -8,36 +8,27 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1168779342723014,
-        "y": 2.6723708920187796
+        "x": 2.6707167630057795,
+        "y": 2.6246936416184963
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Outpost bump"
     },
     {
       "anchor": {
-        "x": 1.3948754448398584,
-        "y": 1.361340450771056
+        "x": 1.925,
+        "y": 1.5971713615023488
       },
       "prevControl": {
-        "x": 1.8210561677314245,
-        "y": 2.44318382426503
+        "x": 2.3771213872832364,
+        "y": 2.0794450867052023
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Outpost front space"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1,
-      "rotationDegrees": 0.0
-    },
-    {
-      "waypointRelativePos": 1,
-      "rotationDegrees": 0.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -51,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 135.0
+    "rotation": 90.0
   },
   "reversed": false,
   "folder": "To Outpost",

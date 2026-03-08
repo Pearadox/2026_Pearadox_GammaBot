@@ -29,27 +29,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "OutpostSlowIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "NZone-OBump-AllianZone1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stow Intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "AllianZone-Outpost"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "NZone-OBump-AllianZone1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Stow Intake"
+                }
+              }
+            ]
           }
         },
         {
