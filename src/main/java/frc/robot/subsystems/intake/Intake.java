@@ -54,7 +54,7 @@ public class Intake extends SubsystemBase {
 
     Logger.recordOutput("Intake/State", intakeState.toString());
     Logger.recordOutput(
-        "Intake/maxduty", StateConfig.INTAKE_STATE_MAP.get(intakeState).maxDuty() + dutyAdjust);
+        "Intake/VoltageOut", StateConfig.INTAKE_STATE_MAP.get(intakeState).voltage());
 
     // io.runRollersAmps(loggedIntakeStatorCurrent.get(), maxDuty.get());
     // io.runRollersVolts(StateConfig.INTAKE_STATE_MAP.get(intakeState).voltage());
@@ -63,9 +63,8 @@ public class Intake extends SubsystemBase {
     //   io.runRollersVelocityTorqueCurrentFOC(rps.get(), ffamps.get());
 
     // } else {
-    io.runRollersAmps(
-        StateConfig.INTAKE_STATE_MAP.get(intakeState).amps(),
-        StateConfig.INTAKE_STATE_MAP.get(intakeState).maxDuty() + dutyAdjust);
+    io.runRollersVolts(StateConfig.INTAKE_STATE_MAP.get(intakeState).voltage());
+
     // }
     io.runPositionDegrees(
         StateConfig.INTAKE_STATE_MAP.get(intakeState).angleDeg() + pivotDegreesAdjust,

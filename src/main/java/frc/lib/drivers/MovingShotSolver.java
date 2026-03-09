@@ -10,7 +10,6 @@ import frc.robot.Constants.FieldConstants.Hub;
 import frc.robot.Constants.FieldConstants.LinesHorizontal;
 import frc.robot.Constants.FieldConstants.LinesVertical;
 import frc.robot.Robot;
-import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherConstants;
 import frc.robot.util.LoggedTunableNumber;
 import frc.robot.util.SmarterDashboard;
@@ -42,7 +41,7 @@ public class MovingShotSolver {
 
   private static double hubHeightMeters = Hub.height;
   private static double shooterHeightMeters = Units.inchesToMeters(22.5);
-  private static double hoodAngleRadians = Units.degreesToRadians(65);
+  private static double hoodAngleRadians = Units.degreesToRadians(75);
 
   private final LoggedTunableNumber rpsMultiplier =
       new LoggedTunableNumber("SOTM/Rps Multiplier", 1.85);
@@ -75,7 +74,7 @@ public class MovingShotSolver {
   public ShotSolution solve(
       Supplier<Pose2d> poseSupplier, Supplier<ChassisSpeeds> robotRelativeSpeedSupplier) {
 
-    hoodAngleRadians = Launcher.getState().getHoodAngleRads();
+    // hoodAngleRadians = Launcher.getState().getHoodAngleRads();
 
     alliance = Robot.getAlliance();
 

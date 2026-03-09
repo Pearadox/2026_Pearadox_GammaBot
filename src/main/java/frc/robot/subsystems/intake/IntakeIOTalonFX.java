@@ -60,15 +60,14 @@ public abstract class IntakeIOTalonFX implements IntakeIO {
   @Override
   public void runRollersVelocityTorqueCurrentFOC(double velocity, double ffAmps) {
     // roller1Leader.setControl(rollerVoltage.withOutput(volts));
-    roller1Leader.setControl(
-        velocityTorqueCurrentFOC.withVelocity(velocity).withFeedForward(ffAmps));
+    roller1Leader.setControl(velocityTorqueCurrentFOC.withVelocity(velocity));
 
     roller2Follower.setControl(followerRequest);
   }
 
   @Override
   public void runRollersVolts(double volts) {
-    roller1Leader.setControl(rollerVoltage.withOutput(volts));
+    roller1Leader.setControl(rollerVoltage.withOutput(volts).withEnableFOC(false));
   }
 
   @Override

@@ -22,23 +22,23 @@ public class IntakeConstants {
    * @param angleRad the angle in radians
    * @param voltage the voltage in volts
    */
-  // public static record StateConfig(double angleDeg, double voltage) {
-  //   public static final Map<IntakeState, StateConfig> INTAKE_STATE_MAP =
-  //       Map.of(
-  //           IntakeState.STOWED, new StateConfig(0, 0),
-  //           IntakeState.DEPLOYED, new StateConfig(90, 0),
-  //           IntakeState.INTAKING, new StateConfig(90, 3),
-  //           IntakeState.OUTTAKING, new StateConfig(90, -3));
-  // }
-
-  public static record StateConfig(double angleDeg, double amps, double maxDuty) {
+  public static record StateConfig(double angleDeg, double voltage) {
     public static final Map<IntakeState, StateConfig> INTAKE_STATE_MAP =
         Map.of(
-            IntakeState.STOWED, new StateConfig(0, 0, 0),
-            IntakeState.DEPLOYED, new StateConfig(95, 0, 0),
-            IntakeState.INTAKING, new StateConfig(95, 45, 0.4),
-            IntakeState.OUTTAKING, new StateConfig(90, -40, 0.4));
+            IntakeState.STOWED, new StateConfig(0, 0),
+            IntakeState.DEPLOYED, new StateConfig(90, 0),
+            IntakeState.INTAKING, new StateConfig(90, 3),
+            IntakeState.OUTTAKING, new StateConfig(90, -3));
   }
+
+  // public static record StateConfig(double angleDeg, double amps, double maxDuty) {
+  //   public static final Map<IntakeState, StateConfig> INTAKE_STATE_MAP =
+  //       Map.of(
+  //           IntakeState.STOWED, new StateConfig(0, 0, 0),
+  //           IntakeState.DEPLOYED, new StateConfig(95, 0, 0),
+  //           IntakeState.INTAKING, new StateConfig(95, 45, 0.4),
+  //           IntakeState.OUTTAKING, new StateConfig(90, -40, 0.4));
+  // }
 
   // roller constants
   public static final int ROLLER_1_LEADER_ID = 31;
