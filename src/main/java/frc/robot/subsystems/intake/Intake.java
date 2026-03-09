@@ -22,10 +22,9 @@ public class Intake extends SubsystemBase {
     pivotDegreesAdjust += adj;
   }
 
-  public void adjustVoltsBy (double volts) {
+  public void adjustVoltsBy(double volts) {
     voltAdjust += volts;
-  } 
-
+  }
 
   public void adjustMaxDuty(double adj) {
     dutyAdjust += adj;
