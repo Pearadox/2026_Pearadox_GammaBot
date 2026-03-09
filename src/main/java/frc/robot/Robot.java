@@ -131,7 +131,7 @@ public class Robot extends LoggedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    RobotContainer.setScoringMode(ScoringMode.PARTIAL_AUTO);
+    RobotContainer.setScoringMode(ScoringMode.FULLY_AUTO);
     autonomousCommand = robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -155,7 +155,7 @@ public class Robot extends LoggedRobot {
       autonomousCommand.cancel();
     }
 
-    RobotContainer.setScoringMode(ScoringMode.PARTIAL_AUTO);
+    RobotContainer.setScoringMode(ScoringMode.FULLY_AUTO);
 
     Optional<Alliance> allianceOptional = DriverStation.getAlliance();
     alliance = allianceOptional.orElse(Alliance.Blue);

@@ -77,7 +77,7 @@ public class RobotContainer {
   public final RobotVisualizer visualizer;
 
   // Controller
-  private final CommandXboxController drivercontroller = new CommandXboxController(0);
+  public static final CommandXboxController drivercontroller = new CommandXboxController(0);
   private final CommandXboxController opController = new CommandXboxController(1);
 
   // Dashboard inputs
@@ -127,9 +127,10 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation),
-                new VisionIOPhotonVision(
-                    VisionConstants.camera1Name, VisionConstants.robotToCamera1));
+                new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation)
+                // new VisionIOPhotonVision(
+                //     VisionConstants.camera1Name, VisionConstants.robotToCamera1)
+                );
 
         break;
 

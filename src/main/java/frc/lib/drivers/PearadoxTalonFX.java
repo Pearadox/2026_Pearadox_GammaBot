@@ -36,6 +36,7 @@ public class PearadoxTalonFX extends TalonFX {
           getMotorVoltage(false),
           getSupplyCurrent(false),
           getStatorCurrent(false),
+          getTorqueCurrent(false),
           getDeviceTemp(false)
         };
 
@@ -70,7 +71,8 @@ public class PearadoxTalonFX extends TalonFX {
         telemetrySignals[2].getValueAsDouble(), // voltage
         telemetrySignals[3].getValueAsDouble(), // supply current
         telemetrySignals[4].getValueAsDouble(), // stator current
-        telemetrySignals[5].getValueAsDouble(), // temperature
+        telemetrySignals[5].getValueAsDouble(), // torque current
+        telemetrySignals[6].getValueAsDouble(), // temperature
         connected);
   }
 
@@ -91,11 +93,12 @@ public class PearadoxTalonFX extends TalonFX {
       double appliedVolts,
       double supplyCurrent,
       double statorCurrent,
+      double torqueCurrent,
       double temperature,
       boolean isConnected) {
 
     public MotorData() {
-      this(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false);
+      this(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false);
     }
   }
 }

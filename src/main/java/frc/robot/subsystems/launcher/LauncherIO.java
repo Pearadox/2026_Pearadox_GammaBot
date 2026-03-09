@@ -33,8 +33,9 @@ public interface LauncherIO {
   /**
    * @param velocityRPS the rotor velocity setpoint in Rotations per Second
    */
-  public default void runLauncherVelocity(
-      double velocityRPS, double ffamps) {} // TODO: add feedfoward for torque current
+  public default void runLauncherVelocity(double velocityRPS, double ffamps) {}
+
+  public default void runLauncherVelocityWithoutFOC(double velocityRPS) {}
 
   /**
    * This is assuming that the left servo is at 0.0 and the right servo is at 1.0 when the hood is
@@ -48,4 +49,6 @@ public interface LauncherIO {
    * @param isPassing if the robot is in PASSING mode or other modes
    */
   public default void setHoodAngle(boolean isPassing) {}
+
+  public default void setPID(double kP) {}
 }

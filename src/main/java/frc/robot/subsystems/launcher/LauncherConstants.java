@@ -56,8 +56,10 @@ public class LauncherConstants {
     LAUNCHER_CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
     LAUNCHER_CONFIG.TorqueCurrent.PeakForwardTorqueCurrent = 40.0; // added for bang-bang control
-
     LAUNCHER_CONFIG.TorqueCurrent.PeakReverseTorqueCurrent = 0.0; // added for bang-bang control
+
+    LAUNCHER_CONFIG.Voltage.PeakForwardVoltage = 12;
+    LAUNCHER_CONFIG.Voltage.PeakReverseVoltage = -3;
 
     LAUNCHER_CONFIG_SLOT0.kP = 99999.0; // 0.8
     LAUNCHER_CONFIG_SLOT0.kI = 0.0;
