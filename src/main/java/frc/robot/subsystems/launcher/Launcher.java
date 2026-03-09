@@ -32,10 +32,16 @@ public class Launcher extends SubsystemBase {
     rpsAdjust += adj;
   }
 
-  private final LoggedTunableNumber fullyManualInitialVelocity = new LoggedTunableNumber("Launcher/Default velocity", LauncherConstants.DEFAULT_VELOCITY_SETPOINT_RPS);
+  private final LoggedTunableNumber fullyManualInitialVelocity =
+      new LoggedTunableNumber(
+          "Launcher/Default velocity", LauncherConstants.DEFAULT_VELOCITY_SETPOINT_RPS);
+
+  private final LoggedTunableNumber kP = new LoggedTunableNumber("Launcher/kP", 99999);
 
   public Launcher(LauncherIO io) {
     this.io = io;
+
+    io.setPID(kP.get());
   }
 
   @Override
@@ -53,8 +59,9 @@ public class Launcher extends SubsystemBase {
     if (currentScoringMode == ScoringMode.FULLY_AUTO) {
       desiredVelocity = RobotContainer.getShotSolution().getShooterSpeedRPS();
 
-    } else if (currentScoringMode == ScoringMode.PARTIAL_AUTO
-        || currentScoringMode == ScoringMode.PASSING) {
+    } else if ((currentScoringMode == ScoringMode.PARTIAL_AUTO
+            || currentScoringMode == ScoringMode.PASSING)
+        && RobotContainer.drivercontroller.rightBumper().getAsBoolean()) {
 
       desiredVelocity =
           RobotContainer.getShouldSOTM()
@@ -98,6 +105,9 @@ public class Launcher extends SubsystemBase {
     //     LauncherConstants.angularPositiontoRotations(inputs.hoodServo1Position)
     //         / LauncherConstants.HOOD_GEARING); // 5 because 1.0 position -> 5 rotations
 
+    if (kP.hasChanged(hashCode())) {
+      io.setPID(kP.get());
+    }
   }
 
   /** velocity will be calculated from aim assist command factory */
