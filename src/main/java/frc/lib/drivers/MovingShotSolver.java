@@ -10,8 +10,8 @@ import frc.robot.Constants.FieldConstants.Hub;
 import frc.robot.Constants.FieldConstants.LinesHorizontal;
 import frc.robot.Constants.FieldConstants.LinesVertical;
 import frc.robot.Robot;
-import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherConstants;
+import frc.robot.util.LoggedTunableNumber;
 import frc.robot.util.SmarterDashboard;
 import java.util.function.Supplier;
 import lombok.Getter;
@@ -19,17 +19,21 @@ import org.littletonrobotics.junction.Logger;
 
 public class MovingShotSolver {
 
-  private static final double g = 9.81; // gravity constant in m/s^2
+  private static MovingShotSolver INSTANCE;
+
+  public static MovingShotSolver getInstance() {
+    if (INSTANCE == null) {
+      INSTANCE = new MovingShotSolver();
+    }
+    return INSTANCE;
+  }
+
+  private MovingShotSolver() {}
+
+  private static final double g = Constants.g; // gravity constant in m/s^2
 
   private static Alliance alliance = Robot.getAlliance();
 
-  private static double hubXMeters =
-      alliance == Alliance.Red ? Hub.topCenterPointRed.getX() : Hub.topCenterPointBlue.getX();
-  private static double hubYMeters =
-      alliance == Alliance.Red ? Hub.topCenterPointRed.getY() : Hub.topCenterPointBlue.getY();
-
-  private static double neutralZoneTargetX =
-      alliance == Alliance.Red ? LinesVertical.redHubCenterX : LinesVertical.blueHubCenterX;
   private static double[] neutralZoneTargetYs = {
     LinesHorizontal.leftBumpStart - 0.25, LinesHorizontal.rightBumpEnd + 0.25
   };
@@ -37,7 +41,10 @@ public class MovingShotSolver {
 
   private static double hubHeightMeters = Hub.height;
   private static double shooterHeightMeters = Units.inchesToMeters(22.5);
-  private static double hoodAngleRadians = Units.degreesToRadians(65);
+  private static double hoodAngleRadians = Units.degreesToRadians(70);
+
+  private final LoggedTunableNumber rpsMultiplier =
+      new LoggedTunableNumber("SOTM/Rps Multiplier", 2.1);
 
   private static final double MPSToRPSConversion =
       LauncherConstants.LAUNCHER_GEARING / LauncherConstants.ROLLER_CIRCUMFERENCE_METERS;
@@ -64,10 +71,20 @@ public class MovingShotSolver {
         : neutralZoneTargetYs[1];
   }
 
-  public static ShotSolution solve(
+  public ShotSolution solve(
       Supplier<Pose2d> poseSupplier, Supplier<ChassisSpeeds> robotRelativeSpeedSupplier) {
 
-    hoodAngleRadians = Launcher.getState().getHoodAngleRads();
+    // hoodAngleRadians = Launcher.getState().getHoodAngleRads();
+
+    alliance = Robot.getAlliance();
+
+    double hubXMeters =
+        alliance == Alliance.Red ? Hub.topCenterPointRed.getX() : Hub.topCenterPointBlue.getX();
+    double hubYMeters =
+        alliance == Alliance.Red ? Hub.topCenterPointRed.getY() : Hub.topCenterPointBlue.getY();
+
+    double neutralZoneTargetX =
+        alliance == Alliance.Red ? LinesVertical.redHubCenterX : LinesVertical.blueHubCenterX;
 
     ChassisSpeeds robotRelative = robotRelativeSpeedSupplier.get();
     Pose2d curPose = poseSupplier.get();
@@ -187,6 +204,6 @@ public class MovingShotSolver {
     Logger.recordOutput("Launcher/SOTM/targetPose", targetPose);
 
     return new ShotSolution(
-        ToF, 1.85 * shooterSpeedRPS, fieldRelativeTurretAngleRot2d, isInNeutralZone);
+        ToF, rpsMultiplier.get() * shooterSpeedRPS, fieldRelativeTurretAngleRot2d, isInNeutralZone);
   }
 }

@@ -5,10 +5,15 @@
 package frc.robot.subsystems.launcher;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.ScoringMode;
 import frc.robot.subsystems.launcher.LauncherConstants.LauncherState;
+import frc.robot.util.LoggedTunableNumber;
+import lombok.Getter;
+import lombok.Setter;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Launcher extends SubsystemBase {
@@ -17,7 +22,9 @@ public class Launcher extends SubsystemBase {
 
   private final LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
 
-  private static LauncherState launcherState = LauncherState.SCORING;
+  @AutoLogOutput @Getter @Setter private static LauncherState launcherState = LauncherState.MANUAL;
+
+  private final LoggedTunableNumber tunableffAmps = new LoggedTunableNumber("Launcher/ffamps", 0);
 
   private double rpsAdjust = 0.0;
 
@@ -25,10 +32,16 @@ public class Launcher extends SubsystemBase {
     rpsAdjust += adj;
   }
 
-  private double fullyManualInitialVelocity = LauncherConstants.DEFAULT_VELOCITY_SETPOINT_RPS;
+  private final LoggedTunableNumber fullyManualInitialVelocity =
+      new LoggedTunableNumber(
+          "Launcher/Default velocity", LauncherConstants.DEFAULT_VELOCITY_SETPOINT_RPS);
+
+  private final LoggedTunableNumber kP = new LoggedTunableNumber("Launcher/kP", 99999);
 
   public Launcher(LauncherIO io) {
     this.io = io;
+
+    io.setPID(kP.get());
   }
 
   @Override
@@ -44,27 +57,29 @@ public class Launcher extends SubsystemBase {
     double desiredVelocity = 0;
     ScoringMode currentScoringMode = RobotContainer.getScoringMode();
     if (currentScoringMode == ScoringMode.FULLY_AUTO) {
-
       desiredVelocity = RobotContainer.getShotSolution().getShooterSpeedRPS();
 
-    } else if (currentScoringMode == ScoringMode.PARTIAL_AUTO
-        || currentScoringMode == ScoringMode.PASSING) {
+    } else if ((currentScoringMode == ScoringMode.PARTIAL_AUTO
+            || currentScoringMode == ScoringMode.PASSING)
+        && RobotContainer.drivercontroller.rightBumper().getAsBoolean()) {
 
       desiredVelocity =
           RobotContainer.getShouldSOTM()
               ? RobotContainer.getShotSolution().getShooterSpeedRPS()
-              : 20;
+              : fullyManualInitialVelocity.get();
 
     } else if (currentScoringMode == ScoringMode.FULLY_MANUAL) {
-
-      desiredVelocity = fullyManualInitialVelocity + rpsAdjust;
+      desiredVelocity = fullyManualInitialVelocity.get();
     }
 
     double launcherRPS = Math.abs(desiredVelocity + rpsAdjust);
 
+    if (DriverStation.isAutonomousEnabled() && launcherState != LauncherState.SCORING)
+      launcherRPS = 0;
+
     if (launcherState != LauncherState.OFF
-        && launcherRPS > LauncherConstants.SHOOTER_VELOCITY_DEADBAND) {
-      setVelocity(Math.min(launcherRPS, LauncherConstants.SHOOTER_MAX_VELOCITY));
+        && Math.abs(launcherRPS) > LauncherConstants.SHOOTER_VELOCITY_DEADBAND) {
+      setVelocity(launcherRPS, tunableffAmps.get());
     } else {
       turnLauncherOff();
     }
@@ -76,8 +91,7 @@ public class Launcher extends SubsystemBase {
             Units.rotationsToDegrees(
                 LauncherConstants.angularPositiontoRotations(inputs.hoodServo1Position)));
 
-    Logger.recordOutput("Launcher/adjust", launcherRPS);
-
+    Logger.recordOutput("Launcher/adjust", rpsAdjust);
     Logger.recordOutput("Debug/ScoringMode", currentScoringMode);
     Logger.recordOutput("Debug/desiredLauncherRPS", launcherRPS);
     Logger.recordOutput("Debug/shouldSOTM", RobotContainer.getShouldSOTM());
@@ -91,11 +105,14 @@ public class Launcher extends SubsystemBase {
     //     LauncherConstants.angularPositiontoRotations(inputs.hoodServo1Position)
     //         / LauncherConstants.HOOD_GEARING); // 5 because 1.0 position -> 5 rotations
 
+    if (kP.hasChanged(hashCode())) {
+      io.setPID(kP.get());
+    }
   }
 
   /** velocity will be calculated from aim assist command factory */
-  public void setVelocity(double velocityRPS) {
-    io.runLauncherVelocity(velocityRPS);
+  private void setVelocity(double velocityRPS, double ffamps) {
+    io.runLauncherVelocity(velocityRPS, ffamps);
   }
 
   public double getLauncherVelocity() {
@@ -103,7 +120,7 @@ public class Launcher extends SubsystemBase {
   }
 
   // this is the CORRECT method to turn launcher off
-  public void turnLauncherOff() {
+  private void turnLauncherOff() {
     io.stopLauncher();
   }
 

@@ -33,6 +33,8 @@ public class VisionIOLimelight implements VisionIO {
   private final DoubleArraySubscriber megatag1Subscriber;
   private final DoubleArraySubscriber megatag2Subscriber;
 
+  private int numRewinds = 0;
+
   /**
    * Creates a new VisionIOLimelight.
    *
@@ -148,5 +150,13 @@ public class VisionIOLimelight implements VisionIO {
             Units.degreesToRadians(rawLLArray[3]),
             Units.degreesToRadians(rawLLArray[4]),
             Units.degreesToRadians(rawLLArray[5])));
+  }
+
+  @Override
+  public void captureRewind() {
+    NetworkTableInstance.getDefault()
+        .getTable(VisionConstants.camera0Name)
+        .getEntry("capture_rewind")
+        .setDoubleArray(new double[] {++numRewinds, 235});
   }
 }

@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.495,
-        "y": 5.565
+        "x": 3.585,
+        "y": 5.504084507042253
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.82777108433735,
-        "y": 5.379108433734939
+        "x": 4.91777108433735,
+        "y": 5.318192940777192
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Depot bump"
     },
     {
       "anchor": {
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 1.0,
-    "rotation": 0.0
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": "To Neutral Zone",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }

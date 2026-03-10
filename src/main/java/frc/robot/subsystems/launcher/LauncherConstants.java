@@ -56,8 +56,10 @@ public class LauncherConstants {
     LAUNCHER_CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
     LAUNCHER_CONFIG.TorqueCurrent.PeakForwardTorqueCurrent = 40.0; // added for bang-bang control
-
     LAUNCHER_CONFIG.TorqueCurrent.PeakReverseTorqueCurrent = 0.0; // added for bang-bang control
+
+    LAUNCHER_CONFIG.Voltage.PeakForwardVoltage = 12;
+    LAUNCHER_CONFIG.Voltage.PeakReverseVoltage = -3;
 
     LAUNCHER_CONFIG_SLOT0.kP = 99999.0; // 0.8
     LAUNCHER_CONFIG_SLOT0.kI = 0.0;
@@ -117,8 +119,8 @@ public class LauncherConstants {
   public static final double ROLLER_CIRCUMFERENCE_METERS = Units.inchesToMeters(4.0 * Math.PI);
   public static final double LAUNCHER_HEIGHT_METERS =
       Units.inchesToMeters(22.5); // TODO: double check
-  public static final double LAUNCHER_ROLLER_MOI =
-      0.5 * ROLLER_MASS_KG * Math.pow(ROLLER_RADIUS_METERS, 2);
+  public static final double LAUNCHER_ROLLER_MOI = 0.003;
+  // 0.5 * ROLLER_MASS_KG * Math.pow(ROLLER_RADIUS_METERS, 2);
   public static final int ROLLER_SEGMENT_COUNT = 60;
   public static final int SIM_LINE_WIDTH = 5;
 }

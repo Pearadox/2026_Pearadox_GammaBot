@@ -5,17 +5,26 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.intake.IntakeConstants.IntakeState;
 import frc.robot.subsystems.intake.IntakeConstants.StateConfig;
 import frc.robot.util.LoggedTunableNumber;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
   private IntakeIO io;
-
-  public IntakeState intakeState = IntakeState.STOWED;
-
-  public static double pivotDegreesAdjust = 0.0;
+  @AutoLogOutput public IntakeState intakeState = IntakeState.STOWED;
+  @AutoLogOutput public static double pivotDegreesAdjust = 0.0;
+  @AutoLogOutput public static double dutyAdjust = 0.0;
+  @AutoLogOutput public static double voltAdjust = 0.0;
 
   public void adjustPivotAngleBy(double adj) {
     pivotDegreesAdjust += adj;
+  }
+
+  public void adjustVoltsBy(double volts) {
+    voltAdjust += volts;
+  }
+
+  public void adjustMaxDuty(double adj) {
+    dutyAdjust += adj;
   }
 
   public Intake(IntakeIO io) {
@@ -47,17 +56,19 @@ public class Intake extends SubsystemBase {
     Logger.processInputs("Intake", inputs);
 
     Logger.recordOutput("Intake/State", intakeState.toString());
+    Logger.recordOutput(
+        "Intake/VoltageOut", StateConfig.INTAKE_STATE_MAP.get(intakeState).voltage() + voltAdjust);
 
     // io.runRollersAmps(loggedIntakeStatorCurrent.get(), maxDuty.get());
     // io.runRollersVolts(StateConfig.INTAKE_STATE_MAP.get(intakeState).voltage());
 
-    if (intakeState == IntakeState.INTAKING) {
-      io.runRollersVelocityTorqueCurrentFOC(rps.get(), ffamps.get());
-    } else {
-      io.runRollersAmps(
-          StateConfig.INTAKE_STATE_MAP.get(intakeState).amps(),
-          StateConfig.INTAKE_STATE_MAP.get(intakeState).maxDuty());
-    }
+    // if (intakeState == IntakeState.INTAKING) {
+    //   io.runRollersVelocityTorqueCurrentFOC(rps.get(), ffamps.get());
+
+    // } else {
+    io.runRollersVolts(StateConfig.INTAKE_STATE_MAP.get(intakeState).voltage() + voltAdjust);
+
+    // }
     io.runPositionDegrees(
         StateConfig.INTAKE_STATE_MAP.get(intakeState).angleDeg() + pivotDegreesAdjust,
         getFFVolts());

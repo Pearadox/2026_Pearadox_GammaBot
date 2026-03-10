@@ -68,7 +68,7 @@ public final class Constants {
     public static final Translation3d MODEL1_OFFSET = Z1_ZERO.minus(MODEL0_ZERO);
     public static final Translation3d MODEL4_OFFSET = Z4_ZERO.minus(MODEL3_ZERO);
 
-    public static final double TURRET_STARTING_ANGLE = Math.PI / 2;
+    public static final double TURRET_STARTING_ANGLE = -Math.PI / 2; // this is only used in sim
 
     public static final double HOOD_STARTING_ANGLE = Units.degreesToRadians(61.549451);
     public static final double HOOD_MIN_ANGLE = Units.degreesToRadians(24.652849);

@@ -57,47 +57,11 @@
           "data": {
             "name": "Stop Launching"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Set Intaking"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "AllianZone-Depot1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop Intaking"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Set Launching"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 5.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop Launching"
-          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "WIP",
+  "folder": "Runnables",
   "choreoAuto": false
 }

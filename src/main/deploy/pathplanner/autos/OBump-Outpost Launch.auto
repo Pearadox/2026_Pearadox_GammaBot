@@ -7,25 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "DBump-NZone1"
+            "pathName": "OBump-Outpost"
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Set Intaking"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DepotScoop2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "NZone-DBump-AllianZone1"
+            "waitTime": 3.0
           }
         },
         {

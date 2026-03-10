@@ -25,4 +25,6 @@ public interface TurretIO {
   default void setFFGains(double kS, double kV, double kA) {}
 
   default void setMotionMagicLimits(double mmCruiseVel, double mmAcceleration) {}
+
+  default void setBrakeMode(boolean brake) {}
 }

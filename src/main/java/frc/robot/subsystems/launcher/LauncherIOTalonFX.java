@@ -4,13 +4,16 @@
 
 package frc.robot.subsystems.launcher;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.revrobotics.servohub.ServoChannel;
 import com.revrobotics.servohub.ServoHub;
 import edu.wpi.first.math.util.Units;
 import frc.lib.drivers.PearadoxTalonFX;
+import frc.robot.util.PhoenixUtil;
 import org.littletonrobotics.junction.Logger;
 
 /** Launcher IO's base class for TalonFX motors */
@@ -23,21 +26,24 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
   protected final VelocityTorqueCurrentFOC launcher1Control;
   protected final Follower launcher2Control;
 
+  protected final VelocityVoltage velocityVoltageRequest;
+
   protected final ServoHub hoodServoHub;
 
   protected final ServoChannel hoodServo1;
   protected final ServoChannel hoodServo2;
 
+  private final TalonFXConfiguration launcherConfigs;
+
   public LauncherIOTalonFX() {
-    launcher1Leader =
-        new PearadoxTalonFX(
-            LauncherConstants.LAUNCHER_1_CAN_ID, LauncherConstants.LAUNCHER_MOTOR_CONFIG());
-    launcher2Follower =
-        new PearadoxTalonFX(
-            LauncherConstants.LAUNCHER_2_CAN_ID, LauncherConstants.LAUNCHER_MOTOR_CONFIG());
+    launcherConfigs = LauncherConstants.LAUNCHER_MOTOR_CONFIG();
+
+    launcher1Leader = new PearadoxTalonFX(LauncherConstants.LAUNCHER_1_CAN_ID, launcherConfigs);
+    launcher2Follower = new PearadoxTalonFX(LauncherConstants.LAUNCHER_2_CAN_ID, launcherConfigs);
 
     // launcher1Control = new VelocityVoltage(0);
     launcher1Control = new VelocityTorqueCurrentFOC(0);
+    velocityVoltageRequest = new VelocityVoltage(0);
     launcher2Control = new Follower(launcher1Leader.getDeviceID(), MotorAlignmentValue.Opposed);
 
     hoodServoHub = new ServoHub(LauncherConstants.HOOD_SERVO_HUB_CAN_ID);
@@ -63,14 +69,21 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
         LauncherConstants.pulseWidthtoAngularPosition(hoodServo2.getPulseWidth());
   }
 
-  public void runLauncherVelocity(double velocityRPS) {
-    launcher1Leader.setControl(launcher1Control.withVelocity(velocityRPS).withFeedForward(25));
+  public void runLauncherVelocity(double velocityRPS, double ffamps) {
+    launcher1Leader.setControl(launcher1Control.withVelocity(velocityRPS).withFeedForward(ffamps));
     launcher2Follower.setControl(launcher2Control);
     Logger.recordOutput("Launcher/VelocitySetpointRPS", velocityRPS);
-    Logger.recordOutput(
-        "Launcher/ActualVelocityRPS", launcher1Leader.getVelocity().getValueAsDouble());
-    Logger.recordOutput(
-        "Launcher/CurrentDrawStator", launcher1Leader.getStatorCurrent().getValueAsDouble());
+    // Logger.recordOutput(
+    //     "Launcher/ActualVelocityRPS", launcher1Leader.getVelocity().getValueAsDouble());
+    // Logger.recordOutput(
+    //     "Launcher/CurrentDrawStator", launcher1Leader.getStatorCurrent().getValueAsDouble());
+  }
+
+  @Override
+  public void runLauncherVelocityWithoutFOC(double velocityRPS) {
+    launcher1Leader.setControl(
+        velocityVoltageRequest.withVelocity(velocityRPS).withEnableFOC(false));
+    launcher2Follower.setControl(launcher2Control);
   }
 
   public void stopLauncher() {
@@ -94,5 +107,13 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
     } else {
       Logger.recordOutput("HoodAngleOutOfRange", angleRads);
     }
+  }
+
+  @Override
+  public void setPID(double kP) {
+    launcherConfigs.Slot0.kP = kP;
+
+    PhoenixUtil.tryUntilOk(5, () -> launcher1Leader.getConfigurator().apply(launcherConfigs));
+    PhoenixUtil.tryUntilOk(5, () -> launcher2Follower.getConfigurator().apply(launcherConfigs));
   }
 }

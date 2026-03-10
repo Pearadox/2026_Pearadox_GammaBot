@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5147111111111116,
-        "y": 2.554
+        "x": 3.6178990610328654,
+        "y": 2.683016431924882
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.138355555555556,
-        "y": 2.7001666666666666
+        "x": 4.24154350547731,
+        "y": 2.8291830985915487
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Outpost bump"
     },
     {
       "anchor": {

@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.4952222222222225,
-        "y": 5.564877777777777
+        "x": 3.585,
+        "y": 5.504084507042253
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.079888888888889,
-        "y": 5.603855555555556
+        "x": 4.169666666666666,
+        "y": 5.5430622848200315
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Depot bump"
     },
     {
       "anchor": {

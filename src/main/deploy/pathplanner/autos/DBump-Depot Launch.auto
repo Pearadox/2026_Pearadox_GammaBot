@@ -7,37 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "DBump-NZone1"
+            "pathName": "DBump-DepotSpace"
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "DepotScoop1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Set Intaking"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DepotSlowIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop Intaking"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "NZone-DBump-AllianZone1"
+            "waitTime": 3.0
           }
         },
         {
