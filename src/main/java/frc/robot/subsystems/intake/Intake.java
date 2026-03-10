@@ -29,25 +29,20 @@ public class Intake extends SubsystemBase {
 
   public Intake(IntakeIO io) {
     this.io = io;
-    io.setPIDFF(kp.get(), kv.get(), pivotkp.get(), pivotkd.get());
+    io.setPIDFF(rollerkP.get(), rollerkV.get(), pivotkp.get(), pivotkd.get());
   }
 
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
   // private static LoggedTunableNumber loggedIntakeRollerVoltage =
   //     new LoggedTunableNumber("Intake/Voltage", 4.0);
-
-  private static LoggedTunableNumber rps = new LoggedTunableNumber("Intake/rps", 100.0);
-  private static LoggedTunableNumber ffamps = new LoggedTunableNumber("Intake/ffamps", 30.0);
-
-  private static LoggedTunableNumber kp = new LoggedTunableNumber("Intake/roller kp", 0.05);
-  private static LoggedTunableNumber kv = new LoggedTunableNumber("Intake/roller kv", 0.05);
+  // private static LoggedTunableNumber rps = new LoggedTunableNumber("Intake/rps", 100.0);
+  // private static LoggedTunableNumber ffamps = new LoggedTunableNumber("Intake/ffamps", 30.0);
+  private static LoggedTunableNumber rollerkP = new LoggedTunableNumber("Intake/roller kp", 0.05);
+  private static LoggedTunableNumber rollerkV = new LoggedTunableNumber("Intake/roller kv", 0.05);
   private static LoggedTunableNumber pivotkp = new LoggedTunableNumber("Intake/pivot kp", 0.5);
   private static LoggedTunableNumber pivotkd = new LoggedTunableNumber("Intake/pivotkd", 0.0);
   private static LoggedTunableNumber pivotkg = new LoggedTunableNumber("Intake/pivot kg", -0.5);
-
-  // max duty 0.5
-  // amps 45
 
   @Override
   public void periodic() {
@@ -83,11 +78,11 @@ public class Intake extends SubsystemBase {
         "Intake/Current Position Degrees",
         Units.rotationsToDegrees(inputs.pivotMotorData.position()) / IntakeConstants.GEARING);
 
-    if (kp.hasChanged(hashCode())
-        || kv.hasChanged(hashCode())
+    if (rollerkP.hasChanged(hashCode())
+        || rollerkV.hasChanged(hashCode())
         || pivotkp.hasChanged(hashCode())
         || pivotkd.hasChanged(hashCode())) {
-      io.setPIDFF(kp.get(), kv.get(), pivotkp.get(), pivotkd.get());
+      io.setPIDFF(rollerkP.get(), rollerkV.get(), pivotkp.get(), pivotkd.get());
     }
 
     // UNCOMMENT WHEN TESTING INTAKE TO TUNE VOLTAGE!

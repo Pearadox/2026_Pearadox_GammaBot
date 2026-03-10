@@ -12,13 +12,11 @@ import frc.robot.Constants.FieldConstants.LinesVertical;
 import frc.robot.Robot;
 import frc.robot.subsystems.launcher.LauncherConstants;
 import frc.robot.util.LoggedTunableNumber;
-import frc.robot.util.SmarterDashboard;
 import java.util.function.Supplier;
 import lombok.Getter;
 import org.littletonrobotics.junction.Logger;
 
 public class MovingShotSolver {
-
   private static MovingShotSolver INSTANCE;
 
   public static MovingShotSolver getInstance() {
@@ -40,11 +38,15 @@ public class MovingShotSolver {
   private static double neutralZoneHeightMeters = 2.0; // arbitrary for now
 
   private static double hubHeightMeters = Hub.height;
-  private static double shooterHeightMeters = Units.inchesToMeters(22.5);
-  private static double hoodAngleRadians = Units.degreesToRadians(70);
 
   private final LoggedTunableNumber rpsMultiplier =
       new LoggedTunableNumber("SOTM/Rps Multiplier", 2.1);
+  private final LoggedTunableNumber turretDx = new LoggedTunableNumber("SOTM/Turret dx", -0.135);
+  private final LoggedTunableNumber turretDy = new LoggedTunableNumber("SOTM/Turret dx", -0.14);
+  private final LoggedTunableNumber shooterHeightInches =
+      new LoggedTunableNumber("SOTM/Turret dx", 22.5);
+  private final LoggedTunableNumber hoodAngleDegrees =
+      new LoggedTunableNumber("SOTM/Turret dx", 70);
 
   private static final double MPSToRPSConversion =
       LauncherConstants.LAUNCHER_GEARING / LauncherConstants.ROLLER_CIRCUMFERENCE_METERS;
@@ -102,8 +104,8 @@ public class MovingShotSolver {
 
     // Robot-relative turret offset (meters)
 
-    double dxTurretRobotRelative = -0.135; // TODO: find real forward offset
-    double dyTurretRobotRelative = -0.14; // TODO: find real sideways offset
+    double dxTurretRobotRelative = turretDx.get(); // TODO: find real forward offset
+    double dyTurretRobotRelative = turretDy.get(); // TODO: find real sideways offset
 
     // Rotate offset into field coordinates using matrix multiplication done below
 
@@ -127,7 +129,9 @@ public class MovingShotSolver {
 
     double Dx = goalXMeters - turretXMeters;
     double Dy = goalYMeters - turretYMeters;
-    double Dz = goalHeightMeters - shooterHeightMeters;
+    double Dz = goalHeightMeters - Units.inchesToMeters(shooterHeightInches.get());
+
+    double hoodAngleRadians = Math.toRadians(hoodAngleDegrees.get());
 
     double robotVx = fieldRelativeSpeeds.vxMetersPerSecond;
     double robotVy = fieldRelativeSpeeds.vyMetersPerSecond;
@@ -196,12 +200,12 @@ public class MovingShotSolver {
 
     Rotation2d fieldRelativeTurretAngleRot2d = new Rotation2d(Math.atan2(vyLaunchMPS, vxLaunchMPS));
 
-    SmarterDashboard.putNumber(
-        "Launcher/SOTM/fieldRelativeTurretAngle", fieldRelativeTurretAngleRot2d.getDegrees());
-    SmarterDashboard.putNumber("Launcher/SOTM/timeOfFlight", ToF);
-    SmarterDashboard.putNumber("Launcher/SOTM/desiredShooterSpeed_RPS", shooterSpeedRPS);
-    SmarterDashboard.putNumber("Launcher/SOTM/currentRotation", curPose.getRotation().getDegrees());
-    Logger.recordOutput("Launcher/SOTM/targetPose", targetPose);
+    Logger.recordOutput(
+        "SOTM/fieldRelativeTurretAngle", fieldRelativeTurretAngleRot2d.getDegrees());
+    Logger.recordOutput("SOTM/timeOfFlight", ToF);
+    Logger.recordOutput("SOTM/desiredShooterSpeed_RPS", shooterSpeedRPS);
+    Logger.recordOutput("SOTM/currentRotation", curPose.getRotation().getDegrees());
+    Logger.recordOutput("SOTM/targetPose", targetPose);
 
     return new ShotSolution(
         ToF, rpsMultiplier.get() * shooterSpeedRPS, fieldRelativeTurretAngleRot2d, isInNeutralZone);

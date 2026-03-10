@@ -50,5 +50,7 @@ public interface LauncherIO {
    */
   public default void setHoodAngle(boolean isPassing) {}
 
-  public default void setPID(double kP) {}
+  public default void setPIDFF(double kP, double kD, double kS, double kV) {}
+
+  public default void setCurrentLimits(double stator, double supply) {}
 }

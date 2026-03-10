@@ -110,8 +110,20 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
   }
 
   @Override
-  public void setPID(double kP) {
+  public void setPIDFF(double kP, double kD, double kS, double kV) {
     launcherConfigs.Slot0.kP = kP;
+    launcherConfigs.Slot0.kD = kD;
+    launcherConfigs.Slot0.kS = kS;
+    launcherConfigs.Slot0.kV = kV;
+
+    PhoenixUtil.tryUntilOk(5, () -> launcher1Leader.getConfigurator().apply(launcherConfigs));
+    PhoenixUtil.tryUntilOk(5, () -> launcher2Follower.getConfigurator().apply(launcherConfigs));
+  }
+
+  @Override
+  public void setCurrentLimits(double stator, double supply) {
+    launcherConfigs.CurrentLimits.StatorCurrentLimit = stator;
+    launcherConfigs.CurrentLimits.SupplyCurrentLimit = supply;
 
     PhoenixUtil.tryUntilOk(5, () -> launcher1Leader.getConfigurator().apply(launcherConfigs));
     PhoenixUtil.tryUntilOk(5, () -> launcher2Follower.getConfigurator().apply(launcherConfigs));

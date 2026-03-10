@@ -37,11 +37,21 @@ public class Launcher extends SubsystemBase {
           "Launcher/Default velocity", LauncherConstants.DEFAULT_VELOCITY_SETPOINT_RPS);
 
   private final LoggedTunableNumber kP = new LoggedTunableNumber("Launcher/kP", 99999);
+  private final LoggedTunableNumber kD = new LoggedTunableNumber("Launcher/kD", 0);
+  private final LoggedTunableNumber kS = new LoggedTunableNumber("Launcher/kS", 0);
+  private final LoggedTunableNumber kV = new LoggedTunableNumber("Launcher/kV", 0);
+  private final LoggedTunableNumber statorCurrentLimit =
+      new LoggedTunableNumber(
+          "Launcher/Stator Current Limit", LauncherConstants.LAUNCHER_STATOR_CURRENT_LIMIT);
+  private final LoggedTunableNumber supplyCurrentLimit =
+      new LoggedTunableNumber(
+          "Launcher/Supply Current Limit", LauncherConstants.LAUNCHER_SUPPLY_CURRENT_LIMIT);
 
   public Launcher(LauncherIO io) {
     this.io = io;
 
-    io.setPID(kP.get());
+    io.setPIDFF(kP.get(), kD.get(), kS.get(), kV.get());
+    io.setCurrentLimits(statorCurrentLimit.get(), supplyCurrentLimit.get());
   }
 
   @Override
@@ -105,8 +115,14 @@ public class Launcher extends SubsystemBase {
     //     LauncherConstants.angularPositiontoRotations(inputs.hoodServo1Position)
     //         / LauncherConstants.HOOD_GEARING); // 5 because 1.0 position -> 5 rotations
 
-    if (kP.hasChanged(hashCode())) {
-      io.setPID(kP.get());
+    if (kP.hasChanged(hashCode())
+        || kD.hasChanged(hashCode())
+        || kS.hasChanged(hashCode())
+        || kV.hasChanged(hashCode())) {
+      io.setPIDFF(kP.get(), kD.get(), kS.get(), kV.get());
+    }
+    if (statorCurrentLimit.hasChanged(hashCode()) || supplyCurrentLimit.hasChanged(hashCode())) {
+      io.setCurrentLimits(statorCurrentLimit.get(), supplyCurrentLimit.get());
     }
   }
 

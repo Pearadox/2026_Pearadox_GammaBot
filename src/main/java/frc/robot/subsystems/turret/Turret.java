@@ -78,37 +78,18 @@ public class Turret extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Turret", inputs);
 
-    // if (!hasZeroed && inputs.cancoderConnected) {
-    //   requestZero();
-    // }
-
     if (kP.hasChanged(hashCode()) || kI.hasChanged(hashCode()) || kD.hasChanged(hashCode())) {
       io.setPID(kP.get(), kI.get(), kD.get());
     }
-
     if (kS.hasChanged(hashCode()) || kV.hasChanged(hashCode()) || kA.hasChanged(hashCode())) {
       io.setFFGains(kS.get(), kV.get(), kA.get());
     }
-
     if (mmCruiseVel.hasChanged(hashCode()) || mmAcceleration.hasChanged(hashCode())) {
       io.setMotionMagicLimits(mmCruiseVel.get(), mmAcceleration.get());
     }
 
-    ScoringMode currentScoringMode = RobotContainer.getScoringMode();
-
-    if (currentScoringMode != ScoringMode.FULLY_MANUAL) {
-
+    if (RobotContainer.getScoringMode() != ScoringMode.FULLY_MANUAL) {
       followFieldCentricTarget(() -> RobotContainer.getShotSolution().getTurretAngleRot2d());
-
-    } else if (currentScoringMode == ScoringMode.FULLY_MANUAL) {
-
-      // followFieldCentricTarget(
-      //     () -> getFieldRelativeTurretAngleRotation2d().plus(new
-      // Rotation2d(turretRotationAdjust)));
-
-      Logger.recordOutput(
-          "Turret/SOTM/shotSolutionDesiredRotation",
-          RobotContainer.getShotSolution().getTurretAngleRot2d());
     }
   }
 
@@ -152,7 +133,7 @@ public class Turret extends SubsystemBase {
     Logger.recordOutput("Turret/Setpoint Turret Degrees", setpointDegs);
   }
 
-  /** Zeroes the turret */
+  /** Zeroes the turret and sets the motor to brake mode */
   public void requestZero() {
     if (inputs.cancoderConnected) {
       io.setPosition(
@@ -164,7 +145,13 @@ public class Turret extends SubsystemBase {
     }
   }
 
-  public void setBrakeMode(boolean brake) {
+  /** Sets the motor back to coast mode */
+  public void undoZero() {
+    hasZeroed = false;
+    setBrakeMode(false);
+  }
+
+  private void setBrakeMode(boolean brake) {
     io.setBrakeMode(brake);
   }
 

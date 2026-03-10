@@ -70,7 +70,7 @@ public class RobotContainer {
   private final Launcher launcher;
   private final Spindexer spindexer;
   private final Turret turret;
-  private final Vision vision;
+  public final Vision vision;
 
   // Visualizer
   public final RobotVisualizer visualizer;
@@ -212,7 +212,6 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-
     // Driver Bindings
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
@@ -260,24 +259,6 @@ public class RobotContainer {
     //     .rightBumper()
     //     .whileTrue(
     //         new ShootOnTheMove(launcher, feeder, turret::getFieldRelativeTurretAngleRotation2d));
-
-    // Uncomment when ready to run turret SysID routines
-    // opController.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
-    // opController.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
-
-    // opController.y().whileTrue(turret.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    // opController.a().whileTrue(turret.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    // opController.b().whileTrue(turret.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    // opController.x().whileTrue(turret.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
-    // Trigger shouldCalculateShotSolutionTrigger =
-    //     new Trigger(() -> scoringMode != ScoringMode.FULLY_MANUAL);
-
-    // shouldCalculateShotSolutionTrigger.whileTrue(
-    //     Commands.run(
-    //         () ->
-    //             setShotSolution(MovingShotSolver.solve(drive::getPose,
-    // drive::getChassisSpeeds))));
 
     vision.setDefaultCommand(
         new RunCommand(
@@ -366,8 +347,21 @@ public class RobotContainer {
 
     opController.leftBumper().onTrue(new InstantCommand(() -> turret.goToZero(), turret));
     opController.rightBumper().onTrue(new InstantCommand(() -> turret.goToTestSetpoint(), turret));
-    opController.start().onTrue(new InstantCommand(() -> turret.requestZero()));
-    // opController.x().onTrue(new InstantCommand(() -> turret.goToMinus180(), turret));
+
+    opController
+        .start()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  if (!turret.isHasZeroed()) {
+                    // Zeroes the turret and sets it to brake mode
+                    turret.requestZero();
+                  } else {
+                    // If the start button is pressed a second time,
+                    // set it back to coast mode so it can be rezeroed
+                    turret.undoZero();
+                  }
+                }));
 
     // opController
     //     .y()
