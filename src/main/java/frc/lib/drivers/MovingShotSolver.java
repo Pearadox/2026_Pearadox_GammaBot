@@ -2,10 +2,12 @@ package frc.lib.drivers;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.FieldConstants.Hub;
 import frc.robot.Constants.FieldConstants.LinesHorizontal;
 import frc.robot.Constants.FieldConstants.LinesVertical;
@@ -28,65 +30,78 @@ public class MovingShotSolver {
 
   private MovingShotSolver() {}
 
-  private static final double g = Constants.g; // gravity constant in m/s^2
+  @Getter private static ShotSolution shotSolution = new ShotSolution(0.0, 0.0, Rotation2d.kZero);
 
-  private static Alliance alliance = Robot.getAlliance();
+  private enum Goal {
+    HUB(Hub.topCenterPointRed, Hub.topCenterPointBlue),
+    DEPOT_CORNER(
+        new Translation3d(LinesVertical.redHubCenterX, LinesHorizontal.leftBumpStart - 0.25, 2.0),
+        new Translation3d(
+            LinesVertical.blueHubCenterX,
+            FieldConstants.fieldWidth - (LinesHorizontal.leftBumpStart - 0.25),
+            2.0)),
+    OUTPOST_CORNER(
+        new Translation3d(LinesVertical.redHubCenterX, LinesHorizontal.rightBumpEnd + 0.25, 2.0),
+        new Translation3d(
+            LinesVertical.blueHubCenterX,
+            FieldConstants.fieldWidth - (LinesHorizontal.rightBumpEnd + 0.25),
+            2.0));
 
-  private static double[] neutralZoneTargetYs = {
-    LinesHorizontal.leftBumpStart - 0.25, LinesHorizontal.rightBumpEnd + 0.25
-  };
-  private static double neutralZoneHeightMeters = 2.0; // arbitrary for now
+    private final Translation3d redLocation;
+    private final Translation3d blueLocation;
 
-  private static double hubHeightMeters = Hub.height;
+    private Goal(Translation3d red, Translation3d blue) {
+      this.redLocation = red;
+      this.blueLocation = blue;
+    }
+
+    public Translation3d getLocation(Alliance alliance) {
+      return alliance == Alliance.Red ? redLocation : blueLocation;
+    }
+
+    public static Goal findTarget(Pose2d robotPose, Alliance alliance) {
+      double robotX = robotPose.getX();
+      double robotY = robotPose.getY();
+      boolean isRedAlliance = alliance == Alliance.Red;
+
+      boolean inAllianceZone =
+          (!isRedAlliance && robotX < LinesVertical.allianceZone)
+              || (isRedAlliance && robotX > LinesVertical.oppAllianceZone);
+
+      if (inAllianceZone) {
+        return HUB;
+      }
+
+      boolean isLowerHalf = robotY < FieldConstants.fieldWidth / 2.0;
+
+      if (isRedAlliance) {
+        return isLowerHalf ? OUTPOST_CORNER : DEPOT_CORNER;
+      } else {
+        return isLowerHalf ? DEPOT_CORNER : OUTPOST_CORNER;
+      }
+    }
+  }
 
   private final LoggedTunableNumber rpsMultiplier =
       new LoggedTunableNumber("SOTM/Rps Multiplier", 2.1);
   private final LoggedTunableNumber turretDx = new LoggedTunableNumber("SOTM/Turret dx", -0.135);
-  private final LoggedTunableNumber turretDy = new LoggedTunableNumber("SOTM/Turret dx", -0.14);
+  private final LoggedTunableNumber turretDy = new LoggedTunableNumber("SOTM/Turret dy", -0.14);
   private final LoggedTunableNumber shooterHeightInches =
-      new LoggedTunableNumber("SOTM/Turret dx", 22.5);
+      new LoggedTunableNumber("SOTM/Launch Height in", 22.5);
   private final LoggedTunableNumber hoodAngleDegrees =
-      new LoggedTunableNumber("SOTM/Turret dx", 70);
+      new LoggedTunableNumber("SOTM/Launch Angle Degs", 70);
 
   private static final double MPSToRPSConversion =
       LauncherConstants.LAUNCHER_GEARING / LauncherConstants.ROLLER_CIRCUMFERENCE_METERS;
 
-  public static class ShotSolution {
-
-    @Getter public final double timeOfFlight; // seconds
-    @Getter public final double shooterSpeedRPS; // rot / s
-    @Getter public final Rotation2d turretAngleRot2d; // field-relative turret angle
-    @Getter public final boolean isInsideNeutralZone;
-
-    public ShotSolution(double time, double speed, Rotation2d turretAngle, boolean isNeutral) {
-      this.timeOfFlight = time;
-      this.shooterSpeedRPS = speed;
-      this.turretAngleRot2d = turretAngle;
-      this.isInsideNeutralZone = isNeutral;
-    }
-  }
-
-  public static double findClosestNeutralZoneSide(Pose2d curPose) {
-    return Math.abs(curPose.getY() - neutralZoneTargetYs[0])
-            < Math.abs(curPose.getY() - neutralZoneTargetYs[1])
-        ? neutralZoneTargetYs[0]
-        : neutralZoneTargetYs[1];
-  }
+  public record ShotSolution(double time, double speed, Rotation2d turretAngle) {}
 
   public ShotSolution solve(
       Supplier<Pose2d> poseSupplier, Supplier<ChassisSpeeds> robotRelativeSpeedSupplier) {
 
     // hoodAngleRadians = Launcher.getState().getHoodAngleRads();
 
-    alliance = Robot.getAlliance();
-
-    double hubXMeters =
-        alliance == Alliance.Red ? Hub.topCenterPointRed.getX() : Hub.topCenterPointBlue.getX();
-    double hubYMeters =
-        alliance == Alliance.Red ? Hub.topCenterPointRed.getY() : Hub.topCenterPointBlue.getY();
-
-    double neutralZoneTargetX =
-        alliance == Alliance.Red ? LinesVertical.redHubCenterX : LinesVertical.blueHubCenterX;
+    Alliance alliance = Robot.getAlliance();
 
     ChassisSpeeds robotRelative = robotRelativeSpeedSupplier.get();
     Pose2d curPose = poseSupplier.get();
@@ -94,13 +109,11 @@ public class MovingShotSolver {
     ChassisSpeeds fieldRelativeSpeeds =
         ChassisSpeeds.fromRobotRelativeSpeeds(robotRelative, curPose.getRotation());
 
-    boolean isInNeutralZone =
-        curPose.getX() < LinesVertical.redHubCenterX
-            && curPose.getX() > LinesVertical.blueHubCenterX;
-
-    double goalXMeters = isInNeutralZone ? neutralZoneTargetX : hubXMeters;
-    double goalYMeters = isInNeutralZone ? findClosestNeutralZoneSide(curPose) : hubYMeters;
-    double goalHeightMeters = isInNeutralZone ? neutralZoneHeightMeters : hubHeightMeters;
+    Goal goal = Goal.findTarget(curPose, alliance);
+    Translation3d goalTranslation = goal.getLocation(alliance);
+    double goalXMeters = goalTranslation.getX();
+    double goalYMeters = goalTranslation.getY();
+    double goalHeightMeters = goalTranslation.getZ();
 
     // Robot-relative turret offset (meters)
 
@@ -152,7 +165,7 @@ public class MovingShotSolver {
 
       double vzLaunch = horizontalSpeed * Math.tan(hoodAngleRadians);
 
-      double f = (vzLaunch * ToF - 0.5 * g * ToF * ToF) - Dz; // h = vt - 1/2at^2
+      double f = (vzLaunch * ToF - 0.5 * Constants.g * ToF * ToF) - Dz; // h = vt - 1/2at^2
 
       // Numerical derivative for Newton's method
 
@@ -164,7 +177,7 @@ public class MovingShotSolver {
       double h2 = Math.hypot(vx2, vy2);
       double vz2 = h2 * Math.tan(hoodAngleRadians);
 
-      double f2 = (vz2 * t2 - 0.5 * g * t2 * t2) - Dz;
+      double f2 = (vz2 * t2 - 0.5 * Constants.g * t2 * t2) - Dz;
 
       double fPrime = (f2 - f) / dt;
 
@@ -206,8 +219,9 @@ public class MovingShotSolver {
     Logger.recordOutput("SOTM/desiredShooterSpeed_RPS", shooterSpeedRPS);
     Logger.recordOutput("SOTM/currentRotation", curPose.getRotation().getDegrees());
     Logger.recordOutput("SOTM/targetPose", targetPose);
+    Logger.recordOutput("SOTM/Goal", goal.toString());
 
-    return new ShotSolution(
-        ToF, rpsMultiplier.get() * shooterSpeedRPS, fieldRelativeTurretAngleRot2d, isInNeutralZone);
+    return shotSolution =
+        new ShotSolution(ToF, rpsMultiplier.get() * shooterSpeedRPS, fieldRelativeTurretAngleRot2d);
   }
 }

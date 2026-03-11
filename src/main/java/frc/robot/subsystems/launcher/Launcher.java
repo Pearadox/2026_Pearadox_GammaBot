@@ -5,10 +5,10 @@
 package frc.robot.subsystems.launcher;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;
-import frc.robot.RobotContainer.ScoringMode;
+import frc.lib.drivers.MovingShotSolver;
 import frc.robot.subsystems.launcher.LauncherConstants.LauncherState;
 import frc.robot.util.LoggedTunableNumber;
 import lombok.Getter;
@@ -17,14 +17,10 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Launcher extends SubsystemBase {
-  /** Creates a new Launcher. */
   private final LauncherIO io;
-
   private final LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
 
-  @AutoLogOutput @Getter @Setter private static LauncherState launcherState = LauncherState.MANUAL;
-
-  private final LoggedTunableNumber tunableffAmps = new LoggedTunableNumber("Launcher/ffamps", 0);
+  @AutoLogOutput @Getter @Setter private LauncherState launcherState = LauncherState.OFF;
 
   private double rpsAdjust = 0.0;
 
@@ -32,9 +28,12 @@ public class Launcher extends SubsystemBase {
     rpsAdjust += adj;
   }
 
-  private final LoggedTunableNumber fullyManualInitialVelocity =
+  private final LoggedTunableNumber tunableffAmps = new LoggedTunableNumber("Launcher/ffamps", 0);
+  private final LoggedTunableNumber manualDefaultVelocity =
       new LoggedTunableNumber(
-          "Launcher/Default velocity", LauncherConstants.DEFAULT_VELOCITY_SETPOINT_RPS);
+          "Launcher/Manual Mode Default Velocity", LauncherConstants.DEFAULT_VELOCITY_SETPOINT_RPS);
+  private final LoggedTunableNumber idleDefaultVelocity =
+      new LoggedTunableNumber("Launcher/Idle Mode Default Velocity", 20);
 
   private final LoggedTunableNumber kP = new LoggedTunableNumber("Launcher/kP", 99999);
   private final LoggedTunableNumber kD = new LoggedTunableNumber("Launcher/kD", 0);
@@ -56,42 +55,27 @@ public class Launcher extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
     io.updateInputs(inputs);
-    // io.runLauncherVelocity((launcherState == LauncherState.SCORING ? 60 : 0));
-    // io.setHoodAngleRads(launcherState.getHoodAngleRads());
     Logger.processInputs("Launcher", inputs);
 
-    Logger.recordOutput("Launcher/State", getState());
-
-    double desiredVelocity = 0;
-    ScoringMode currentScoringMode = RobotContainer.getScoringMode();
-    if (currentScoringMode == ScoringMode.FULLY_AUTO) {
-      desiredVelocity = RobotContainer.getShotSolution().getShooterSpeedRPS();
-
-    } else if ((currentScoringMode == ScoringMode.PARTIAL_AUTO
-            || currentScoringMode == ScoringMode.PASSING)
-        && RobotContainer.drivercontroller.rightBumper().getAsBoolean()) {
-
-      desiredVelocity =
-          RobotContainer.getShouldSOTM()
-              ? RobotContainer.getShotSolution().getShooterSpeedRPS()
-              : fullyManualInitialVelocity.get();
-
-    } else if (currentScoringMode == ScoringMode.FULLY_MANUAL) {
-      desiredVelocity = fullyManualInitialVelocity.get();
+    double desiredVelocity;
+    if (launcherState == LauncherState.SCORING) {
+      desiredVelocity = MovingShotSolver.getShotSolution().speed();
+    } else if (launcherState == LauncherState.MANUAL) {
+      desiredVelocity = manualDefaultVelocity.get();
+    } else if (launcherState == LauncherState.IDLE) {
+      desiredVelocity = idleDefaultVelocity.get();
+    } else {
+      desiredVelocity = 0;
     }
 
-    double launcherRPS = Math.abs(desiredVelocity + rpsAdjust);
+    desiredVelocity = Math.abs(desiredVelocity + rpsAdjust);
 
-    if (DriverStation.isAutonomousEnabled() && launcherState != LauncherState.SCORING)
-      launcherRPS = 0;
-
-    if (launcherState != LauncherState.OFF
-        && Math.abs(launcherRPS) > LauncherConstants.SHOOTER_VELOCITY_DEADBAND) {
-      setVelocity(launcherRPS, tunableffAmps.get());
-    } else {
+    if (desiredVelocity < LauncherConstants.SHOOTER_VELOCITY_DEADBAND) {
+      desiredVelocity = 0;
       turnLauncherOff();
+    } else {
+      setVelocity(desiredVelocity, tunableffAmps.get());
     }
 
     LauncherVisualizer.getInstance()
@@ -102,12 +86,9 @@ public class Launcher extends SubsystemBase {
                 LauncherConstants.angularPositiontoRotations(inputs.hoodServo1Position)));
 
     Logger.recordOutput("Launcher/adjust", rpsAdjust);
-    Logger.recordOutput("Debug/ScoringMode", currentScoringMode);
-    Logger.recordOutput("Debug/desiredLauncherRPS", launcherRPS);
-    Logger.recordOutput("Debug/shouldSOTM", RobotContainer.getShouldSOTM());
-    Logger.recordOutput("Debug/ScoringMode", currentScoringMode);
     Logger.recordOutput("Debug/getLauncherVelocity", getLauncherVelocity());
 
+    // io.setHoodAngleRads(launcherState.getHoodAngleRads());
     // Logger.recordOutput("Hood/Desired-Angle", launcherState.getHoodAngleRads());
     // Logger.recordOutput("Hood/Servo-Position", inputs.hoodServo1Position);
     // Logger.recordOutput(
@@ -140,7 +121,6 @@ public class Launcher extends SubsystemBase {
     io.stopLauncher();
   }
 
-  // this is for the hood
   public void setOff() {
     launcherState = LauncherState.OFF;
   }
@@ -153,11 +133,25 @@ public class Launcher extends SubsystemBase {
     launcherState = LauncherState.SCORING;
   }
 
-  public void setPassing() {
-    launcherState = LauncherState.PASSING;
+  public void setIdle() {
+    launcherState = LauncherState.IDLE;
   }
 
-  public static LauncherState getState() {
-    return launcherState;
+  public Command score() {
+    return Commands.startEnd(
+        () -> {
+          if (launcherState != LauncherState.MANUAL) {
+            launcherState = LauncherState.SCORING;
+          }
+        },
+        () -> {
+          if (launcherState == LauncherState.SCORING) {
+            launcherState = LauncherState.IDLE;
+          }
+        });
   }
+
+  // public void setPassing() {
+  //   launcherState = LauncherState.PASSING;
+  // }
 }

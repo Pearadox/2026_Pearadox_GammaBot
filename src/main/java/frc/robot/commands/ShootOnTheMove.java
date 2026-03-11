@@ -8,7 +8,7 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.RobotContainer;
+import frc.lib.drivers.MovingShotSolver;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.spindexer.Spindexer;
@@ -16,7 +16,6 @@ import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 public class ShootOnTheMove extends Command {
-
   private final Launcher launcher;
   private final Feeder feeder;
   private final Spindexer spindexer;
@@ -46,8 +45,8 @@ public class ShootOnTheMove extends Command {
 
   @Override
   public void execute() {
-    double desiredVelocity = RobotContainer.getShotSolution().getShooterSpeedRPS();
-    Rotation2d desiredRotation = RobotContainer.getShotSolution().getTurretAngleRot2d();
+    double desiredVelocity = MovingShotSolver.getShotSolution().speed();
+    Rotation2d desiredRotation = MovingShotSolver.getShotSolution().turretAngle();
 
     double shooterVelocityError = launcher.getLauncherVelocity() - desiredVelocity;
 
