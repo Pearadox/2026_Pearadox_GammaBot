@@ -19,7 +19,7 @@ public class LauncherConstants {
     OFF(Units.degreesToRadians(60)),
     MANUAL(Units.degreesToRadians(40)),
     IDLE(Units.degreesToRadians(40)),
-    SCORING(Units.degreesToRadians(40));
+    SELF_DIRECTING(Units.degreesToRadians(40));
     // PASSING(Units.degreesToRadians(25)); // TODO: find proper hood angles
 
     @Getter private final double hoodAngleRads;

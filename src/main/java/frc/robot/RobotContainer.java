@@ -262,8 +262,6 @@ public class RobotContainer {
     opController.povLeft().whileTrue(new RunCommand(() -> turret.adjustRotationBy(+0.01)));
     opController.povRight().whileTrue(new RunCommand(() -> turret.adjustRotationBy(-0.01)));
 
-    // opController.povUp().whileTrue(new RunCommand(() -> launcher.adjustRPSBy(+0.05)));
-    // opController.povDown().whileTrue(new RunCommand(() -> launcher.adjustRPSBy(-0.05)));
     opController.povUp().whileTrue(new RunCommand(() -> intake.adjustVoltsBy(+0.1)));
     opController.povDown().whileTrue(new RunCommand(() -> intake.adjustVoltsBy(-0.1)));
 
@@ -283,17 +281,24 @@ public class RobotContainer {
                     Math.signum(opController.getRightY())
                         * IntakeConstants.OP_ADJUST_INCREMENT_DEGREES)));
 
+    turret.setDefaultCommand(
+        new RunCommand(
+            () ->
+                turret.followFieldCentricTarget(
+                    () -> MovingShotSolver.getShotSolution().turretAngle()),
+            turret));
+
     opController
         .back()
         .onTrue(
-            new RunCommand(
+            new RunCommand( // same as default cmd btw
                 () ->
                     turret.followFieldCentricTarget(
                         () -> MovingShotSolver.getShotSolution().turretAngle()),
                 turret));
 
-    opController.leftBumper().onTrue(new InstantCommand(() -> turret.goToZero(), turret));
-    opController.rightBumper().onTrue(new InstantCommand(() -> turret.goToTestSetpoint(), turret));
+    opController.leftBumper().onTrue(new RunCommand(() -> turret.goToZero(), turret));
+    opController.rightBumper().onTrue(new RunCommand(() -> turret.goToTestSetpoint(), turret));
 
     opController
         .start()

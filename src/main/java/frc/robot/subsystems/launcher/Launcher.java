@@ -59,7 +59,7 @@ public class Launcher extends SubsystemBase {
     Logger.processInputs("Launcher", inputs);
 
     double desiredVelocity;
-    if (launcherState == LauncherState.SCORING) {
+    if (launcherState == LauncherState.SELF_DIRECTING) {
       desiredVelocity = MovingShotSolver.getShotSolution().speed();
     } else if (launcherState == LauncherState.MANUAL) {
       desiredVelocity = manualDefaultVelocity.get();
@@ -130,7 +130,7 @@ public class Launcher extends SubsystemBase {
   }
 
   public void setScoring() {
-    launcherState = LauncherState.SCORING;
+    launcherState = LauncherState.SELF_DIRECTING;
   }
 
   public void setIdle() {
@@ -141,11 +141,11 @@ public class Launcher extends SubsystemBase {
     return Commands.startEnd(
         () -> {
           if (launcherState != LauncherState.MANUAL) {
-            launcherState = LauncherState.SCORING;
+            launcherState = LauncherState.SELF_DIRECTING;
           }
         },
         () -> {
-          if (launcherState == LauncherState.SCORING) {
+          if (launcherState == LauncherState.SELF_DIRECTING) {
             launcherState = LauncherState.IDLE;
           }
         });
