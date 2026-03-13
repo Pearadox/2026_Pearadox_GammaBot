@@ -31,9 +31,9 @@ public final class TurretConstants {
   // center of mass ≈ 1.67 in from its axis of rotation
   // I = I_cm + md^2 = 218 + 9(1.67)^2 = 243 in^2 lb ≈ 0.071 kg m^2
   // irl the turret weighed 4.56 kg (>10 lbs), so rounded up to 0.08
-  public static final double TURRET_MOI = 0.08;
+  public static final double TURRET_MOI = 0.08 * 2.5;
 
-  public static final DCMotor TURRET_MOTOR = DCMotor.getKrakenX60(1);
+  public static final DCMotor TURRET_MOTOR = DCMotor.getKrakenX60Foc(1);
 
   // feedforward term: adds a voltage to the turret as the chassis rotates
   //   public static final double K_OMEGA = 0.2; // volts per radian per second
@@ -48,7 +48,7 @@ public final class TurretConstants {
   public static final double FF_CHASSIS_ROT_VELOCITY_LIMIT = 1.5 * Math.PI; // rad/s
 
   public static final int TURRET_CANCODER_ID = 26;
-  public static final double TURRET_CANCODER_OFFSET_ROTS = -0.4106;
+  public static final double TURRET_CANCODER_OFFSET_ROTS = -0.4106 + 0.3637;
   // 0; // 0.4229; // 0.012451; // -0.217041; // 0.223145;
 
   public static final double TURRET_TO_CANCODER_RATIO = 3. / 10.;

@@ -8,15 +8,14 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.RobotContainer;
+import frc.lib.drivers.MovingShotSolver;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.spindexer.Spindexer;
-import frc.robot.util.SmarterDashboard;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 
 public class ShootOnTheMove extends Command {
-
   private final Launcher launcher;
   private final Feeder feeder;
   private final Spindexer spindexer;
@@ -46,9 +45,8 @@ public class ShootOnTheMove extends Command {
 
   @Override
   public void execute() {
-
-    double desiredVelocity = RobotContainer.getShotSolution().getShooterSpeedRPS();
-    Rotation2d desiredRotation = RobotContainer.getShotSolution().getTurretAngleRot2d();
+    double desiredVelocity = MovingShotSolver.getShotSolution().speed();
+    Rotation2d desiredRotation = MovingShotSolver.getShotSolution().turretAngle();
 
     double shooterVelocityError = launcher.getLauncherVelocity() - desiredVelocity;
 
@@ -70,14 +68,14 @@ public class ShootOnTheMove extends Command {
       spindexer.setStopped();
     }
 
-    SmarterDashboard.putBoolean("Launcher/SOTM/readyToShoot", readyToShoot);
-    SmarterDashboard.putBoolean("Launcher/SOTM/atDesiredVelocity", atDesiredVelocity);
-    SmarterDashboard.putBoolean("Drive/SOTM/atDesiredRotation", atDesiredRotation);
-    SmarterDashboard.putNumber("Launcher/SOTM/Velocity-Error_RPS", shooterVelocityError);
-    SmarterDashboard.putNumber("Launcher/SOTM/AutoScore-Desired-Velocity_RPS", desiredVelocity);
-    SmarterDashboard.putNumber("Drive/SOTM/rotationError", turretRotationError);
-    SmarterDashboard.putNumber("Drive/SOTM/currentAngle", currentAngle);
-    SmarterDashboard.putNumber("Drive/SOTM/desiredAngle", desiredAngle);
+    Logger.recordOutput("SOTM/readyToShoot", readyToShoot);
+    Logger.recordOutput("SOTM/atDesiredVelocity", atDesiredVelocity);
+    Logger.recordOutput("SOTM/atDesiredRotation", atDesiredRotation);
+    Logger.recordOutput("SOTM/Velocity-Error_RPS", shooterVelocityError);
+    Logger.recordOutput("SOTM/AutoScore-Desired-Velocity_RPS", desiredVelocity);
+    Logger.recordOutput("SOTM/rotationError", turretRotationError);
+    Logger.recordOutput("SOTM/currentAngle", currentAngle);
+    Logger.recordOutput("SOTM/desiredAngle", desiredAngle);
   }
 
   @Override

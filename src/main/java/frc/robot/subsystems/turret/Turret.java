@@ -10,8 +10,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.RobotContainer;
-import frc.robot.RobotContainer.ScoringMode;
 import frc.robot.util.LoggedTunableNumber;
 import java.util.function.Supplier;
 import lombok.Getter;
@@ -78,37 +76,14 @@ public class Turret extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Turret", inputs);
 
-    // if (!hasZeroed && inputs.cancoderConnected) {
-    //   requestZero();
-    // }
-
     if (kP.hasChanged(hashCode()) || kI.hasChanged(hashCode()) || kD.hasChanged(hashCode())) {
       io.setPID(kP.get(), kI.get(), kD.get());
     }
-
     if (kS.hasChanged(hashCode()) || kV.hasChanged(hashCode()) || kA.hasChanged(hashCode())) {
       io.setFFGains(kS.get(), kV.get(), kA.get());
     }
-
     if (mmCruiseVel.hasChanged(hashCode()) || mmAcceleration.hasChanged(hashCode())) {
       io.setMotionMagicLimits(mmCruiseVel.get(), mmAcceleration.get());
-    }
-
-    ScoringMode currentScoringMode = RobotContainer.getScoringMode();
-
-    if (currentScoringMode != ScoringMode.FULLY_MANUAL) {
-
-      followFieldCentricTarget(() -> RobotContainer.getShotSolution().getTurretAngleRot2d());
-
-    } else if (currentScoringMode == ScoringMode.FULLY_MANUAL) {
-
-      // followFieldCentricTarget(
-      //     () -> getFieldRelativeTurretAngleRotation2d().plus(new
-      // Rotation2d(turretRotationAdjust)));
-
-      Logger.recordOutput(
-          "Turret/SOTM/shotSolutionDesiredRotation",
-          RobotContainer.getShotSolution().getTurretAngleRot2d());
     }
   }
 
@@ -137,22 +112,18 @@ public class Turret extends SubsystemBase {
   }
 
   public void goToZero() {
-    if (RobotContainer.getScoringMode() != ScoringMode.FULLY_MANUAL) return;
-
     double setpointDegs = Units.radiansToDegrees(turretRotationAdjust);
     io.runPosition(Units.degreesToRadians(setpointDegs) / TurretConstants.TURRET_P_COEFFICIENT, 0);
     Logger.recordOutput("Turret/Setpoint Turret Degrees", setpointDegs);
   }
 
   public void goToTestSetpoint() {
-    if (RobotContainer.getScoringMode() != ScoringMode.FULLY_MANUAL) return;
-
     double setpointDegs = testSetpoint.get() + Units.radiansToDegrees(turretRotationAdjust);
     io.runPosition(Units.degreesToRadians(setpointDegs) / TurretConstants.TURRET_P_COEFFICIENT, 0);
     Logger.recordOutput("Turret/Setpoint Turret Degrees", setpointDegs);
   }
 
-  /** Zeroes the turret */
+  /** Zeroes the turret and sets the motor to brake mode */
   public void requestZero() {
     if (inputs.cancoderConnected) {
       io.setPosition(
@@ -164,7 +135,13 @@ public class Turret extends SubsystemBase {
     }
   }
 
-  public void setBrakeMode(boolean brake) {
+  /** Sets the motor back to coast mode */
+  public void undoZero() {
+    hasZeroed = false;
+    setBrakeMode(false);
+  }
+
+  private void setBrakeMode(boolean brake) {
     io.setBrakeMode(brake);
   }
 

@@ -18,8 +18,9 @@ public class LauncherConstants {
   public static enum LauncherState {
     OFF(Units.degreesToRadians(60)),
     MANUAL(Units.degreesToRadians(40)),
-    SCORING(Units.degreesToRadians(40)),
-    PASSING(Units.degreesToRadians(25)); // TODO: find proper hood angles
+    IDLE(Units.degreesToRadians(40)),
+    SELF_DIRECTING(Units.degreesToRadians(40));
+    // PASSING(Units.degreesToRadians(25)); // TODO: find proper hood angles
 
     @Getter private final double hoodAngleRads;
 
@@ -74,7 +75,7 @@ public class LauncherConstants {
   public static final ChannelId HOOD_1_ID = ChannelId.kChannelId0; // TODO: set
   public static final ChannelId HOOD_2_ID = ChannelId.kChannelId5; // TODO: set
 
-  public static final double HOOD_GEARING = 25 / 12; // TODO: double check
+  public static final double HOOD_GEARING = 25. / 12.; // TODO: double check
 
   public static final double HOOD_MAX_ANGLE_RADS = Units.degreesToRadians(60.0);
   public static final double HOOD_MIN_ANGLE_RADS = Units.degreesToRadians(20.0);

@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.RobotContainer.ScoringMode;
 import frc.robot.subsystems.intake.MechVisualizer;
 import frc.robot.subsystems.launcher.LauncherVisualizer;
 import frc.robot.util.LoggedTracer;
@@ -117,12 +116,13 @@ public class Robot extends LoggedRobot {
     isHubCurrentlyActive = isHubActive();
 
     Logger.recordOutput("Robot/isHubActive", isHubCurrentlyActive);
-    Logger.recordOutput("Robot/ScoringMode", RobotContainer.getScoringMode());
   }
 
   /** This function is called once when the robot is disabled. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    robotContainer.vision.captureRewind();
+  }
 
   /** This function is called periodically when disabled. */
   @Override
@@ -131,7 +131,6 @@ public class Robot extends LoggedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    RobotContainer.setScoringMode(ScoringMode.PARTIAL_AUTO);
     autonomousCommand = robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -154,8 +153,6 @@ public class Robot extends LoggedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
-
-    RobotContainer.setScoringMode(ScoringMode.FULLY_AUTO);
 
     Optional<Alliance> allianceOptional = DriverStation.getAlliance();
     alliance = allianceOptional.orElse(Alliance.Blue);

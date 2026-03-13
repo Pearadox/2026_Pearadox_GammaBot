@@ -3,7 +3,6 @@ package frc.robot.subsystems.spindexer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.spindexer.SpindexerConstants.*;
 import frc.robot.util.LoggedTunableNumber;
-import frc.robot.util.SmarterDashboard;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -28,12 +27,10 @@ public class Spindexer extends SubsystemBase {
     io.updateInputs(inputs);
 
     Logger.processInputs("Spindexer", inputs);
-    SmarterDashboard.putNumber("Spindexer/Voltage", inputs.spindexerMotorData.appliedVolts());
-    SmarterDashboard.putNumber("Spindexer/Velocity", inputs.spindexerMotorData.velocity());
-    SmarterDashboard.putNumber(
-        "Spindexer/StatorCurrent", inputs.spindexerMotorData.statorCurrent());
-    SmarterDashboard.putNumber(
-        "Spindexer/SupplyCurrent", inputs.spindexerMotorData.supplyCurrent());
+    Logger.recordOutput("Spindexer/Voltage", inputs.spindexerMotorData.appliedVolts());
+    Logger.recordOutput("Spindexer/Velocity", inputs.spindexerMotorData.velocity());
+    Logger.recordOutput("Spindexer/StatorCurrent", inputs.spindexerMotorData.statorCurrent());
+    Logger.recordOutput("Spindexer/SupplyCurrent", inputs.spindexerMotorData.supplyCurrent());
 
     if (spindexerState.equals(SpindexerState.RUNNING)) {
       io.runSpindexerTorqueCurrent(spindexerCurrentAmps.get(), spindexerMaxDutyCycle.get());

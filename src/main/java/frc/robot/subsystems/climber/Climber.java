@@ -2,7 +2,6 @@ package frc.robot.subsystems.climber;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.climber.ClimberConstants.ClimberState;
-import frc.robot.util.SmarterDashboard;
 import org.littletonrobotics.junction.Logger;
 
 public class Climber extends SubsystemBase {
@@ -20,8 +19,8 @@ public class Climber extends SubsystemBase {
     io.updateInputs(inputs);
 
     Logger.processInputs("Climber", inputs);
-    SmarterDashboard.putNumber("Climber/VoltageOut", inputs.climberMotorData.appliedVolts());
-    SmarterDashboard.putNumber("Climber/PositionRots", inputs.climberMotorData.position());
+    Logger.recordOutput("Climber/VoltageOut", inputs.climberMotorData.appliedVolts());
+    Logger.recordOutput("Climber/PositionRots", inputs.climberMotorData.position());
 
     io.runPosition(climberState.getClimberPositionRotations());
   }

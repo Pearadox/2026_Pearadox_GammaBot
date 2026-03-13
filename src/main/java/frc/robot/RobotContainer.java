@@ -11,6 +11,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -24,7 +25,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.drivers.MovingShotSolver;
-import frc.lib.drivers.MovingShotSolver.ShotSolution;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ShootOnTheMove;
 import frc.robot.generated.TunerConstants;
@@ -59,8 +59,6 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.DriveHelpers;
-import lombok.Getter;
-import lombok.Setter;
 
 public class RobotContainer {
   // Subsystems
@@ -70,34 +68,17 @@ public class RobotContainer {
   private final Launcher launcher;
   private final Spindexer spindexer;
   private final Turret turret;
-  private final Vision vision;
+  public final Vision vision;
 
   // Visualizer
   public final RobotVisualizer visualizer;
 
   // Controller
-  public static final CommandXboxController drivercontroller = new CommandXboxController(0);
+  private final CommandXboxController drivercontroller = new CommandXboxController(0);
   private final CommandXboxController opController = new CommandXboxController(1);
 
   // Dashboard inputs
   private final SendableChooser<Command> autoChooser;
-
-  private static ShotSolution shotSolution = new ShotSolution(0., 0, new Rotation2d(), false);
-
-  public enum ScoringMode {
-    FULLY_AUTO,
-    PARTIAL_AUTO,
-    FULLY_MANUAL,
-    PASSING
-  }
-
-  @Getter @Setter private static ScoringMode scoringMode = ScoringMode.FULLY_MANUAL;
-
-  @Setter private static boolean shouldSOTM = false;
-
-  public static boolean getShouldSOTM() {
-    return shouldSOTM;
-  }
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -197,12 +178,17 @@ public class RobotContainer {
             turret::getTurretAngleRads,
             () -> 0, // TODO: replace with hood angle supplier
             () -> 0, // TODO: replace with spindexer angle supplier
-            () -> 0, // TODO: replace with intake angle supplier
+            () -> Units.degreesToRadians(90 - intake.getAngleDegs()),
             () -> 0 // TODO: replace with climber displacement supplier
             );
 
     // Configure the button bindings
     configureButtonBindings();
+
+    vision.setDefaultCommand(
+        new RunCommand(
+            () -> MovingShotSolver.getInstance().solve(drive::getPose, drive::getChassisSpeeds),
+            vision));
   }
 
   /**
@@ -212,7 +198,6 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-
     // Driver Bindings
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
@@ -221,16 +206,6 @@ public class RobotContainer {
             () -> -drivercontroller.getLeftY(),
             () -> -drivercontroller.getLeftX(),
             () -> -drivercontroller.getRightX()));
-
-    // Lock to 0° when A button is held
-    // drivercontroller
-    //     .a()
-    //     .whileTrue(
-    //         DriveCommands.joystickDriveAtAngle(
-    //             drive,
-    //             () -> -drivercontroller.getLeftY(),
-    //             () -> -drivercontroller.getLeftX(),
-    //             () -> Rotation2d.kZero));
 
     // Switch to X pattern when X button is pressed
     drivercontroller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
@@ -256,51 +231,12 @@ public class RobotContainer {
                 () -> -drivercontroller.getLeftX(),
                 () -> DriveHelpers.findClosestCorner(drive::getPose)));
 
-    // drivercontroller
-    //     .rightBumper()
-    //     .whileTrue(
-    //         new ShootOnTheMove(launcher, feeder, turret::getFieldRelativeTurretAngleRotation2d));
-
-    // Uncomment when ready to run turret SysID routines
-    // opController.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
-    // opController.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
-
-    // opController.y().whileTrue(turret.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    // opController.a().whileTrue(turret.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    // opController.b().whileTrue(turret.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    // opController.x().whileTrue(turret.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
-    // Trigger shouldCalculateShotSolutionTrigger =
-    //     new Trigger(() -> scoringMode != ScoringMode.FULLY_MANUAL);
-
-    // shouldCalculateShotSolutionTrigger.whileTrue(
-    //     Commands.run(
-    //         () ->
-    //             setShotSolution(MovingShotSolver.solve(drive::getPose,
-    // drive::getChassisSpeeds))));
-
-    vision.setDefaultCommand(
-        new RunCommand(
-            () ->
-                setShotSolution(
-                    MovingShotSolver.getInstance().solve(drive::getPose, drive::getChassisSpeeds)),
-            vision));
-
-    Trigger shouldShootOnTheMoveTrigger =
-        new Trigger(
-            () ->
-                (scoringMode == ScoringMode.FULLY_AUTO) // && Robot.isHubCurrentlyActive()
-                    || ((scoringMode == ScoringMode.PARTIAL_AUTO
-                            || scoringMode == ScoringMode.PASSING)
-                        && drivercontroller.rightBumper().getAsBoolean()));
-
-    shouldShootOnTheMoveTrigger
-        .onTrue(new InstantCommand(() -> setShouldSOTM(true)))
-        .onFalse(new InstantCommand(() -> setShouldSOTM(false)));
-
-    shouldShootOnTheMoveTrigger.whileTrue(
-        new ShootOnTheMove(
-            launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d));
+    drivercontroller
+        .rightBumper()
+        .whileTrue(
+            new ShootOnTheMove(
+                    launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d)
+                .alongWith(launcher.score()));
 
     drivercontroller
         .leftBumper()
@@ -313,38 +249,19 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> intake.setOuttaking()))
         .onFalse(new InstantCommand(() -> intake.setDeployed()));
 
-    Trigger shouldRunSpindexerAndFeeder =
-        new Trigger(() -> drivercontroller.rightBumper().getAsBoolean());
-
-    shouldRunSpindexerAndFeeder.onTrue(
-        new InstantCommand(() -> launcher.setScoring())
-            .andThen(new WaitCommand(0.1))
-            .andThen(new InstantCommand(() -> feeder.setRunning()))
-            .andThen(new InstantCommand(() -> spindexer.setRunning())));
-    // .onFalse(
-    //     new InstantCommand(() -> launcher.setOff())
-    //         .andThen(new InstantCommand(() -> feeder.setStopped()))
-    //         .andThen(new InstantCommand(() -> spindexer.setStopped())));
-
     drivercontroller
         .b()
-        .onTrue(new InstantCommand(() -> spindexer.setReverse()))
-        .onFalse(new InstantCommand(() -> spindexer.setStopped()));
+        .whileTrue(new RunCommand(() -> spindexer.setReverse(), spindexer))
+        .onFalse(new InstantCommand(() -> spindexer.setStopped(), spindexer));
 
     // Op Bindings
-    opController.a().onTrue(new InstantCommand(() -> setScoringMode(ScoringMode.FULLY_AUTO)));
-    opController.x().onTrue(new InstantCommand(() -> setScoringMode(ScoringMode.PARTIAL_AUTO)));
-    opController.y().onTrue(new InstantCommand(() -> setScoringMode(ScoringMode.FULLY_MANUAL)));
-    Trigger isPassing = new Trigger(() -> shotSolution.isInsideNeutralZone);
-    isPassing
-        .onTrue(new InstantCommand(() -> setScoringMode(ScoringMode.PASSING)))
-        .onFalse(new InstantCommand(() -> setScoringMode(ScoringMode.PARTIAL_AUTO)));
+    opController.a().onTrue(new InstantCommand(() -> launcher.setIdle()));
+    opController.b().onTrue(new InstantCommand(() -> launcher.setOff()));
+    opController.y().onTrue(new InstantCommand(() -> launcher.setManual()));
 
     opController.povLeft().whileTrue(new RunCommand(() -> turret.adjustRotationBy(+0.01)));
     opController.povRight().whileTrue(new RunCommand(() -> turret.adjustRotationBy(-0.01)));
 
-    // opController.povUp().whileTrue(new RunCommand(() -> launcher.adjustRPSBy(+0.05)));
-    // opController.povDown().whileTrue(new RunCommand(() -> launcher.adjustRPSBy(-0.05)));
     opController.povUp().whileTrue(new RunCommand(() -> intake.adjustVoltsBy(+0.1)));
     opController.povDown().whileTrue(new RunCommand(() -> intake.adjustVoltsBy(-0.1)));
 
@@ -364,29 +281,40 @@ public class RobotContainer {
                     Math.signum(opController.getRightY())
                         * IntakeConstants.OP_ADJUST_INCREMENT_DEGREES)));
 
-    opController.leftBumper().onTrue(new InstantCommand(() -> turret.goToZero(), turret));
-    opController.rightBumper().onTrue(new InstantCommand(() -> turret.goToTestSetpoint(), turret));
-    opController.start().onTrue(new InstantCommand(() -> turret.requestZero()));
-    // opController.x().onTrue(new InstantCommand(() -> turret.goToMinus180(), turret));
+    turret.setDefaultCommand(
+        new RunCommand(
+            () ->
+                turret.followFieldCentricTarget(
+                    () -> MovingShotSolver.getShotSolution().turretAngle()),
+            turret));
 
-    // opController
-    //     .y()
-    //     .onTrue(
-    //         new RunCommand(
-    //             () -> {
-    //               setShotSolution(MovingShotSolver.solve(drive::getPose,
-    // drive::getChassisSpeeds));
-    //               turret.followFieldCentricTarget(shotSolution::getTurretAngleRot2d);
-    //             },
-    //             turret));
+    opController
+        .back()
+        .onTrue(
+            new RunCommand( // same as default cmd btw
+                () ->
+                    turret.followFieldCentricTarget(
+                        () -> MovingShotSolver.getShotSolution().turretAngle()),
+                turret));
 
-    // drivercontroller.y().onTrue(new InstantCommand(() -> launcher.setPassing()));
-    // drivercontroller.a().onTrue(new InstantCommand(() -> launcher.setScoring()));
+    opController.leftBumper().onTrue(new RunCommand(() -> turret.goToZero(), turret));
+    opController.rightBumper().onTrue(new RunCommand(() -> turret.goToTestSetpoint(), turret));
 
-    // drivercontroller.rightBumper().whileTrue(new InstantCommand(() ->
-    // feeder.launch()));
-    // drivercontroller.rightBumper().onFalse(new InstantCommand(() ->
-    // feeder.stopLaunch()));
+    opController
+        .start()
+        .onTrue(
+            new InstantCommand(
+                    () -> {
+                      if (!turret.isHasZeroed()) {
+                        // Zeroes the turret and sets it to brake mode
+                        turret.requestZero();
+                      } else {
+                        // If the start button is pressed a second time,
+                        // set it back to coast mode so it can be rezeroed
+                        turret.undoZero();
+                      }
+                    })
+                .ignoringDisable(true));
   }
 
   /**
@@ -410,7 +338,6 @@ public class RobotContainer {
                 (new InstantCommand(
                     () -> {
                       spindexer.setRunning();
-                      setScoringMode(ScoringMode.FULLY_AUTO);
                     }))));
     NamedCommands.registerCommand(
         "Stop Launching",
@@ -421,13 +348,5 @@ public class RobotContainer {
     NamedCommands.registerCommand("Set Intaking", new InstantCommand(() -> intake.setIntaking()));
     NamedCommands.registerCommand("Stop Intaking", new InstantCommand(() -> intake.setDeployed()));
     NamedCommands.registerCommand("Stow Intake", new InstantCommand(() -> intake.setStowed()));
-  }
-
-  public void setShotSolution(ShotSolution sol) {
-    shotSolution = sol;
-  }
-
-  public static ShotSolution getShotSolution() {
-    return shotSolution;
   }
 }

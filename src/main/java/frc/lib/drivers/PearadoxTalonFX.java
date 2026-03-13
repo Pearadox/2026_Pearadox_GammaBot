@@ -3,6 +3,7 @@ package frc.lib.drivers;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants;
 import frc.robot.util.PhoenixUtil;
 
@@ -14,10 +15,8 @@ public class PearadoxTalonFX extends TalonFX {
 
   private final BaseStatusSignal[] telemetrySignals;
 
-  public static final double LOOP_PERIOD = 0.02; // 20ms
-  public static final double LOOP_FREQUENCY = 1.0 / LOOP_PERIOD; // 50Hz
-  public static final double NOMINAL_VOLTAGE = 12; // V
-  public static final double g = 9.79267; // m/s^2 in Pearland
+  private double lastTimestamp;
+  private double cumulativeSupplyCurrentDrawAh;
 
   /**
    * Constructs a new PearadoxTalonFX with the specified device ID and configuration.
@@ -45,6 +44,9 @@ public class PearadoxTalonFX extends TalonFX {
     this.optimizeBusUtilization();
 
     PhoenixUtil.registerSignals(false, telemetrySignals);
+
+    lastTimestamp = RobotController.getFPGATime();
+    cumulativeSupplyCurrentDrawAh = 0.0;
   }
 
   /**
@@ -65,11 +67,18 @@ public class PearadoxTalonFX extends TalonFX {
   public MotorData getData() {
     boolean connected = BaseStatusSignal.isAllGood(telemetrySignals);
 
+    double currentTime = RobotController.getFPGATime();
+    double dtHours = (currentTime - lastTimestamp) / 3.6e9; // 3 600 000 000 microseconds per hour
+    double supplyCurrent = telemetrySignals[3].getValueAsDouble();
+
+    cumulativeSupplyCurrentDrawAh += supplyCurrent * dtHours;
+
     return new MotorData(
         telemetrySignals[0].getValueAsDouble(), // position
         telemetrySignals[1].getValueAsDouble(), // velocity
         telemetrySignals[2].getValueAsDouble(), // voltage
-        telemetrySignals[3].getValueAsDouble(), // supply current
+        supplyCurrent, // supply current
+        cumulativeSupplyCurrentDrawAh,
         telemetrySignals[4].getValueAsDouble(), // stator current
         telemetrySignals[5].getValueAsDouble(), // torque current
         telemetrySignals[6].getValueAsDouble(), // temperature
@@ -92,13 +101,14 @@ public class PearadoxTalonFX extends TalonFX {
       double velocity,
       double appliedVolts,
       double supplyCurrent,
+      double cumulativeSupplyCurrentDrawAh,
       double statorCurrent,
       double torqueCurrent,
       double temperature,
       boolean isConnected) {
 
     public MotorData() {
-      this(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false);
+      this(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false);
     }
   }
 }
