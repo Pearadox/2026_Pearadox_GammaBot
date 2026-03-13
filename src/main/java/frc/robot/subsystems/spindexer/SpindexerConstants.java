@@ -27,12 +27,11 @@ public class SpindexerConstants {
 
   public static final int SPINDEXER_MOTOR_ID = 42;
 
-  public static final int SPINDEXER_SUPPLY_CURRENT_LIMIT = 80; // changed to match the breaker
-  public static final int SPINDEXER_STATOR_CURRENT_LIMIT =
-      60; // originally 40 on 3/3/2026 during testing
+  public static final int SPINDEXER_SUPPLY_CURRENT_LIMIT = 80;
+  public static final int SPINDEXER_STATOR_CURRENT_LIMIT = 60;
 
-  public static final double SPINDEXER_GEARING =
-      1.0 / 15.0; // technically 1/18 (according to Hitesh)
+  public static final double SPINDEXER_GEARING = 1.0 / 9.0;
+  // 1.0 / 15.0; // technically 1/18 (according to Hitesh)
   public static final double SPINDEXER_RADIUS_METERS = Units.inchesToMeters(4);
   public static final double SPINDEXER_MASS_KG = Units.lbsToKilograms(5);
   public static final double SPINDEXER_MOI =
@@ -49,7 +48,7 @@ public class SpindexerConstants {
 
     SPINDEXER_CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-    SPINDEXER_SLOT0_CONFIGS.kP = 0.1;
+    SPINDEXER_SLOT0_CONFIGS.kP = 0.2; // 0.1
     SPINDEXER_SLOT0_CONFIGS.kI = 0.0;
     SPINDEXER_SLOT0_CONFIGS.kD = 0.0;
     SPINDEXER_SLOT0_CONFIGS.kS = 0.0;
