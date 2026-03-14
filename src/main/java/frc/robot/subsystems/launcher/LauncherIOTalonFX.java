@@ -9,9 +9,6 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
-import com.revrobotics.servohub.ServoChannel;
-import com.revrobotics.servohub.ServoHub;
-import edu.wpi.first.math.util.Units;
 import frc.lib.drivers.PearadoxTalonFX;
 import frc.robot.util.PhoenixUtil;
 import org.littletonrobotics.junction.Logger;
@@ -28,10 +25,10 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
 
   protected final VelocityVoltage velocityVoltageRequest;
 
-  protected final ServoHub hoodServoHub;
+  // protected final ServoHub hoodServoHub;
 
-  protected final ServoChannel hoodServo1;
-  protected final ServoChannel hoodServo2;
+  // protected final ServoChannel hoodServo1;
+  // protected final ServoChannel hoodServo2;
 
   private final TalonFXConfiguration launcherConfigs;
 
@@ -46,27 +43,27 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
     velocityVoltageRequest = new VelocityVoltage(0);
     launcher2Control = new Follower(launcher1Leader.getDeviceID(), MotorAlignmentValue.Opposed);
 
-    hoodServoHub = new ServoHub(LauncherConstants.HOOD_SERVO_HUB_CAN_ID);
+    // hoodServoHub = new ServoHub(LauncherConstants.HOOD_SERVO_HUB_CAN_ID);
 
-    hoodServo1 = hoodServoHub.getServoChannel(LauncherConstants.HOOD_1_ID);
-    hoodServo1.setEnabled(true);
-    hoodServo1.setPowered(true);
+    // hoodServo1 = hoodServoHub.getServoChannel(LauncherConstants.HOOD_1_ID);
+    // hoodServo1.setEnabled(true);
+    // hoodServo1.setPowered(true);
 
-    hoodServo2 = hoodServoHub.getServoChannel(LauncherConstants.HOOD_2_ID);
-    hoodServo2.setEnabled(true);
-    hoodServo2.setPowered(true);
+    // hoodServo2 = hoodServoHub.getServoChannel(LauncherConstants.HOOD_2_ID);
+    // hoodServo2.setEnabled(true);
+    // hoodServo2.setPowered(true);
   }
 
   public void updateInputs(LauncherIOInputs inputs) {
     inputs.launcher1Data = launcher1Leader.getData();
     inputs.launcher2Data = launcher2Follower.getData();
 
-    inputs.hoodServoHubVoltage = hoodServoHub.getDeviceVoltage();
+    // inputs.hoodServoHubVoltage = hoodServoHub.getDeviceVoltage();
 
-    inputs.hoodServo1Position =
-        LauncherConstants.pulseWidthtoAngularPosition(hoodServo1.getPulseWidth());
-    inputs.hoodServo2Position =
-        LauncherConstants.pulseWidthtoAngularPosition(hoodServo2.getPulseWidth());
+    // inputs.hoodServo1Position =
+    //     LauncherConstants.pulseWidthtoAngularPosition(hoodServo1.getPulseWidth());
+    // inputs.hoodServo2Position =
+    //     LauncherConstants.pulseWidthtoAngularPosition(hoodServo2.getPulseWidth());
   }
 
   public void runLauncherVelocity(double velocityRPS, double ffamps) {
@@ -92,21 +89,21 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
   }
 
   public void setHoodAngleRads(double angleRads) {
-    if (angleRads < LauncherConstants.HOOD_MAX_ANGLE_RADS
-        && angleRads > LauncherConstants.HOOD_MIN_ANGLE_RADS) {
-      double angleRadsFromMinimum = angleRads - LauncherConstants.HOOD_MIN_ANGLE_RADS;
+    // if (angleRads < LauncherConstants.HOOD_MAX_ANGLE_RADS
+    //     && angleRads > LauncherConstants.HOOD_MIN_ANGLE_RADS) {
+    //   double angleRadsFromMinimum = angleRads - LauncherConstants.HOOD_MIN_ANGLE_RADS;
 
-      double servoRotations =
-          (Units.radiansToRotations(angleRadsFromMinimum) * LauncherConstants.HOOD_GEARING)
-              / LauncherConstants.SERVO_POSITION_TO_ROTATIONS_CONVERSION;
+    //   double servoRotations =
+    //       (Units.radiansToRotations(angleRadsFromMinimum) * LauncherConstants.HOOD_GEARING)
+    //           / LauncherConstants.SERVO_POSITION_TO_ROTATIONS_CONVERSION;
 
-      hoodServo1.setPulseWidth(LauncherConstants.rotationstoPulseWidth(servoRotations));
-      hoodServo2.setPulseWidth(
-          LauncherConstants.SERVO_MAX_PULSE_WIDTH
-              - LauncherConstants.rotationstoPulseWidth(servoRotations));
-    } else {
-      Logger.recordOutput("HoodAngleOutOfRange", angleRads);
-    }
+    //   hoodServo1.setPulseWidth(LauncherConstants.rotationstoPulseWidth(servoRotations));
+    //   hoodServo2.setPulseWidth(
+    //       LauncherConstants.SERVO_MAX_PULSE_WIDTH
+    //           - LauncherConstants.rotationstoPulseWidth(servoRotations));
+    // } else {
+    //   Logger.recordOutput("HoodAngleOutOfRange", angleRads);
+    // }
   }
 
   @Override

@@ -5,7 +5,6 @@
 package frc.robot.subsystems.launcher;
 
 import com.ctre.phoenix6.sim.TalonFXSimState;
-import com.revrobotics.servohub.ServoHubSim;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.Constants;
@@ -23,13 +22,13 @@ public class LauncherIOSim extends LauncherIOTalonFX {
           false,
           0);
   private TalonFXSimState launcherSimState;
-  private ServoHubSim hoodServoHubSim;
+  // private ServoHubSim hoodServoHubSim;
 
   public LauncherIOSim() {
     super();
     launcherSimState = launcher1Leader.getSimState();
-    hoodServoHubSim = new ServoHubSim(hoodServoHub);
-    hoodServoHubSim.enable();
+    // hoodServoHubSim = new ServoHubSim(hoodServoHub);
+    // hoodServoHubSim.enable();
   }
 
   public void updateInputs(LauncherIOInputs inputs) {
@@ -48,6 +47,6 @@ public class LauncherIOSim extends LauncherIOTalonFX {
         Units.radiansPerSecondToRotationsPerMinute(launcherPhysicsSim.getVelocityRadPerSec()) / 60);
 
     launcherPhysicsSim.update(Constants.UPDATE_FREQ_SEC);
-    hoodServoHubSim.setServoVoltage(12);
+    // hoodServoHubSim.setServoVoltage(12);
   }
 }
