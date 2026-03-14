@@ -13,19 +13,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Stop Intaking"
+            "name": "Set Intaking"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "OutpostScoop1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Set Intaking"
           }
         },
         {
