@@ -44,6 +44,8 @@ public final class Constants {
 
   public static final int NEWTONS_METHOD_NUM_STEPS = 15;
 
+  public static final double BROWNOUT_VOLTAGE = 6.0; // TODO: TUNE
+
   public static final class AlignConstants {
     public static final double ALIGN_STRAFE_KP = 0.02;
     public static final double ALIGN_STRAFE_KI = 0.001;
