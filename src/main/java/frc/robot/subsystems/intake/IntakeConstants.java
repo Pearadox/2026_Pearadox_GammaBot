@@ -44,15 +44,14 @@ public class IntakeConstants {
   public static final int ROLLER_1_LEADER_ID = 31;
   public static final int ROLLER_2_FOLLOWER_ID = 32;
 
-  public static final int ROLLER_SUPPLY_CURRENT_LIMIT = 80; // changed to match the breaker
-  public static final int ROLLER_STATOR_CURRENT_LIMIT =
-      60; // originally 60 on 3/3/2026 during testing
+  public static final int ROLLER_SUPPLY_CURRENT_LIMIT = 50; // changed 3/17/26 for #119
+  public static final int ROLLER_STATOR_CURRENT_LIMIT = 60;
 
   // pivot constants
   public static final int PIVOT_ID = 30;
 
-  public static final int PIVOT_SUPPLY_CURRENT_LIMIT = 60; // changed to match the breaker
-  public static final int PIVOT_STATOR_CURRENT_LIMIT = 40;
+  public static final int PIVOT_SUPPLY_CURRENT_LIMIT = 50; // changed 3/17/26 for #119
+  public static final int PIVOT_STATOR_CURRENT_LIMIT = 60;
 
   public static final double GEARING = (44.0 / 12.0) * (60.0 / 16.0) * (44.0 / 14.0);
   public static final double LENGTH_METERS = Units.inchesToMeters(15.114);

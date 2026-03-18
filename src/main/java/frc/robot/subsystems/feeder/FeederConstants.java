@@ -31,7 +31,7 @@ public class FeederConstants {
   // feeder constants
   public static final int FEEDER_CAN_ID = 41;
 
-  public static final int FEEDER_SUPPLY_CURRENT_LIMIT = 80;
+  public static final int FEEDER_SUPPLY_CURRENT_LIMIT = 50; // changed 3/17/26 for #119
   public static final int FEEDER_STATOR_CURRENT_LIMIT = 60;
 
   public static final double FEEDER_GEARING =

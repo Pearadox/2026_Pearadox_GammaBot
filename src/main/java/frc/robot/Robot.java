@@ -9,6 +9,7 @@ package frc.robot;
 
 import com.pathplanner.lib.commands.FollowPathCommand;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -85,6 +86,8 @@ public class Robot extends LoggedRobot {
 
     // Pathplanner warm-up command
     CommandScheduler.getInstance().schedule(FollowPathCommand.warmupCommand());
+
+    RobotController.setBrownoutVoltage(Constants.BROWNOUT_VOLTAGE);
   }
 
   /** This function is called periodically during all modes. */
