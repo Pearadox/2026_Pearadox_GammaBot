@@ -63,10 +63,10 @@ import frc.robot.util.DriveHelpers;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  private final Feeder feeder;
+  public final Feeder feeder;
   private final Intake intake;
   public final Launcher launcher;
-  private final Spindexer spindexer;
+  public final Spindexer spindexer;
   private final Turret turret;
   public final Vision vision;
 

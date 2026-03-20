@@ -161,6 +161,8 @@ public class Robot extends LoggedRobot {
     }
 
     robotContainer.vision.unthrottleLimelights();
+    robotContainer.spindexer.setStopped();
+    robotContainer.feeder.setStopped();
     robotContainer.launcher.setIdle();
 
     Optional<Alliance> allianceOptional = DriverStation.getAlliance();
