@@ -23,9 +23,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "NZone_Reverse-DBump-AllianZone1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "NZone_Reverse-DBump-AllianZone1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Stow Intake"
+                }
+              }
+            ]
           }
         },
         {
@@ -47,15 +60,67 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "DBump_Space-NZone_Front"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "DBump_Space-NZone_Front"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 2.5
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Set Intaking"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "NZone_Uturn-DBump-AllianZone1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "NZone_Uturn-DBump-AllianZone1"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 2.5
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Stow Intake"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
