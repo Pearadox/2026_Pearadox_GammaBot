@@ -16,32 +16,32 @@
     },
     {
       "anchor": {
-        "x": 6.976134094151213,
-        "y": 4.481383737517832
+        "x": 7.122590361445783,
+        "y": 4.537674698795181
       },
       "prevControl": {
-        "x": 7.5299384249808785,
-        "y": 4.495228845788573
+        "x": 7.47105644389775,
+        "y": 4.574142079516898
       },
       "nextControl": {
-        "x": 5.423495007132667,
-        "y": 4.442567760342368
+        "x": 6.182807228915664,
+        "y": 4.4393253012048195
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.6124792408066435,
-        "y": 5.568185053380782
+        "x": 5.6364216867469885,
+        "y": 5.357253012048193
       },
       "prevControl": {
-        "x": 6.109243937232525,
-        "y": 5.0377460770328115
+        "x": 6.182807228915664,
+        "y": 5.084060240963856
       },
       "nextControl": {
-        "x": 4.583248171198051,
-        "y": 6.667184798967908
+        "x": 4.8965695532726325,
+        "y": 5.72717907878537
       },
       "isLocked": false,
       "linkedName": null
@@ -52,12 +52,12 @@
         "y": 6.440892018779343
       },
       "prevControl": {
-        "x": 4.3524413145539915,
-        "y": 3.9178990610328643
+        "x": 2.1723373493975906,
+        "y": 5.608590361445783
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Depot front space"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
@@ -67,11 +67,11 @@
     },
     {
       "waypointRelativePos": 1,
-      "rotationDegrees": 180.0
+      "rotationDegrees": 155.65891006330745
     },
     {
       "waypointRelativePos": 1.262877442273534,
-      "rotationDegrees": 90.0
+      "rotationDegrees": 113.267
     }
   ],
   "constraintZones": [],
@@ -87,7 +87,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 113.267
   },
   "reversed": false,
   "folder": "To Alliance Zone",

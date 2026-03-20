@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.715939759036146,
-        "y": 1.335855421686747
+        "x": 7.515987951807228,
+        "y": 1.8494578313253012
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.144674698795182,
-        "y": 2.461409638554217
+        "x": 5.428795180722891,
+        "y": 2.3193493975903605
       },
       "prevControl": {
-        "x": 5.6124080321285135,
-        "y": 2.4321763052208842
+        "x": 6.204662650602408,
+        "y": 2.3521325301204814
       },
       "nextControl": {
-        "x": 3.983427766484973,
-        "y": 2.533987571823603
+        "x": 4.266319654503371,
+        "y": 2.2702307133839015
       },
       "isLocked": false,
       "linkedName": null
@@ -44,7 +44,12 @@
       "linkedName": "Outpost front space"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6721259842519651,
+      "rotationDegrees": 0.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -66,5 +71,5 @@
     "velocity": 0.0,
     "rotation": 90.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
