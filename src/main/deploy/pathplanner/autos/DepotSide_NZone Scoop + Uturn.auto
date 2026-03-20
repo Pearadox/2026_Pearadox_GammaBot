@@ -37,13 +37,31 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 5.0
+            "waitTime": 3.0
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Stop Launching"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DBump_Space-NZone_Front"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NZone_Uturn-DBump-AllianZone1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set Launching"
           }
         }
       ]

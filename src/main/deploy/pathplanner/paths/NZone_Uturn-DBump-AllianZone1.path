@@ -3,77 +3,79 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.28,
-        "y": 1.043
+        "x": 7.35,
+        "y": 6.15
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.607377777777778,
-        "y": 1.1993666666666671
+        "x": 7.351936619718309,
+        "y": 5.329100938967136
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.516,
-        "y": 1.8230111111111102
+        "x": 6.8,
+        "y": 3.811443661971831
       },
       "prevControl": {
-        "x": 7.148011688975819,
-        "y": 1.396770669708812
+        "x": 7.353497109764025,
+        "y": 3.8345060415453327
       },
       "nextControl": {
-        "x": 6.09698888888889,
-        "y": 2.1055999999999995
+        "x": 5.778028169014085,
+        "y": 3.7688615023474172
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.064077777777778,
-        "y": 2.3199777777777775
+        "x": 5.6124792408066435,
+        "y": 5.568185053380782
       },
       "prevControl": {
-        "x": 5.502577777777777,
-        "y": 2.2420222222222206
+        "x": 6.570047449584816,
+        "y": 5.223890865954922
       },
       "nextControl": {
-        "x": 3.9185267151554486,
-        "y": 2.5236313000217514
+        "x": 4.1955870576579,
+        "y": 6.077629433838758
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.925,
-        "y": 1.5971713615023488
+        "x": 1.62718309859155,
+        "y": 6.440892018779343
       },
       "prevControl": {
-        "x": 2.638509389671362,
-        "y": 3.1409460093896735
+        "x": 4.3524413145539915,
+        "y": 3.9178990610328643
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Outpost front space"
+      "linkedName": "Depot front space"
     }
   ],
-  "rotationTargets": [],
-  "constraintZones": [],
-  "pointTowardsZones": [
+  "rotationTargets": [
     {
-      "fieldPosition": {
-        "x": 4.62,
-        "y": 4.0
-      },
-      "rotationOffset": 90.0,
-      "minWaypointRelativePos": 2.742547425474255,
-      "maxWaypointRelativePos": 3.0,
-      "name": "Point Towards Zone"
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 1.262877442273534,
+      "rotationDegrees": 90.0
     }
   ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
@@ -91,7 +93,7 @@
   "folder": "To Alliance Zone",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -119.99999999999999
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }

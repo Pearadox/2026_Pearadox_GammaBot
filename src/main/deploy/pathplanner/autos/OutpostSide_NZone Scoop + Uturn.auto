@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "DBump-NZone1"
+            "pathName": "OBump-NZone1"
           }
         },
         {
@@ -19,13 +19,26 @@
         {
           "type": "path",
           "data": {
-            "pathName": "DepotScoop2"
+            "pathName": "OutpostScoop1"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "NZone_Reverse-DBump-AllianZone1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "NZone-OBump-AllianZone1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Stow Intake"
+                }
+              }
+            ]
           }
         },
         {
@@ -44,6 +57,24 @@
           "type": "named",
           "data": {
             "name": "Stop Launching"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "OBump_Space-NZone_Front"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "OBump_Space-NZone_Front"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set Launching"
           }
         }
       ]
