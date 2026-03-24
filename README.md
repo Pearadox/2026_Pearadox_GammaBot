@@ -44,8 +44,8 @@ Throughout the course of the season, there have been some key lessons, ideas, an
 ### Competition Season:
 - **Space City District Competition**: To achieve the most BPS/throughput, we bypassed checking whether the launcher was at the desired velocity before launching. However, this also led to some missed shots, meaning that we needed to find appropriate balance of checks to launch fuel both quickly and precisely.
 - **Aldine District Competition**: The robot seemed to overshoot or undershoot depending on its distance to the hub, likely because of our physics-based algorithm. This taught us that the desired launcher velocity might not always score accurately in the real-world due to non-constant launcher energy transfer efficiency (so linear interpolation might be a better alternative).
-- **District Championship**: TODO
-- **World Championship**: TODO
+- **District Championship**: TBD
+- **World Championship**: TBD
 
 ### Overall Takeaways:
 - Physics models provide strong starting points but often require empirical correction.
