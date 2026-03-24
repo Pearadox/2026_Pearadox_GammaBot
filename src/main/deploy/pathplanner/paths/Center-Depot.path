@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.8,
-        "y": 4.973
+        "x": 3.560156626506024,
+        "y": 4.024072289156626
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.024471830985916,
-        "y": 7.324471830985916
+        "x": 3.1558313253012056,
+        "y": 4.035
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Center"
     },
     {
       "anchor": {
-        "x": 1.62718309859155,
-        "y": 6.440892018779343
+        "x": 0.51,
+        "y": 5.0
       },
       "prevControl": {
-        "x": 4.3524413145539915,
-        "y": 3.9178990610328643
+        "x": 2.476987951807229,
+        "y": 5.065566265060241
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Depot front space"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 110.0
   },
   "reversed": false,
-  "folder": "To Alliance Zone",
+  "folder": "To Depot",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 45.0
   },
   "useDefaultConstraints": true
 }

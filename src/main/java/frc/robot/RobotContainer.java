@@ -63,10 +63,10 @@ import frc.robot.util.DriveHelpers;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  private final Feeder feeder;
+  public final Feeder feeder;
   private final Intake intake;
-  private final Launcher launcher;
-  private final Spindexer spindexer;
+  public final Launcher launcher;
+  public final Spindexer spindexer;
   private final Turret turret;
   public final Vision vision;
 
@@ -236,7 +236,13 @@ public class RobotContainer {
         .whileTrue(
             new ShootOnTheMove(
                     launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d)
-                .alongWith(launcher.score()));
+                .alongWith(launcher.score()))
+        .onFalse(
+            new InstantCommand(
+                () -> {
+                  feeder.setStopped();
+                  spindexer.setStopped();
+                }));
 
     drivercontroller
         .leftBumper()
@@ -256,7 +262,15 @@ public class RobotContainer {
 
     // Op Bindings
     opController.a().onTrue(new InstantCommand(() -> launcher.setIdle()));
-    opController.b().onTrue(new InstantCommand(() -> launcher.setOff()));
+    opController
+        .b()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  launcher.setOff();
+                  spindexer.setStopped();
+                  feeder.setStopped();
+                }));
     opController.y().onTrue(new InstantCommand(() -> launcher.setManual()));
 
     opController.povLeft().whileTrue(new RunCommand(() -> turret.adjustRotationBy(+0.01)));
@@ -342,11 +356,17 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Stop Launching",
         new InstantCommand(() -> feeder.setStopped())
-            .andThen((new InstantCommand(() -> spindexer.setStopped()))));
+            .andThen(
+                (new InstantCommand(
+                    () -> {
+                      spindexer.setStopped();
+                      launcher.setOff();
+                    }))));
 
     // Intake Commands
     NamedCommands.registerCommand("Set Intaking", new InstantCommand(() -> intake.setIntaking()));
     NamedCommands.registerCommand("Stop Intaking", new InstantCommand(() -> intake.setDeployed()));
     NamedCommands.registerCommand("Stow Intake", new InstantCommand(() -> intake.setStowed()));
+    NamedCommands.registerCommand("Flow Intake", new InstantCommand(() -> intake.setFlow()));
   }
 }

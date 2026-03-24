@@ -47,7 +47,8 @@ public final class TurretConstants {
   public static final double FF_CHASSIS_ROT_VELOCITY_LIMIT = 1.5 * Math.PI; // rad/s
 
   public static final int TURRET_CANCODER_ID = 26;
-  public static final double TURRET_CANCODER_OFFSET_ROTS = -0.4106 + 0.3637 - 0.3508;
+  public static final double TURRET_CANCODER_OFFSET_ROTS = -0.6623;
+  // -0.4106 + 0.3637 - 0.3508 - 0.220;
   // 0; // 0.4229; // 0.012451; // -0.217041; // 0.223145;
 
   public static final double TURRET_TO_CANCODER_RATIO = 3. / 10.;
@@ -73,8 +74,8 @@ public final class TurretConstants {
     config.Slot0.kI = 0.0;
     config.Slot0.kD = 0.0;
 
-    config.Voltage.PeakForwardVoltage = 4;
-    config.Voltage.PeakReverseVoltage = -4;
+    config.Voltage.PeakForwardVoltage = 8;
+    config.Voltage.PeakReverseVoltage = -8;
 
     return config;
   }

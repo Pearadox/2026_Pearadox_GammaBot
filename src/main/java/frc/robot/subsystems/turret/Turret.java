@@ -39,7 +39,7 @@ public class Turret extends SubsystemBase {
   private final LoggedTunableNumber kA = new LoggedTunableNumber("Turret/kA", 0.0);
   private final LoggedTunableNumber kOmega = new LoggedTunableNumber("Turret/kOmega", 0.0); // 0.2
   private final LoggedTunableNumber mmCruiseVel =
-      new LoggedTunableNumber("Turret/mmCruiseVel", 35); // 85
+      new LoggedTunableNumber("Turret/mmCruiseVel", 85); // 85
   private final LoggedTunableNumber mmAcceleration = new LoggedTunableNumber("Turret/mmAcc", 450);
   private final LoggedTunableNumber testSetpoint =
       new LoggedTunableNumber("Turret/test Setpoint", -90);

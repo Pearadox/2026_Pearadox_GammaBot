@@ -3,32 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6178990610328654,
-        "y": 2.683016431924882
+        "x": 7.8,
+        "y": 4.973
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.784060240963855,
-        "y": 2.526975903614458
+        "x": 6.794759036144578,
+        "y": 6.144048192771083
       },
       "isLocked": false,
-      "linkedName": "Outpost bump"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.165200000000001,
-        "y": 1.832755555555556
+        "x": 2.456457831325301,
+        "y": 6.1003373493975905
       },
       "prevControl": {
-        "x": 6.058011111111111,
-        "y": 2.358955555555555
+        "x": 3.8114939759036144,
+        "y": 4.952927710843373
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Depot front space"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.3977952755905527,
+      "rotationDegrees": 0.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -41,14 +46,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 1.0,
-    "rotation": 90.0
+    "velocity": 0,
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "To Neutral Zone",
+  "folder": "To Alliance Zone",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }

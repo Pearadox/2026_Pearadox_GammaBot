@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 1.62718309859155,
-        "y": 6.440892018779343
+        "x": 2.456457831325301,
+        "y": 6.1003373493975905
       },
       "prevControl": {
-        "x": 1.4355633802816907,
-        "y": 5.951197183098591
+        "x": 2.2648381130154416,
+        "y": 5.610642513716838
       },
       "nextControl": null,
       "isLocked": false,
@@ -58,7 +58,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "To Alliance Zone",

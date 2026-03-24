@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6178990610328654,
-        "y": 2.683016431924882
+        "x": 2.456457831325301,
+        "y": 6.1003373493975905
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.784060240963855,
-        "y": 2.526975903614458
+        "x": 2.509865094179534,
+        "y": 4.36103569206403
       },
       "isLocked": false,
-      "linkedName": "Outpost bump"
+      "linkedName": "Depot front space"
     },
     {
       "anchor": {
-        "x": 6.165200000000001,
-        "y": 1.832755555555556
+        "x": 0.51,
+        "y": 5.0
       },
       "prevControl": {
-        "x": 6.058011111111111,
-        "y": 2.358955555555555
+        "x": 0.7826635120479593,
+        "y": 5.004258948448751
       },
       "nextControl": null,
       "isLocked": false,
@@ -41,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 1.0,
-    "rotation": 90.0
+    "velocity": 0,
+    "rotation": 110.0
   },
   "reversed": false,
-  "folder": "To Neutral Zone",
+  "folder": "To Depot",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

@@ -35,15 +35,17 @@ public class MovingShotSolver {
   private enum Goal {
     HUB(Hub.topCenterPointRed, Hub.topCenterPointBlue),
     DEPOT_CORNER(
-        new Translation3d(LinesVertical.redHubCenterX, LinesHorizontal.leftBumpStart - 0.25, 2.0),
         new Translation3d(
-            LinesVertical.blueHubCenterX,
+            LinesVertical.redHubCenterX + 1, LinesHorizontal.leftBumpStart - 0.25, 2.0),
+        new Translation3d(
+            LinesVertical.blueHubCenterX - 1,
             FieldConstants.fieldWidth - (LinesHorizontal.leftBumpStart - 0.25),
             2.0)),
     OUTPOST_CORNER(
-        new Translation3d(LinesVertical.redHubCenterX, LinesHorizontal.rightBumpEnd + 0.25, 2.0),
         new Translation3d(
-            LinesVertical.blueHubCenterX,
+            LinesVertical.redHubCenterX + 1, LinesHorizontal.rightBumpEnd + 0.25, 2.0),
+        new Translation3d(
+            LinesVertical.blueHubCenterX - 1,
             FieldConstants.fieldWidth - (LinesHorizontal.rightBumpEnd + 0.25),
             2.0));
 
@@ -83,13 +85,13 @@ public class MovingShotSolver {
   }
 
   private final LoggedTunableNumber rpsMultiplier =
-      new LoggedTunableNumber("SOTM/Rps Multiplier", 2.1);
+      new LoggedTunableNumber("SOTM/Rps Multiplier", 2);
   private final LoggedTunableNumber turretDx = new LoggedTunableNumber("SOTM/Turret dx", -0.135);
   private final LoggedTunableNumber turretDy = new LoggedTunableNumber("SOTM/Turret dy", -0.14);
   private final LoggedTunableNumber shooterHeightInches =
       new LoggedTunableNumber("SOTM/Launch Height in", 22.5);
   private final LoggedTunableNumber hoodAngleDegrees =
-      new LoggedTunableNumber("SOTM/Launch Angle Degs", 70);
+      new LoggedTunableNumber("SOTM/Launch Angle Degs", 72);
 
   private static final double MPSToRPSConversion =
       LauncherConstants.LAUNCHER_GEARING / LauncherConstants.ROLLER_CIRCUMFERENCE_METERS;
@@ -209,6 +211,8 @@ public class MovingShotSolver {
     double targetYOffsetMeters = goalYMeters - robotVy * ToF;
     Pose2d targetPose = new Pose2d(targetXOffsetMeters, targetYOffsetMeters, new Rotation2d());
 
+    double outputtedShooterVelocity = Math.min(100, rpsMultiplier.get() * shooterSpeedRPS);
+
     // Compute field-relative turret angle
 
     Rotation2d fieldRelativeTurretAngleRot2d = new Rotation2d(Math.atan2(vyLaunchMPS, vxLaunchMPS));
@@ -216,12 +220,13 @@ public class MovingShotSolver {
     Logger.recordOutput(
         "SOTM/fieldRelativeTurretAngle", fieldRelativeTurretAngleRot2d.getDegrees());
     Logger.recordOutput("SOTM/timeOfFlight", ToF);
-    Logger.recordOutput("SOTM/desiredShooterSpeed_RPS", shooterSpeedRPS);
+    Logger.recordOutput("SOTM/desiredShooterSpeed_RPS", shooterSpeedRPS * rpsMultiplier.get());
+    Logger.recordOutput("SOTM/cappedShooterSpeed_RPS", outputtedShooterVelocity);
     Logger.recordOutput("SOTM/currentRotation", curPose.getRotation().getDegrees());
     Logger.recordOutput("SOTM/targetPose", targetPose);
     Logger.recordOutput("SOTM/Goal", goal.toString());
 
     return shotSolution =
-        new ShotSolution(ToF, rpsMultiplier.get() * shooterSpeedRPS, fieldRelativeTurretAngleRot2d);
+        new ShotSolution(ToF, outputtedShooterVelocity, fieldRelativeTurretAngleRot2d);
   }
 }

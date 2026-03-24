@@ -108,6 +108,10 @@ public class Intake extends SubsystemBase {
     intakeState = IntakeState.STOWED;
   }
 
+  public void setFlow() {
+    intakeState = IntakeState.FLOW_STATE;
+  }
+
   public void setDeployed() {
     intakeState = IntakeState.DEPLOYED; // rollers aren't running; intake is deployed
   }

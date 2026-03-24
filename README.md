@@ -74,4 +74,3 @@ Throughout the course of the season, there have been some key lessons, ideas, an
 - Physics models provide strong starting points but often require empirical correction.
 - Energy transfer efficiency significantly affects real-world projectile accuracy.
 - Bang-bang control can reduce spin-up time but increases steady-state oscillation.
-
