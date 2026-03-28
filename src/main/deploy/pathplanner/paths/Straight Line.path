@@ -1,0 +1,67 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.4550499286772157,
+        "y": 0.7032952924386007
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 0.45668674698795175,
+        "y": 2.1007951807228915
+      },
+      "isLocked": false,
+      "linkedName": "Outpost"
+    },
+    {
+      "anchor": {
+        "x": 0.4550499286772157,
+        "y": 5.182409638554216
+      },
+      "prevControl": {
+        "x": 0.43483132530541757,
+        "y": 4.034999999999999
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Stop Intaking",
+      "waypointRelativePos": 0.39801488833746357,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "Set Launching",
+      "waypointRelativePos": 0.9081885856079425,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 1.75,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 89.44642154319408
+  },
+  "reversed": false,
+  "folder": "To Alliance Zone",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 90.0
+  },
+  "useDefaultConstraints": false
+}
