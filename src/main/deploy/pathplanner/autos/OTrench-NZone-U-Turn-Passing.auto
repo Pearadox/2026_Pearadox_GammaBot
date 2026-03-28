@@ -1,0 +1,43 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "OTrench-NZone-Passing"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NZone U-Turn"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NZone-Outpost-SOTM"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Straight Line"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "WIP",
+  "choreoAuto": false
+}
