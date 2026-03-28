@@ -15,34 +15,7 @@ Throughout the course of the season, there have been some key lessons, ideas, an
 - Used Newton's Method
  and kinematics to estimate the Time-of-Flight (airtime) for the fuel based on the robot's translational velocity and distance to the target from Limelight odometry updates:
 
-    $
-    \textbf{1: Initialize “Estimate" for ToF} \\
-    t_0 = 1.0 \ s
-    $
-
-    $
-    \textbf{2. Define functions } f(t) \text{ (vertical error),} \ v_x, v_y, v_z \  \text{(shooter velocity components)} \\
-    \begin{aligned}
-    v_x(t) &= \frac{D_x}{t} - v_{x,\text{robot}} \\
-    v_y(t) &= \frac{D_y}{t} - v_{y,\text{robot}} \\
-    v_h(t) &= \sqrt{v_x(t)^2 + v_y(t)^2} \\
-    v_z(t) &= v_h(t)\,\tan(\theta) \\
-    f(t) &= v_z(t)\,t - \tfrac{1}{2} g t^2 - (Hub_H - Shooter_H)
-    \end{aligned}
-    $
-
-    $
-    \textbf{3: Approximate the derivative numerically} \\
-    \begin{aligned}
-    \Delta t &= 10^{-4} \ s, \\
-    f'(t) &\approx \frac{f(t + \Delta t) - f(t)}{\Delta t}
-    \end{aligned}
-    $
-
-    $
-    \textbf{4: Newton's Method (then repeat steps 2-4 (n) times with new ToF)} \\
-    t_{n+1} = t_n - \frac{f(t_n)}{f'(t_n)}
-    $
+    ![SOTM Newton's Method](images/SOTM_readme_ss_1.png "SOTM w/ Newton's Method")
 
 
 - Derived required field-relative shooter launch velocities (vx, vy, vz) that compensate for translational robot motion, then computed total shooter wheel speed and a field-relative turret angle to “lead” the target.
@@ -59,18 +32,23 @@ Throughout the course of the season, there have been some key lessons, ideas, an
 - Identified oscillation issues near setpoint with the bang-bang approach.
 - Robot seemed to battery drain power much quicker at higher shooter velocities (an issue we also had in 2024)
 
-### Week 5-6:
+### Week 5-6: Competition-Bot Tuning 
 - Replaced ````VelocityVoltage```` with ````VelocityTorqueCurrentFOC```` for  launcher velocity control, which decreased spin-up time, power usage, fuel kickback, and improved overall controllability
 - Increased robot rotation kP (on MVR) to ensure faster rotation towards desired target
 - Tranferred MVR SOTM code to Competition Bot code and cleaned up any errors (due to addition of real turret and slightly different subsystem code/methods)
 - Decided to vary shooter speed and keep hood static (using only two hood angle setpoints for shooting vs passing) since velocity control with the krakens is more reliable, consistent, accurate, and faster overall
 - Changed Newton's Method ToF initial guess to be based on distance with the following formula:
 
-    $
-    t_{guess} = t_{lowerBound} + \frac{distance \ to \ target}{max \ distance} * ({t_{upperBound} - t_{lowerBound}})
-    $
+    ![Bounds for ToF](images/SOTM_readme_ss_2.png "ToF Initial Guess")
+
+### Competition Season:
+- **Space City District Competition**: To achieve the most BPS/throughput, we bypassed checking whether the launcher was at the desired velocity before launching. However, this also led to some missed shots, meaning that we needed to find appropriate balance of checks to launch fuel both quickly and precisely.
+- **Aldine District Competition**: The robot seemed to overshoot or undershoot depending on its distance to the hub, likely because of our physics-based algorithm. This taught us that the desired launcher velocity might not always score accurately in the real-world due to non-constant launcher energy transfer efficiency (so linear interpolation might be a better alternative).
+- **District Championship**: TBD
+- **World Championship**: TBD
 
 ### Overall Takeaways:
 - Physics models provide strong starting points but often require empirical correction.
 - Energy transfer efficiency significantly affects real-world projectile accuracy.
 - Bang-bang control can reduce spin-up time but increases steady-state oscillation.
+

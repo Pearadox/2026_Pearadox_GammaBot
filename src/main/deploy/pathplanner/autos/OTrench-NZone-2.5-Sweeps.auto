@@ -1,0 +1,91 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "OTrench-NZone"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Intaking"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NZone-OBump-AllianZone3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set Launching"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AllianZone-OTrench"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Launching"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "OTrench-NZone2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Intaking"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NZone-OBump-AllianZone4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set Launching"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AllianZone-OTrench"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Launching"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "OTrench-NZone"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "WIP",
+  "choreoAuto": false
+}

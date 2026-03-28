@@ -18,6 +18,7 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import frc.robot.Constants;
 
 /**
  * Physics sim implementation of module IO. The sim models are configured using a set of module
@@ -93,7 +94,12 @@ public class ModuleIOSim implements ModuleIO {
     inputs.drivePositionRad = driveSim.getAngularPositionRad();
     inputs.driveVelocityRadPerSec = driveSim.getAngularVelocityRadPerSec();
     inputs.driveAppliedVolts = driveAppliedVolts;
-    inputs.driveCurrentAmps = Math.abs(driveSim.getCurrentDrawAmps());
+
+    double driveStatorCurrent = Math.abs(driveSim.getCurrentDrawAmps());
+    double driveDutyOut = driveAppliedVolts / Constants.NOMINAL_VOLTAGE;
+
+    inputs.driveStatorCurrentAmps = driveStatorCurrent;
+    inputs.driveSupplyCurrentAmps = driveStatorCurrent * driveDutyOut;
 
     // Update turn inputs
     inputs.turnConnected = true;
@@ -102,7 +108,12 @@ public class ModuleIOSim implements ModuleIO {
     inputs.turnPosition = new Rotation2d(turnSim.getAngularPositionRad());
     inputs.turnVelocityRadPerSec = turnSim.getAngularVelocityRadPerSec();
     inputs.turnAppliedVolts = turnAppliedVolts;
-    inputs.turnCurrentAmps = Math.abs(turnSim.getCurrentDrawAmps());
+
+    double turnStatorCurrent = Math.abs(turnSim.getCurrentDrawAmps());
+    double turnDutyOut = turnAppliedVolts / Constants.NOMINAL_VOLTAGE;
+
+    inputs.turnStatorCurrentAmps = turnStatorCurrent;
+    inputs.turnSupplyCurrentAmps = turnStatorCurrent * turnDutyOut;
 
     // Update odometry inputs (50Hz because high-frequency odometry in sim doesn't
     // matter)

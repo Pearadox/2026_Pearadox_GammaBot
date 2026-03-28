@@ -10,6 +10,7 @@ import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import frc.lib.drivers.PearadoxTalonFX;
+import frc.robot.util.EnergyTracker.Compeartment;
 import frc.robot.util.PhoenixUtil;
 import org.littletonrobotics.junction.Logger;
 
@@ -35,8 +36,12 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
   public LauncherIOTalonFX() {
     launcherConfigs = LauncherConstants.LAUNCHER_MOTOR_CONFIG();
 
-    launcher1Leader = new PearadoxTalonFX(LauncherConstants.LAUNCHER_1_CAN_ID, launcherConfigs);
-    launcher2Follower = new PearadoxTalonFX(LauncherConstants.LAUNCHER_2_CAN_ID, launcherConfigs);
+    launcher1Leader =
+        new PearadoxTalonFX(
+            LauncherConstants.LAUNCHER_1_CAN_ID, launcherConfigs, Compeartment.LAUNCHER);
+    launcher2Follower =
+        new PearadoxTalonFX(
+            LauncherConstants.LAUNCHER_2_CAN_ID, launcherConfigs, Compeartment.LAUNCHER);
 
     // launcher1Control = new VelocityVoltage(0);
     launcher1Control = new VelocityTorqueCurrentFOC(0);

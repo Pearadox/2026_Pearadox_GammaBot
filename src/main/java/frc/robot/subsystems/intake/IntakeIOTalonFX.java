@@ -9,6 +9,7 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import edu.wpi.first.math.util.Units;
 import frc.lib.drivers.PearadoxTalonFX;
+import frc.robot.util.EnergyTracker.Compeartment;
 import frc.robot.util.PhoenixUtil;
 
 public abstract class IntakeIOTalonFX implements IntakeIO {
@@ -29,9 +30,14 @@ public abstract class IntakeIOTalonFX implements IntakeIO {
     pivotConfigs = IntakeConstants.getPivotConfigTalonFX();
     rollerConfigs = IntakeConstants.getRollerConfigTalonFX();
 
-    roller1Leader = new PearadoxTalonFX(IntakeConstants.ROLLER_1_LEADER_ID, rollerConfigs);
-    roller2Follower = new PearadoxTalonFX(IntakeConstants.ROLLER_2_FOLLOWER_ID, rollerConfigs);
-    pivotMotor = new PearadoxTalonFX(IntakeConstants.PIVOT_ID, pivotConfigs);
+    roller1Leader =
+        new PearadoxTalonFX(
+            IntakeConstants.ROLLER_1_LEADER_ID, rollerConfigs, Compeartment.INTAKE_ROLLERS);
+    roller2Follower =
+        new PearadoxTalonFX(
+            IntakeConstants.ROLLER_2_FOLLOWER_ID, rollerConfigs, Compeartment.INTAKE_ROLLERS);
+    pivotMotor =
+        new PearadoxTalonFX(IntakeConstants.PIVOT_ID, pivotConfigs, Compeartment.INTAKE_PIVOT);
     pivotPositionVoltage = new PositionVoltage(0);
     torqueCurrentFOC = new TorqueCurrentFOC(0);
     velocityTorqueCurrentFOC = new VelocityTorqueCurrentFOC(0);

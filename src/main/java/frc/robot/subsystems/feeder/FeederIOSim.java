@@ -9,6 +9,7 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.lib.drivers.PearadoxTalonFX;
+import frc.robot.util.EnergyTracker.Compeartment;
 
 /** Add your docs here. */
 public class FeederIOSim implements FeederIO {
@@ -26,7 +27,10 @@ public class FeederIOSim implements FeederIO {
 
   public FeederIOSim() {
     feeder =
-        new PearadoxTalonFX(FeederConstants.FEEDER_CAN_ID, FeederConstants.FEEDER_MOTOR_CONFIG());
+        new PearadoxTalonFX(
+            FeederConstants.FEEDER_CAN_ID,
+            FeederConstants.FEEDER_MOTOR_CONFIG(),
+            Compeartment.FEEDER);
     feederSim = feeder.getSimState();
 
     feederControl = new VoltageOut(0.0);

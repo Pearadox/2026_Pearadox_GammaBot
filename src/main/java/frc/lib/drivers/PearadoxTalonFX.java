@@ -5,6 +5,8 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants;
+import frc.robot.util.EnergyTracker;
+import frc.robot.util.EnergyTracker.Compeartment;
 import frc.robot.util.PhoenixUtil;
 
 /**
@@ -12,11 +14,10 @@ import frc.robot.util.PhoenixUtil;
  * optimizes CAN bus usage, and provides structured access to telemetry.
  */
 public class PearadoxTalonFX extends TalonFX {
-
   private final BaseStatusSignal[] telemetrySignals;
 
   private double lastTimestamp;
-  private double cumulativeSupplyCurrentDrawAh;
+  private Compeartment compeartment;
 
   /**
    * Constructs a new PearadoxTalonFX with the specified device ID and configuration.
@@ -24,7 +25,7 @@ public class PearadoxTalonFX extends TalonFX {
    * @param deviceId CAN device ID for the TalonFX
    * @param config TalonFXConfiguration to apply
    */
-  public PearadoxTalonFX(int deviceId, TalonFXConfiguration config) {
+  public PearadoxTalonFX(int deviceId, TalonFXConfiguration config, Compeartment compeartment) {
     super(deviceId);
     applyConfig(config);
 
@@ -45,8 +46,8 @@ public class PearadoxTalonFX extends TalonFX {
 
     PhoenixUtil.registerSignals(false, telemetrySignals);
 
-    lastTimestamp = RobotController.getFPGATime();
-    cumulativeSupplyCurrentDrawAh = 0.0;
+    this.lastTimestamp = RobotController.getFPGATime();
+    this.compeartment = compeartment;
   }
 
   /**
@@ -67,19 +68,19 @@ public class PearadoxTalonFX extends TalonFX {
   public MotorData getData() {
     boolean connected = BaseStatusSignal.isAllGood(telemetrySignals);
 
-    double currentTime = RobotController.getFPGATime();
-    double dtHours = (currentTime - lastTimestamp) / 3.6e9; // 3 600 000 000 microseconds per hour
     double supplyCurrent = telemetrySignals[3].getValueAsDouble();
 
-    cumulativeSupplyCurrentDrawAh += supplyCurrent * dtHours;
-    lastTimestamp = currentTime;
+    double newTimestamp = RobotController.getFPGATime();
+    double deltaHours = (newTimestamp - lastTimestamp) / 3.6e9;
+    lastTimestamp = newTimestamp;
+
+    EnergyTracker.reportCurrentUsage(deltaHours, compeartment, supplyCurrent);
 
     return new MotorData(
         telemetrySignals[0].getValueAsDouble(), // position
         telemetrySignals[1].getValueAsDouble(), // velocity
         telemetrySignals[2].getValueAsDouble(), // voltage
-        supplyCurrent, // supply current
-        cumulativeSupplyCurrentDrawAh,
+        supplyCurrent,
         telemetrySignals[4].getValueAsDouble(), // stator current
         telemetrySignals[5].getValueAsDouble(), // torque current
         telemetrySignals[6].getValueAsDouble(), // temperature
@@ -94,6 +95,7 @@ public class PearadoxTalonFX extends TalonFX {
    * @param appliedVolts Voltage applied to motor
    * @param supplyCurrent Current drawn from supply (A)
    * @param statorCurrent Current through motor windings (A)
+   * @param torqueCurrent Current through motor windings (A)
    * @param temperature Temperature in °C
    * @param isConnected True if all status signals are valid and connected
    */
@@ -102,14 +104,13 @@ public class PearadoxTalonFX extends TalonFX {
       double velocity,
       double appliedVolts,
       double supplyCurrent,
-      double cumulativeSupplyCurrentDrawAh,
       double statorCurrent,
       double torqueCurrent,
       double temperature,
       boolean isConnected) {
 
     public MotorData() {
-      this(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false);
+      this(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false);
     }
   }
 }

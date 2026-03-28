@@ -2,6 +2,7 @@ package frc.robot.subsystems.climber;
 
 import com.ctre.phoenix6.controls.PositionVoltage;
 import frc.lib.drivers.PearadoxTalonFX;
+import frc.robot.util.EnergyTracker.Compeartment;
 
 public abstract class ClimberIOTalonFX implements ClimberIO {
   protected final PearadoxTalonFX climber;
@@ -10,7 +11,9 @@ public abstract class ClimberIOTalonFX implements ClimberIO {
   public ClimberIOTalonFX() {
     climber =
         new PearadoxTalonFX(
-            ClimberConstants.CLIMBER_MOTOR_ID, ClimberConstants.getClimberConfigTalonFX());
+            ClimberConstants.CLIMBER_MOTOR_ID,
+            ClimberConstants.getClimberConfigTalonFX(),
+            Compeartment.CLIMBER);
 
     climberControl = new PositionVoltage(0);
   }

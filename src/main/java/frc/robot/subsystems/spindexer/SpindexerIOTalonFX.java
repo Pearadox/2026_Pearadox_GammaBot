@@ -4,6 +4,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 // import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import frc.lib.drivers.PearadoxTalonFX;
+import frc.robot.util.EnergyTracker.Compeartment;
 
 public abstract class SpindexerIOTalonFX implements SpindexerIO {
   protected PearadoxTalonFX spindexer;
@@ -13,7 +14,9 @@ public abstract class SpindexerIOTalonFX implements SpindexerIO {
   public SpindexerIOTalonFX() {
     spindexerConfig = SpindexerConstants.spindexerConfig();
 
-    spindexer = new PearadoxTalonFX(SpindexerConstants.SPINDEXER_MOTOR_ID, spindexerConfig);
+    spindexer =
+        new PearadoxTalonFX(
+            SpindexerConstants.SPINDEXER_MOTOR_ID, spindexerConfig, Compeartment.SPINDEXER);
 
     spindexerControl = new TorqueCurrentFOC(0);
   }

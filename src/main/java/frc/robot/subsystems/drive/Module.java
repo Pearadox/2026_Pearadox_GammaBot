@@ -16,6 +16,9 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.util.EnergyTracker;
+import frc.robot.util.EnergyTracker.Compeartment;
 import org.littletonrobotics.junction.Logger;
 
 public class Module {
@@ -30,6 +33,8 @@ public class Module {
   private final Alert turnDisconnectedAlert;
   private final Alert turnEncoderDisconnectedAlert;
   private SwerveModulePosition[] odometryPositions = new SwerveModulePosition[] {};
+
+  private double lastTimestamp;
 
   public Module(
       ModuleIO io,
@@ -50,6 +55,8 @@ public class Module {
         new Alert(
             "Disconnected turn encoder on module " + Integer.toString(index) + ".",
             AlertType.kError);
+
+    lastTimestamp = RobotController.getFPGATime();
   }
 
   public void periodic() {
@@ -69,6 +76,15 @@ public class Module {
     driveDisconnectedAlert.set(!inputs.driveConnected);
     turnDisconnectedAlert.set(!inputs.turnConnected);
     turnEncoderDisconnectedAlert.set(!inputs.turnEncoderConnected);
+
+    double newTimestamp = RobotController.getFPGATime();
+    double deltaHours = (newTimestamp - lastTimestamp) / 3.6e9;
+    lastTimestamp = newTimestamp;
+
+    EnergyTracker.reportCurrentUsage(
+        deltaHours, Compeartment.DRIVE_MOTORS, inputs.driveSupplyCurrentAmps);
+    EnergyTracker.reportCurrentUsage(
+        deltaHours, Compeartment.TURN_MOTORS, inputs.turnSupplyCurrentAmps);
   }
 
   /** Runs the module with the specified setpoint state. Mutates the state to optimize it. */

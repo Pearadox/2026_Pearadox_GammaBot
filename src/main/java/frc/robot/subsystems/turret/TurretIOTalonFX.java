@@ -5,6 +5,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.lib.drivers.PearadoxTalonFX;
+import frc.robot.util.EnergyTracker.Compeartment;
 import frc.robot.util.PhoenixUtil;
 
 public abstract class TurretIOTalonFX implements TurretIO {
@@ -15,7 +16,7 @@ public abstract class TurretIOTalonFX implements TurretIO {
   protected final TalonFXConfiguration configs = TurretConstants.getTurretConfig();
 
   protected TurretIOTalonFX() {
-    turretMotor = new PearadoxTalonFX(TurretConstants.TURRET_ID, configs);
+    turretMotor = new PearadoxTalonFX(TurretConstants.TURRET_ID, configs, Compeartment.TURRET);
   }
 
   @Override

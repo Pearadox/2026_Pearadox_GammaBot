@@ -6,6 +6,7 @@ package frc.robot.subsystems.feeder;
 
 import com.ctre.phoenix6.controls.VoltageOut;
 import frc.lib.drivers.PearadoxTalonFX;
+import frc.robot.util.EnergyTracker.Compeartment;
 
 /** Add your docs here. */
 public abstract class FeederIOTalonFX implements FeederIO {
@@ -19,7 +20,10 @@ public abstract class FeederIOTalonFX implements FeederIO {
 
   public FeederIOTalonFX() {
     feeder =
-        new PearadoxTalonFX(FeederConstants.FEEDER_CAN_ID, FeederConstants.FEEDER_MOTOR_CONFIG());
+        new PearadoxTalonFX(
+            FeederConstants.FEEDER_CAN_ID,
+            FeederConstants.FEEDER_MOTOR_CONFIG(),
+            Compeartment.FEEDER);
     feederControl = new VoltageOut(0.0);
 
     // canRange = new CANrange(FeederConstants.CANRANGE_CAN_ID);
