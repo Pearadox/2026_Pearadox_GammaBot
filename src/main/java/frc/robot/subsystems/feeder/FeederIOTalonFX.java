@@ -10,6 +10,7 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANrange;
 import edu.wpi.first.units.measure.Distance;
 import frc.lib.drivers.PearadoxTalonFX;
+import frc.robot.util.PhoenixUtil;
 import frc.robot.util.EnergyTracker.Compeartment;
 import org.littletonrobotics.junction.Logger;
 
@@ -33,7 +34,8 @@ public abstract class FeederIOTalonFX implements FeederIO {
 
     canRange = new CANrange(FeederConstants.CANRANGE_CAN_ID);
 
-    canRange.getConfigurator().apply(CAN_RANGE_CONFIG);
+    //try to get the config 5 times with 0.25 sec in between each try
+    PhoenixUtil.tryUntilOk(5, () -> canRange.getConfigurator().apply(CAN_RANGE_CONFIG, 0.25));
   }
 
   @Override

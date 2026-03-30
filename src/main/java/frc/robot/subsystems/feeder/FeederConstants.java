@@ -73,7 +73,7 @@ public class FeederConstants {
     canRangeConfig.FovParams.FOVCenterX = 3;
     canRangeConfig.FovParams.FOVCenterY = -6.5;
     canRangeConfig.FovParams.FOVRangeX = 10;
-    canRangeConfig.FovParams.FOVCenterY = 10;
+    canRangeConfig.FovParams.FOVRangeY = 10;
     return canRangeConfig;
   }
 }
