@@ -32,7 +32,7 @@ Throughout the course of the season, there have been some key lessons, ideas, an
 - Identified oscillation issues near setpoint with the bang-bang approach.
 - Robot seemed to battery drain power much quicker at higher shooter velocities (an issue we also had in 2024)
 
-### Week 5-6: Competition-Bot Tuning 
+### Week 5-6: Competition-Bot Tuning
 - Replaced ````VelocityVoltage```` with ````VelocityTorqueCurrentFOC```` for  launcher velocity control, which decreased spin-up time, power usage, fuel kickback, and improved overall controllability
 - Increased robot rotation kP (on MVR) to ensure faster rotation towards desired target
 - Tranferred MVR SOTM code to Competition Bot code and cleaned up any errors (due to addition of real turret and slightly different subsystem code/methods)
@@ -51,4 +51,3 @@ Throughout the course of the season, there have been some key lessons, ideas, an
 - Physics models provide strong starting points but often require empirical correction.
 - Energy transfer efficiency significantly affects real-world projectile accuracy.
 - Bang-bang control can reduce spin-up time but increases steady-state oscillation.
-

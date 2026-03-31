@@ -113,7 +113,9 @@ public class Robot extends LoggedRobot {
     // Threads.setCurrentThreadPriority(false, 10);
 
     robotContainer.visualizer.periodic();
+    LoggedTracer.record("Visualizer");
     EnergyTracker.periodic();
+    LoggedTracer.record("EnergyTracker");
 
     Optional<Alliance> allianceOptional = DriverStation.getAlliance();
     alliance = allianceOptional.orElse(Alliance.Blue);
