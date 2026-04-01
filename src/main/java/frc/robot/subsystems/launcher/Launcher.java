@@ -81,9 +81,7 @@ public class Launcher extends SubsystemBase {
     LauncherVisualizer.getInstance()
         .updateFlywheelPositionDeg(Units.rotationsToDegrees(inputs.launcher1Data.position()));
     LauncherVisualizer.getInstance()
-        .updateHoodPositionDeg(
-            Units.rotationsToDegrees(
-                LauncherConstants.angularPositiontoRotations(inputs.hoodServo1Position)));
+        .updateHoodPositionDeg(Units.rotationsToDegrees(inputs.hoodData.position()));
 
     Logger.recordOutput("Launcher/adjust", rpsAdjust);
     Logger.recordOutput("Debug/getLauncherVelocity", getLauncherVelocity());
@@ -105,6 +103,8 @@ public class Launcher extends SubsystemBase {
     if (statorCurrentLimit.hasChanged(hashCode()) || supplyCurrentLimit.hasChanged(hashCode())) {
       io.setCurrentLimits(statorCurrentLimit.get(), supplyCurrentLimit.get());
     }
+
+    io.setHoodAngleRads(launcherState.getHoodAngleRads());
   }
 
   /** velocity will be calculated from aim assist command factory */

@@ -10,7 +10,7 @@ public interface SpindexerIO {
     public MotorData spindexerMotorData = new MotorData();
   }
 
-  public default void updateInputs(SpindexerIOInputsAutoLogged inputs) {}
+  public default void updateInputs(SpindexerIOInputs inputs) {}
 
   public default void runSpindexerTorqueCurrent(double amps, double maxDutyCycle) {}
 }

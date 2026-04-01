@@ -32,7 +32,7 @@ public abstract class FeederIOTalonFX implements FeederIO {
   }
 
   @Override
-  public void updateInputs(FeederIOInputsAutoLogged inputs) {
+  public void updateInputs(FeederIOInputs inputs) {
     inputs.feederData = feeder.getData();
 
     // StatusSignal<Distance> dist = canRange.getDistance();

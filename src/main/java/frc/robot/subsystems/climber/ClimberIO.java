@@ -9,7 +9,7 @@ public interface ClimberIO {
     public MotorData climberMotorData = new MotorData();
   }
 
-  public default void updateInputs(ClimberIOInputsAutoLogged inputs) {}
+  public default void updateInputs(ClimberIOInputs inputs) {}
 
   public default void runPosition(double setpointRots) {}
 
