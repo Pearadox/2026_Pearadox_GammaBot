@@ -233,7 +233,7 @@ public class RobotContainer {
     
     drivercontroller
         .y()
-        .whileTrue(
+        .toggleOnTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
                 () -> -drivercontroller.getLeftY(),
