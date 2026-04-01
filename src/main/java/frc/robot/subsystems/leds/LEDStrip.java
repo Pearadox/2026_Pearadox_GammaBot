@@ -1,15 +1,11 @@
 package frc.robot.subsystems.leds;
 
-import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Constants.LEDConstants;
@@ -45,20 +41,22 @@ public class LEDStrip extends SubsystemBase{
             setSolid(Color.kFirstRed);
         }
 
-        // if (DriverStation.getMatchTime() > 30 && DriverStation.getMatchTime() % 25 > 5)
+        if (DriverStation.getMatchTime() > 30 && DriverStation.getMatchTime() % 25 <= 5 && Robot.getAlliance() == Alliance.Blue) {
+            setBreathing(Color.kFirstBlue);
+        } else if  (DriverStation.getMatchTime() > 30 && DriverStation.getMatchTime() % 25 <= 5 && Robot.getAlliance() == Alliance.Red) {
+            setBreathing(Color.kFirstRed);
+        }
     }
 
     private void setSolid(Color color) {
         LEDPattern solidPattern = LEDPattern.solid(color);
         solidPattern.applyTo(ledBuffer);
-        led.setData(ledBuffer);
     }
 
     private void setGradient(Color... colors) {
         LEDPattern gradient = LEDPattern.gradient(LEDPattern.GradientType.kContinuous, colors)
                 .scrollAtRelativeSpeed(LEDConstants.SCROLL_FREQ);
         gradient.applyTo(ledBuffer);
-        led.setData(ledBuffer);
     }
 
     private void setBlinking(Color color) {
@@ -66,13 +64,11 @@ public class LEDStrip extends SubsystemBase{
                 .blink(LEDConstants.BLINK_PERIOD.div(2.0))
                 .atBrightness(LEDConstants.BLINK_BRIGHTNESS);
         blinkPattern.applyTo(ledBuffer);
-        led.setData(ledBuffer);
     }
 
     private void setBreathing(Color color) {
         LEDPattern breathePattern = LEDPattern.solid(color).breathe(LEDConstants.BREATHE_PERIOD);
         breathePattern.applyTo(ledBuffer);
-        led.setData(ledBuffer);
     }
     
 }
