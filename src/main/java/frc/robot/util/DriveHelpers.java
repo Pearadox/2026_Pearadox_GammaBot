@@ -2,6 +2,7 @@ package frc.robot.util;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import java.util.function.Supplier;
 
@@ -29,4 +30,17 @@ public class DriveHelpers {
     }
     return new Rotation2d(Units.degreesToRadians(closest));
   }
+
+  public static Rotation2d getCourseRotation2d(Supplier<ChassisSpeeds> chassisSpeedsSupplier) {
+    ChassisSpeeds chassisSpeeds = chassisSpeedsSupplier.get();
+    double vx = chassisSpeeds.vxMetersPerSecond;
+    double vy = chassisSpeeds.vyMetersPerSecond;
+
+    Rotation2d course = new Rotation2d(vx, vy);
+    if (Math.hypot(vx, vy) < 0.05) {
+      return new Rotation2d();
+    }
+    return course;
+  }
+
 }

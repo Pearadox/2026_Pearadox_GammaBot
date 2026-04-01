@@ -230,6 +230,15 @@ public class RobotContainer {
                 () -> -drivercontroller.getLeftY(),
                 () -> -drivercontroller.getLeftX(),
                 () -> DriveHelpers.findClosestCorner(drive::getPose)));
+    
+    drivercontroller
+        .y()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -drivercontroller.getLeftY(),
+                () -> -drivercontroller.getLeftX(),
+                () -> DriveHelpers.getCourseRotation2d(drive::getChassisSpeeds)));
 
     drivercontroller
         .rightBumper()
