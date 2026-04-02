@@ -232,6 +232,16 @@ public class RobotContainer {
                 () -> DriveHelpers.findClosestCorner(drive::getPose)));
 
     drivercontroller
+        .y()
+        .toggleOnTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -drivercontroller.getLeftY(),
+                () -> -drivercontroller.getLeftX(),
+                () ->
+                    DriveHelpers.getCourseRotation2d(drive::getChassisSpeeds, drive::getRotation)));
+
+    drivercontroller
         .rightBumper()
         .whileTrue(
             new ShootOnTheMove(

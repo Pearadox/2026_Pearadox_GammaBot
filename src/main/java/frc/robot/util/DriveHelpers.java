@@ -2,11 +2,12 @@ package frc.robot.util;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 
 public class DriveHelpers {
-
   /**
    * rotates the robot 45 degrees given current pose
    *
@@ -28,5 +29,24 @@ public class DriveHelpers {
       }
     }
     return new Rotation2d(Units.degreesToRadians(closest));
+  }
+
+  public static Rotation2d getCourseRotation2d(
+      Supplier<ChassisSpeeds> chassisSpeedsSupplier, Supplier<Rotation2d> rotationSupplier) {
+    ChassisSpeeds chassisSpeeds =
+        ChassisSpeeds.fromRobotRelativeSpeeds(chassisSpeedsSupplier.get(), rotationSupplier.get());
+    double vx = chassisSpeeds.vxMetersPerSecond;
+    double vy = chassisSpeeds.vyMetersPerSecond;
+
+    if (Math.hypot(vx, vy) < 0.05) {
+      return new Rotation2d();
+    }
+
+    Logger.recordOutput("Snake/vy", vy);
+    Logger.recordOutput("Snake/vx", vx);
+    double angleRad = (Math.atan2(vy, vx));
+
+    Logger.recordOutput("Snake/snake angle", Units.radiansToDegrees(angleRad));
+    return new Rotation2d(angleRad);
   }
 }
