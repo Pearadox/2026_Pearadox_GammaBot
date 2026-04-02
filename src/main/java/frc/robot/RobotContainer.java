@@ -230,7 +230,7 @@ public class RobotContainer {
                 () -> -drivercontroller.getLeftY(),
                 () -> -drivercontroller.getLeftX(),
                 () -> DriveHelpers.findClosestCorner(drive::getPose)));
-    
+
     drivercontroller
         .y()
         .toggleOnTrue(
@@ -238,7 +238,8 @@ public class RobotContainer {
                 drive,
                 () -> -drivercontroller.getLeftY(),
                 () -> -drivercontroller.getLeftX(),
-                () -> DriveHelpers.getCourseRotation2d(drive::getChassisSpeeds)));
+                () ->
+                    DriveHelpers.getCourseRotation2d(drive::getChassisSpeeds, drive::getRotation)));
 
     drivercontroller
         .rightBumper()
