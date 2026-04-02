@@ -54,7 +54,7 @@ public class Feeder extends SubsystemBase {
   }
 
   public boolean isHopperEmpty() {
-    if (timer.get() > 3) {
+    if (timer.get() > FeederConstants.IS_HOPPER_EMPTY_BUFFER_TIME) {
       return true;
     }
     return false;
