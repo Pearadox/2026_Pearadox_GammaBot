@@ -7,12 +7,19 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Percent;
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Seconds;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Dimensionless;
+import edu.wpi.first.units.measure.Frequency;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -349,5 +356,16 @@ public final class Constants {
       public static final Translation2d centerPoint =
           new Translation2d(0, aprilTagLayout.getTagPose(29).get().getY());
     }
+  }
+
+  public static final class LEDConstants {
+    public static final int LED_PORT = 0; // TODO : change later
+    public static final int NUM_LEDS = 49;
+
+    public static final Frequency SCROLL_FREQ = Percent.per(Second).of(50);
+    public static final Time BLINK_PERIOD = Seconds.of(0.5); 
+    public static final Time BLINKING_DURATION = BLINK_PERIOD.times(2);
+    public static final Dimensionless BLINK_BRIGHTNESS = Percent.of(50);
+    public static final Time BREATHE_PERIOD = Seconds.of(1);
   }
 }

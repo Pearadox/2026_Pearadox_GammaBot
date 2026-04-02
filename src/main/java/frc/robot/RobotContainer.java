@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.LEDReader;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -47,6 +48,7 @@ import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherIO;
 import frc.robot.subsystems.launcher.LauncherIOReal;
 import frc.robot.subsystems.launcher.LauncherIOSim;
+import frc.robot.subsystems.leds.LEDStrip;
 import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerIO;
 import frc.robot.subsystems.spindexer.SpindexerIOReal;
@@ -69,6 +71,7 @@ public class RobotContainer {
   public final Spindexer spindexer;
   private final Turret turret;
   public final Vision vision;
+  public static final LEDStrip ledStrip = LEDStrip.getInstance();
 
   // Visualizer
   public final RobotVisualizer visualizer;
@@ -189,6 +192,7 @@ public class RobotContainer {
         new RunCommand(
             () -> MovingShotSolver.getInstance().solve(drive::getPose, drive::getChassisSpeeds),
             vision));
+    ledStrip.isHubActive();
   }
 
   /**
