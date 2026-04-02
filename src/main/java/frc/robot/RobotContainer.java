@@ -61,6 +61,7 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.DriveHelpers;
+import frc.robot.util.LoggedTracer;
 
 public class RobotContainer {
   // Subsystems
@@ -190,7 +191,11 @@ public class RobotContainer {
 
     vision.setDefaultCommand(
         new RunCommand(
-            () -> MovingShotSolver.getInstance().solve(drive::getPose, drive::getChassisSpeeds),
+            () -> {
+              LoggedTracer.reset();
+              MovingShotSolver.getInstance().solve(drive::getPose, drive::getChassisSpeeds);
+              LoggedTracer.record("MovingShotSolve");
+            },
             vision));
     ledStrip.isHubActive();
   }

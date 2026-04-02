@@ -8,11 +8,43 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.937212553495005,
-        "y": 2.0621768901569197
+        "x": 6.422627683618366,
+        "y": 4.344329986736781
       },
       "isLocked": false,
       "linkedName": "NZone4"
+    },
+    {
+      "anchor": {
+        "x": 5.941041369472182,
+        "y": 4.287303851640513
+      },
+      "prevControl": {
+        "x": 6.161261372807419,
+        "y": 4.589746331852695
+      },
+      "nextControl": {
+        "x": 5.598199937180769,
+        "y": 3.816457372976782
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.656390870185448,
+        "y": 2.8769900142653353
+      },
+      "prevControl": {
+        "x": 6.066352783933702,
+        "y": 3.309946077832273
+      },
+      "nextControl": {
+        "x": 5.24641359832694,
+        "y": 2.4440177311747395
+      },
+      "isLocked": false,
+      "linkedName": null
     },
     {
       "anchor": {
@@ -20,8 +52,8 @@
         "y": 2.437
       },
       "prevControl": {
-        "x": 5.203537803138373,
-        "y": 2.42413694721826
+        "x": 4.173446106472846,
+        "y": 2.5425574800546884
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,8 +62,8 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.5,
-      "rotationDegrees": 0.0
+      "waypointRelativePos": 1.248700519792081,
+      "rotationDegrees": -90.0
     }
   ],
   "constraintZones": [],
@@ -46,8 +78,8 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 0.0,
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": "To Alliance Zone",

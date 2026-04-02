@@ -17,7 +17,7 @@ public class Feeder extends SubsystemBase {
   private final FeederIOInputsAutoLogged inputs = new FeederIOInputsAutoLogged();
   private FeederState feederState = FeederState.STOPPED;
 
-  private Debouncer canRangeDebouncer = new Debouncer(0.1, DebounceType.kFalling);
+  private Debouncer canRangeDebouncer = new Debouncer(0.04, DebounceType.kFalling);
   private int fuelCount = 0;
   private boolean lastDetected = false;
 
