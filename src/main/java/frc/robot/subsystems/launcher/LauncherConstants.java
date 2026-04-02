@@ -53,7 +53,7 @@ public class LauncherConstants {
 
     LAUNCHER_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
-    LAUNCHER_CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    LAUNCHER_CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     LAUNCHER_CONFIG.TorqueCurrent.PeakForwardTorqueCurrent = 40.0; // added for bang-bang control
     LAUNCHER_CONFIG.TorqueCurrent.PeakReverseTorqueCurrent = 0.0; // added for bang-bang control
