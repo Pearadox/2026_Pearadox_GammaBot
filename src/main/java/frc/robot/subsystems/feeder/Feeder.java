@@ -19,6 +19,8 @@ public class Feeder extends SubsystemBase {
   private FeederState feederState = FeederState.STOPPED;
 
   private Debouncer canRangeDebouncer = new Debouncer(0.1, DebounceType.kFalling);
+  private boolean isDetectedDebounced = false;
+
   private int fuelCount = 0;
   private boolean lastDetected = false;
   private boolean hasSeenFuel = false;
@@ -35,6 +37,7 @@ public class Feeder extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     io.updateInputs(inputs);
+    isDetectedDebounced = canRangeDebouncer.calculate(inputs.canRangeIsDetected);
     Logger.processInputs("FeederInputs", inputs);
     Logger.recordOutput("Feeder/CanRange/Distance from Fuel", canRangeGetDistanceMeters());
     Logger.recordOutput("Feeder/CanRange/FuelIsDetected", isDetectedDebounced());
@@ -54,11 +57,10 @@ public class Feeder extends SubsystemBase {
 
   // CANRange methods
   public boolean isDetectedDebounced() {
-    return canRangeDebouncer.calculate(inputs.canRangeIsDetected);
-  }
+    return isDetectedDebounced;
+}
 
   public void updateFuelCount() {
-    boolean isDetectedDebounced = isDetectedDebounced();
 
     if (isDetectedDebounced && !lastDetected) {
       fuelCount++;
@@ -66,7 +68,7 @@ public class Feeder extends SubsystemBase {
     }
 
     // reset timer any time fuel is detected
-    if (hasSeenFuel) {
+    if (isDetectedDebounced && hasSeenFuel) {
       timer.reset();
     }
 
@@ -88,7 +90,7 @@ public class Feeder extends SubsystemBase {
 
   public boolean isHopperEmpty() {
     return hasSeenFuel
-      && !isDetectedDebounced()
+      && !isDetectedDebounced
       && getTimestamp() > FeederConstants.IS_HOPPER_EMPTY_BUFFER_TIME;
   }
 
