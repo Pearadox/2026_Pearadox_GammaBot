@@ -21,11 +21,14 @@ public class Feeder extends SubsystemBase {
   private Debouncer canRangeDebouncer = new Debouncer(0.1, DebounceType.kFalling);
   private int fuelCount = 0;
   private boolean lastDetected = false;
-  Timer timer = new Timer();
+  private boolean hasSeenFuel = false;
+
+  private Timer timer = new Timer();
 
   /** Creates a new Feeder. */
   public Feeder(FeederIO io) {
     this.io = io;
+    timer.start();
   }
 
   @Override
@@ -49,15 +52,25 @@ public class Feeder extends SubsystemBase {
     feederState = FeederState.RUNNING;
   }
 
+  // CANRange methods
   public boolean isDetectedDebounced() {
     return canRangeDebouncer.calculate(inputs.canRangeIsDetected);
   }
 
-  public boolean isHopperEmpty() {
-    if (timer.get() > FeederConstants.IS_HOPPER_EMPTY_BUFFER_TIME) {
-      return true;
+  public void updateFuelCount() {
+    boolean isDetectedDebounced = isDetectedDebounced();
+
+    if (isDetectedDebounced && !lastDetected) {
+      fuelCount++;
+      hasSeenFuel = true; // solves the edge case where we don't see fuel
     }
-    return false;
+
+    // reset timer any time fuel is detected
+    if (hasSeenFuel) {
+      timer.reset();
+    }
+
+    lastDetected = isDetectedDebounced;
   }
 
   public double canRangeGetDistanceMeters() {
@@ -68,18 +81,27 @@ public class Feeder extends SubsystemBase {
     return inputs.canRangeSignal;
   }
 
-  public void updateFuelCount() {
-    boolean isDetectedDebounced = isDetectedDebounced();
-    if (isDetectedDebounced && !lastDetected) {
-      fuelCount++;
-      timer.reset();
-    }
-    lastDetected = isDetectedDebounced;
-  }
 
   public int getFuelCount() {
     return fuelCount;
   }
+
+  public boolean isHopperEmpty() {
+    return hasSeenFuel
+      && !isDetectedDebounced()
+      && getTimestamp() > FeederConstants.IS_HOPPER_EMPTY_BUFFER_TIME;
+  }
+
+
+// timer methods
+  public double getTimestamp() {
+    return timer.get();
+  }
+
+  public void startTimer() {
+    timer.start();
+  }
+
 
   // public void launch() {
   //   io.runFeederVoltage(FeederConstants.FEEDER_ACTIVE_VOLTAGE);

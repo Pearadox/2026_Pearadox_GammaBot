@@ -35,6 +35,7 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.feeder.Feeder;
+import frc.robot.subsystems.feeder.FeederConstants;
 import frc.robot.subsystems.feeder.FeederIO;
 import frc.robot.subsystems.feeder.FeederIOReal;
 import frc.robot.subsystems.feeder.FeederIOSim;
@@ -341,7 +342,12 @@ public class RobotContainer {
   }
 
   public void registerNamedCommands() {
-    // Feeder Commands
+    // Timer Commands
+    NamedCommands.registerCommand(
+        "Start Timer",
+        new InstantCommand(() -> feeder.startTimer()));
+
+    // Launching Sequence Commands
     NamedCommands.registerCommand(
         "Set Launching",
         new InstantCommand(() -> launcher.setScoring())
@@ -349,10 +355,10 @@ public class RobotContainer {
             .andThen(new InstantCommand(() -> feeder.setRunning()))
             .andThen(new WaitCommand(0.2))
             .andThen(
-                (new InstantCommand(
-                    () -> {
-                      spindexer.setRunning();
-                    })).until(() -> feeder.isHopperEmpty())));
+                (new RunCommand(() -> spindexer.setRunning(), spindexer))
+                    .until(() -> feeder.isHopperEmpty())
+                    .withTimeout(FeederConstants.IS_HOPPER_EMPTY_BUFFER_TIME)));
+
     NamedCommands.registerCommand(
         "Stop Launching",
         new InstantCommand(() -> feeder.setStopped())
