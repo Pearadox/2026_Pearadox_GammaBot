@@ -46,4 +46,6 @@ public interface LauncherIO {
   public default void setPIDFF(double kP, double kD, double kS, double kV) {}
 
   public default void setCurrentLimits(double stator, double supply) {}
+
+  public default void setLauncherVoltage(double voltage) {}
 }

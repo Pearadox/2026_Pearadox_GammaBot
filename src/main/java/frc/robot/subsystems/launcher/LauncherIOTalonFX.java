@@ -9,7 +9,9 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import edu.wpi.first.math.util.Units;
 import frc.lib.drivers.PearadoxTalonFX;
 import frc.robot.util.EnergyTracker.Compeartment;
 import frc.robot.util.PhoenixUtil;
@@ -23,6 +25,7 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
 
   protected final VelocityTorqueCurrentFOC launcher1Control;
   protected final VelocityVoltage velocityVoltageRequest;
+  protected final VoltageOut voltageRequest;
   protected final Follower launcher2Control;
 
   private final TalonFXConfiguration launcherConfigs;
@@ -44,6 +47,7 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
 
     launcher1Control = new VelocityTorqueCurrentFOC(0);
     velocityVoltageRequest = new VelocityVoltage(0);
+    voltageRequest = new VoltageOut(0);
     launcher2Control = new Follower(launcher1Leader.getDeviceID(), MotorAlignmentValue.Opposed);
 
     hoodConfigs = LauncherConstants.HOOD_CONFIG();
@@ -70,6 +74,11 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
     //     "Launcher/CurrentDrawStator", launcher1Leader.getStatorCurrent().getValueAsDouble());
   }
 
+  public void setLauncherVoltage(double voltage) {
+    launcher1Leader.setControl(voltageRequest.withOutput(voltage));
+    launcher2Follower.setControl(launcher2Control);
+  }
+
   public void runLauncherVelocity(double velocityRPS) {
     launcher1Leader.setControl(
         velocityVoltageRequest.withVelocity(velocityRPS).withEnableFOC(false));
@@ -86,9 +95,11 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
     if (angleRads < LauncherConstants.HOOD_MAX_ANGLE_RADS
         && angleRads > LauncherConstants.HOOD_MIN_ANGLE_RADS) {
       double setpoint =
-          (angleRads - LauncherConstants.HOOD_MIN_ANGLE_RADS)
-              / LauncherConstants.HOOD_P_COEFFICIENT;
-      hood.setControl(hoodControl.withPosition(setpoint));
+          // (angleRads - LauncherConstants.HOOD_MIN_ANGLE_RADS)
+          //     / LauncherConstants.HOOD_P_COEFFICIENT;
+          Units.radiansToRotations(angleRads - LauncherConstants.HOOD_MIN_ANGLE_RADS)
+              * LauncherConstants.HOOD_GEARING;
+      hood.setControl(new PositionVoltage(setpoint));
       System.out.printf("%.2f set %.2f actual%n", setpoint, hood.getPosition().getValueAsDouble());
       Logger.recordOutput("Hood/AngleSetpointRots", setpoint);
       Logger.recordOutput("Hood/HoodAngle-inRange", true);

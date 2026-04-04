@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.launcher;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
@@ -63,6 +64,6 @@ public class LauncherVisualizer {
   public void updateHoodPositionDeg(double angleDeg) {
     // this.hoodAngleDeg = angleDeg + Units.radiansToDegrees(LauncherConstants.HOOD_MIN_ANGLE_RADS);
     this.hoodAngleDeg = angleDeg;
-    hood.setAngle(hoodAngleDeg);
+    hood.setAngle(hoodAngleDeg + Units.radiansToDegrees(LauncherConstants.HOOD_MIN_ANGLE_RADS));
   }
 }

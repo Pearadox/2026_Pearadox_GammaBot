@@ -8,7 +8,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.drivers.MovingShotSolver;
 import frc.robot.subsystems.launcher.LauncherConstants.LauncherState;
 import frc.robot.util.LoggedTunableNumber;
 import lombok.Getter;
@@ -34,6 +33,10 @@ public class Launcher extends SubsystemBase {
           "Launcher/Manual Mode Default Velocity", LauncherConstants.DEFAULT_VELOCITY_SETPOINT_RPS);
   private final LoggedTunableNumber idleDefaultVelocity =
       new LoggedTunableNumber("Launcher/Idle Mode Default Velocity", 20);
+  private final LoggedTunableNumber hoodAngleDegs =
+      new LoggedTunableNumber(
+          "Launcher/Hood angle Degrees",
+          Units.radiansToDegrees(LauncherConstants.HOOD_MIN_ANGLE_RADS));
 
   private final LoggedTunableNumber kP = new LoggedTunableNumber("Launcher/kP", 99999);
   private final LoggedTunableNumber kD = new LoggedTunableNumber("Launcher/kD", 0);
@@ -58,28 +61,28 @@ public class Launcher extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Launcher", inputs);
 
-    double desiredVelocity;
-    if (launcherState == LauncherState.SELF_DIRECTING) {
-      desiredVelocity = MovingShotSolver.getShotSolution().speed();
-    } else if (launcherState == LauncherState.MANUAL) {
-      desiredVelocity = manualDefaultVelocity.get();
-    } else if (launcherState == LauncherState.IDLE) {
-      desiredVelocity = idleDefaultVelocity.get();
-    } else {
-      desiredVelocity = 0;
-    }
+    // double desiredVelocity;
+    // if (launcherState == LauncherState.SELF_DIRECTING) {
+    //   desiredVelocity = MovingShotSolver.getShotSolution().speed();
+    // } else if (launcherState == LauncherState.MANUAL) {
+    //   desiredVelocity = manualDefaultVelocity.get();
+    // } else if (launcherState == LauncherState.IDLE) {
+    //   desiredVelocity = idleDefaultVelocity.get();
+    // } else {
+    //   desiredVelocity = 0;
+    // }
 
-    desiredVelocity = Math.abs(desiredVelocity + rpsAdjust);
+    // desiredVelocity = Math.abs(desiredVelocity + rpsAdjust);
 
-    if (desiredVelocity < LauncherConstants.SHOOTER_VELOCITY_DEADBAND) {
-      desiredVelocity = 0;
-      turnLauncherOff();
-    } else {
-      setVelocity(desiredVelocity, tunableffAmps.get());
-    }
+    // if (desiredVelocity < LauncherConstants.SHOOTER_VELOCITY_DEADBAND) {
+    //   desiredVelocity = 0;
+    //   turnLauncherOff();
+    // } else {
+    //   setVelocity(desiredVelocity, tunableffAmps.get());
+    // }
 
-    LauncherVisualizer.getInstance()
-        .updateFlywheelPositionDeg(Units.rotationsToDegrees(inputs.launcher1Data.position()));
+    // LauncherVisualizer.getInstance()
+    //     .updateFlywheelPositionDeg(Units.rotationsToDegrees(inputs.launcher1Data.position()));
     LauncherVisualizer.getInstance()
         .updateHoodPositionDeg(
             Units.rotationsToDegrees(inputs.hoodData.position() / LauncherConstants.HOOD_GEARING));
@@ -87,11 +90,13 @@ public class Launcher extends SubsystemBase {
     Logger.recordOutput("Launcher/adjust", rpsAdjust);
     Logger.recordOutput("Debug/getLauncherVelocity", getLauncherVelocity());
 
-    io.setHoodAngleRads(launcherState.getHoodAngleRads());
-    Logger.recordOutput(
-        "Hood/Desired-Angle-Rotations",
-        Units.radiansToRotations(
-            launcherState.getHoodAngleRads() - LauncherConstants.HOOD_MIN_ANGLE_RADS));
+    // io.runLauncherVelocity(manualDefaultVelocity.get());
+    io.setLauncherVoltage(manualDefaultVelocity.get() * (12.0 / 100.0));
+    io.setHoodAngleRads(Units.degreesToRadians(hoodAngleDegs.get()));
+    // Logger.recordOutput(
+    //     "Hood/Desired-Angle-Rotations",
+    //     Units.radiansToRotations(
+    //         launcherState.getHoodAngleRads() - LauncherConstants.HOOD_MIN_ANGLE_RADS));
     // Logger.recordOutput("Hood/Servo-Position", inputs.hoodServo1Position);
     // Logger.recordOutput(
     //     "Hood/Current-Angle",

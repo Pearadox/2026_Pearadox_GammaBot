@@ -28,8 +28,8 @@ public class LauncherConstants {
     }
   }
 
-  public static final int LAUNCHER_1_CAN_ID = 22;
-  public static final int LAUNCHER_2_CAN_ID = 21;
+  public static final int LAUNCHER_1_CAN_ID = 32;
+  public static final int LAUNCHER_2_CAN_ID = 33;
 
   public static final double SHOOTER_VELOCITY_DEADBAND = 3.0; // in rps
   public static final double SHOOTER_MAX_VELOCITY = 100.0; // in rps
@@ -91,10 +91,10 @@ public class LauncherConstants {
     HOOD_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     HOOD_CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; // TODO: find
 
-    HOOD_CONFIG.Voltage.PeakForwardVoltage = 6;
-    HOOD_CONFIG.Voltage.PeakReverseVoltage = 6;
+    HOOD_CONFIG.Voltage.PeakForwardVoltage = 4;
+    HOOD_CONFIG.Voltage.PeakReverseVoltage = -4;
 
-    HOOD_CONFIG_SLOT0.kP = 0.5; // TODO: tune
+    HOOD_CONFIG_SLOT0.kP = 1.0; // TODO: tune
     HOOD_CONFIG_SLOT0.kI = 0.0; // TODO: tune
     HOOD_CONFIG_SLOT0.kD = 0.0; // TODO: tune
     HOOD_CONFIG_SLOT0.kV = 0.0; // TODO: tune

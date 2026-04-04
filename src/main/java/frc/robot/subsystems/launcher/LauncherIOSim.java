@@ -62,9 +62,7 @@ public class LauncherIOSim extends LauncherIOTalonFX {
     hoodPhysicsSim.update(Constants.UPDATE_FREQ_SEC);
 
     hoodSimState.setRawRotorPosition(
-        (hoodPhysicsSim.getAngleRads() - LauncherConstants.HOOD_MIN_ANGLE_RADS)
-            / LauncherConstants.HOOD_P_COEFFICIENT * 0.1);
-    hoodSimState.setRotorVelocity(
-        hoodPhysicsSim.getVelocityRadPerSec() / LauncherConstants.HOOD_P_COEFFICIENT * 0.1);
+        (hoodPhysicsSim.getAngleRads() - LauncherConstants.HOOD_MIN_ANGLE_RADS));
+    hoodSimState.setRotorVelocity(hoodPhysicsSim.getVelocityRadPerSec());
   }
 }
