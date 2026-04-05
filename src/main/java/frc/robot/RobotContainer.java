@@ -62,6 +62,8 @@ import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.DriveHelpers;
 import frc.robot.util.LoggedTracer;
+import lombok.Getter;
+import lombok.Setter;
 
 public class RobotContainer {
   // Subsystems
@@ -76,6 +78,7 @@ public class RobotContainer {
 
   // Visualizer
   public final RobotVisualizer visualizer;
+  @Getter @Setter private double robotSpeedMultiplier = 1.0;
 
   // Controller
   private final CommandXboxController drivercontroller = new CommandXboxController(0);
@@ -212,8 +215,8 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -drivercontroller.getLeftY(),
-            () -> -drivercontroller.getLeftX(),
+            () -> -drivercontroller.getLeftY() * getRobotSpeedMultiplier(),
+            () -> -drivercontroller.getLeftX() * getRobotSpeedMultiplier(),
             () -> -drivercontroller.getRightX()));
 
     // Switch to X pattern when X button is pressed
@@ -261,6 +264,17 @@ public class RobotContainer {
                 () -> {
                   feeder.setStopped();
                   spindexer.setStopped();
+                }));
+
+    drivercontroller
+        .rightBumper()
+        .whileTrue(
+            Commands.startEnd(
+                () -> {
+                  setRobotSpeedMultiplier(0.7);
+                },
+                () -> {
+                  setRobotSpeedMultiplier(1.0);
                 }));
 
     drivercontroller
