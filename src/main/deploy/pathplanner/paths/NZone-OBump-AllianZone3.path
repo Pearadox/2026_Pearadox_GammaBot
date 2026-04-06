@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 3.0815977175463622,
-        "y": 2.4370756062767476
+        "x": 2.1370756062767473,
+        "y": 2.3853209700427964
       },
       "prevControl": {
-        "x": 4.763623395149788,
-        "y": 2.4500142653352364
+        "x": 3.8191012838801734,
+        "y": 2.398259629101285
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Outpost AllianZone"
     }
   ],
   "rotationTargets": [
@@ -47,7 +47,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -0.5787255656077432
   },
   "reversed": false,
   "folder": "To Alliance Zone",

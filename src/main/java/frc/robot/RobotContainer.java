@@ -93,7 +93,6 @@ public class RobotContainer {
   public RobotContainer() {
 
     // Register named commands for PathPlanner
-    registerNamedCommands();
 
     switch (Constants.currentMode) {
       case REAL:
@@ -162,6 +161,7 @@ public class RobotContainer {
         break;
     }
 
+    registerNamedCommands();
     // Set up auto routines
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Super auto chooser", autoChooser);
@@ -205,7 +205,7 @@ public class RobotContainer {
               LoggedTracer.record("MovingShotSolve");
             },
             vision));
-    ledStrip.isHubActive();
+    ledStrip.setDefaultCommand(new RunCommand(() -> ledStrip.isHubActive(), ledStrip));
   }
 
   /**
@@ -380,9 +380,7 @@ public class RobotContainer {
 
   public void registerNamedCommands() {
     // Timer Commands
-    NamedCommands.registerCommand(
-        "Start Timer",
-        new InstantCommand(() -> feeder.startTimer()));
+    NamedCommands.registerCommand("Start Timer", new InstantCommand(() -> feeder.startTimer()));
 
     // Launching Sequence Commands
     NamedCommands.registerCommand(

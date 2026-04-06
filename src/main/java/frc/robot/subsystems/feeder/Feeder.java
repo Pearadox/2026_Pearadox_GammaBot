@@ -58,7 +58,7 @@ public class Feeder extends SubsystemBase {
   // CANRange methods
   public boolean isDetectedDebounced() {
     return isDetectedDebounced;
-}
+  }
 
   public void updateFuelCount() {
 
@@ -83,19 +83,17 @@ public class Feeder extends SubsystemBase {
     return inputs.canRangeSignal;
   }
 
-
   public int getFuelCount() {
     return fuelCount;
   }
 
   public boolean isHopperEmpty() {
     return hasSeenFuel
-      && !isDetectedDebounced
-      && getTimestamp() > FeederConstants.IS_HOPPER_EMPTY_BUFFER_TIME;
+        && !isDetectedDebounced
+        && getTimestamp() > FeederConstants.IS_HOPPER_EMPTY_BUFFER_TIME;
   }
 
-
-// timer methods
+  // timer methods
   public double getTimestamp() {
     return timer.get();
   }
@@ -103,7 +101,6 @@ public class Feeder extends SubsystemBase {
   public void startTimer() {
     timer.start();
   }
-
 
   // public void launch() {
   //   io.runFeederVoltage(FeederConstants.FEEDER_ACTIVE_VOLTAGE);

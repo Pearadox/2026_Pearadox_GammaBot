@@ -11,15 +11,21 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "NZone-OBump-AllianZone3"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Stop Intaking"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "NZone-OBump-AllianZone3"
+            "name": "Flow Intake"
           }
         },
         {
@@ -47,15 +53,21 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of NZone-OBump-AllianZone4"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Stop Intaking"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Copy of NZone-OBump-AllianZone4"
+            "name": "Flow Intake"
           }
         },
         {

@@ -98,7 +98,7 @@ public class MovingShotSolver {
       new LoggedTunableNumber("SOTM/Launch Height inches", 22.5);
 
   private final LoggedTunableNumber hoodAngleDegrees =
-      new LoggedTunableNumber("SOTM/Launch Angle Degs", 72);
+      new LoggedTunableNumber("SOTM/Launch Angle Degs", 71);
 
   // may need to be tuned
   private final LoggedTunableNumber shotLatency = new LoggedTunableNumber("SOTM/shot latency", 0.1);
