@@ -22,7 +22,7 @@ public class ClimberIOSim extends ClimberIOTalonFX {
     climberSimState = climber.getSimState();
   }
 
-  public void updateInputs(ClimberIOInputsAutoLogged inputs) {
+  public void updateInputs(ClimberIOInputs inputs) {
     climberSimState.setSupplyVoltage(12);
     physicsSim.setInputVoltage(climberSimState.getMotorVoltage());
     climberSimState.setRawRotorPosition(

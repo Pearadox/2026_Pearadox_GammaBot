@@ -19,7 +19,7 @@ public abstract class ClimberIOTalonFX implements ClimberIO {
   }
 
   @Override
-  public void updateInputs(ClimberIOInputsAutoLogged inputs) {
+  public void updateInputs(ClimberIOInputs inputs) {
     inputs.climberMotorData = climber.getData();
   }
 
