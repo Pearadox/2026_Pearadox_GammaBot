@@ -45,8 +45,7 @@ public class Turret extends SubsystemBase {
       new LoggedTunableNumber("Turret/test Setpoint", -90);
   private final LoggedTunableNumber fieldRelOffset =
       new LoggedTunableNumber("Turret/fieldreloffset", 0);
-
-  private boolean shouldApplyFF = true;
+  @AutoLogOutput private boolean shouldApplyFF = true;
 
   private final SysIdRoutine sysId;
 

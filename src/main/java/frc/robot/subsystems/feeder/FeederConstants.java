@@ -63,6 +63,7 @@ public class FeederConstants {
 
   // canRange constants
   public static final int CANRANGE_CAN_ID = 25;
+  public static final double IS_HOPPER_EMPTY_BUFFER_TIME = 3.0;
 
   public static CANrangeConfiguration createCANrangeConfig() {
     CANrangeConfiguration canRangeConfig = new CANrangeConfiguration();
