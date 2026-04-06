@@ -22,7 +22,7 @@ public class IntakeIOSim extends IntakeIOTalonFX {
   private TalonFXSimState pivotSimState;
 
   public IntakeIOSim() {
-    pivotSimState = pivotMotor.getSimState();
+    pivotSimState = pivot1Leader.getSimState();
   }
 
   public void updateInputs(IntakeIOInputs inputs) {

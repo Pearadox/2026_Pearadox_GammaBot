@@ -69,14 +69,14 @@ public class Intake extends SubsystemBase {
         getFFVolts());
 
     MechVisualizer.getInstance()
-        .updatePositionDegrees(Units.rotationsToDegrees(inputs.pivotMotorData.position()));
+        .updatePositionDegrees(Units.rotationsToDegrees(inputs.pivot1MotorData.position()));
 
     Logger.recordOutput(
         "Intake/Target Position Degrees", StateConfig.INTAKE_STATE_MAP.get(intakeState).angleDeg());
-    Logger.recordOutput("Intake/VoltageOut", inputs.rollerMotorData.appliedVolts());
+    Logger.recordOutput("Intake/VoltageOut", inputs.roller1MotorData.appliedVolts());
     Logger.recordOutput(
         "Intake/Current Position Degrees",
-        Units.rotationsToDegrees(inputs.pivotMotorData.position()) / IntakeConstants.GEARING);
+        Units.rotationsToDegrees(inputs.pivot1MotorData.position()) / IntakeConstants.GEARING);
 
     if (rollerkP.hasChanged(hashCode())
         || rollerkV.hasChanged(hashCode())
@@ -101,7 +101,7 @@ public class Intake extends SubsystemBase {
   }
 
   public double getAngleDegs() {
-    return Units.rotationsToDegrees(inputs.pivotMotorData.position()) / IntakeConstants.GEARING;
+    return Units.rotationsToDegrees(inputs.pivot1MotorData.position()) / IntakeConstants.GEARING;
   }
 
   public void setStowed() {
