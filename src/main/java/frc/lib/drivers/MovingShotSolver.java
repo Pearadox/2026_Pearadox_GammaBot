@@ -203,14 +203,16 @@ public class MovingShotSolver {
     double Dx = goalXMeters - turretXMeters;
     double Dy = goalYMeters - turretYMeters;
     double Dz = goalHeightMeters - Units.inchesToMeters(shooterHeightInches.get());
-
-    double hoodAngleRadians = hoodAngleRadsSupplier.get();
-
-    Logger.recordOutput("SOTM/lateral dist to target", Math.hypot(Dx, Dy));
-
+    
+    // double hoodAngleRadians = hoodAngleRadsSupplier.get();
+    double distanceToTarget = Math.hypot(Dx, Dy);
+    double hoodAngleRadians = distanceToTarget < 10 ? 72 : 50;
+    
     double ToF =
-        1.0 + Math.hypot(Dx, Dy) / 15.0 * (3.0 - 1.0); // Initial guess of ToF for Newton's Method
+    1.0 + distanceToTarget / 15.0 * (3.0 - 1.0); // Initial guess of ToF for Newton's Method
     // (formula: ToF = t_min + dist/maxDist * (t_max - t_min))
+    
+    Logger.recordOutput("SOTM/lateral dist to target", distanceToTarget);
 
     for (int i = 0; i < Constants.NEWTONS_METHOD_NUM_STEPS; i++) {
       // recalculating closer approximate value of ToF after each "step"
