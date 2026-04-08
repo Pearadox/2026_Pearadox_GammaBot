@@ -105,12 +105,16 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
           (Units.radiansToRotations(angleRadsFromMinimum) * LauncherConstants.HOOD_GEARING)
               / LauncherConstants.SERVO_POSITION_TO_ROTATIONS_CONVERSION;
 
-
-      // int pwm0 = (int) (-(servoRotations * LauncherConstants.SERVO_POSITION_TO_ROTATIONS_CONVERSION) + LauncherConstants.SERVO_MAX_PULSE_WIDTH);
-      // int pwm5 = (int) ( (servoRotations * LauncherConstants.SERVO_POSITION_TO_ROTATIONS_CONVERSION) + LauncherConstants.SERVO_MIN_PULSE_WIDTH);
+      // int pwm0 = (int) (-(servoRotations *
+      // LauncherConstants.SERVO_POSITION_TO_ROTATIONS_CONVERSION) +
+      // LauncherConstants.SERVO_MAX_PULSE_WIDTH);
+      // int pwm5 = (int) ( (servoRotations *
+      // LauncherConstants.SERVO_POSITION_TO_ROTATIONS_CONVERSION) +
+      // LauncherConstants.SERVO_MIN_PULSE_WIDTH);
       // int pwm5 = LauncherConstants.rotationstoPulseWidth(servoRotations);
       // int pwm0 = LauncherConstants.SERVO_MAX_PULSE_WIDTH
-      //         - LauncherConstants.rotationstoPulseWidth(servoRotations) - LauncherConstants.SERVO_MIN_PULSE_WIDTH;
+      //         - LauncherConstants.rotationstoPulseWidth(servoRotations) -
+      // LauncherConstants.SERVO_MIN_PULSE_WIDTH;
 
       int pwm0 = (int) (12000 * Units.radiansToRotations(angleRads) + 833.33); // [1500, 2500]
       int pwm5 = (int) (-12000 * Units.radiansToRotations(angleRads) + 2166.67); // [500, 1500]

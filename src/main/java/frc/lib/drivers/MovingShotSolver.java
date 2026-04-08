@@ -222,11 +222,11 @@ public class MovingShotSolver {
     double distanceToTarget = Math.hypot(Dx, Dy);
     LauncherState launcherState = launcher.getLauncherState();
 
-    if (hoodAngleDebouncer.calculate(distanceToTarget > farShotMinDistance.get())
-        && launcherState == LauncherState.SELF_DIRECTING) {
+    boolean isFar = hoodAngleDebouncer.calculate(distanceToTarget > farShotMinDistance.get());
+
+    if (isFar && launcherState == LauncherState.SELF_DIRECTING) {
       launcher.setScoringFar();
-    } else if (hoodAngleDebouncer.calculate(distanceToTarget < farShotMinDistance.get())
-        && launcherState == LauncherState.SELF_DIRECTING_FAR) {
+    } else if (!isFar && launcherState == LauncherState.SELF_DIRECTING_FAR) {
       launcher.setScoring();
     }
 
