@@ -359,7 +359,7 @@ public final class Constants {
   }
 
   public static final class LEDConstants {
-    public static final int LED_PORT = 0; // TODO : change later
+    public static final int LED_PORT = 9; // TODO : change later
     public static final int NUM_LEDS = 49;
 
     public static final Frequency SCROLL_FREQ = Percent.per(Second).of(50);
