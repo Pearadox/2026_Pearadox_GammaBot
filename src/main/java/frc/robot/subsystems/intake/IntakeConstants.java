@@ -28,8 +28,8 @@ public class IntakeConstants {
         Map.of(
             IntakeState.STOWED, new StateConfig(0, 0),
             IntakeState.DEPLOYED, new StateConfig(100, 0),
-            IntakeState.INTAKING, new StateConfig(100, 4.0),
-            IntakeState.OUTTAKING, new StateConfig(100, -4.0),
+            IntakeState.INTAKING, new StateConfig(100, 5.0), // 4V
+            IntakeState.OUTTAKING, new StateConfig(100, -5.0), // -4V
             IntakeState.FLOW_STATE, new StateConfig(0, 4.0));
   }
 
