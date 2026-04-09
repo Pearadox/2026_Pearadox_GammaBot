@@ -61,7 +61,7 @@ import frc.robot.subsystems.turret.TurretIOReal;
 import frc.robot.subsystems.turret.TurretIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
-import frc.robot.subsystems.vision.VisionIOLimelight;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.util.DriveHelpers;
 import frc.robot.util.LoggedTracer;
 import lombok.Getter;
@@ -115,10 +115,9 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation)
-                // new VisionIOPhotonVision(
-                //     VisionConstants.camera1Name, VisionConstants.robotToCamera1)
-                );
+                // new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation)
+                new VisionIOPhotonVision(
+                    VisionConstants.camera1Name, VisionConstants.robotToCamera1));
 
         break;
 
@@ -393,6 +392,14 @@ public class RobotContainer {
                 (new RunCommand(() -> spindexer.setRunning(), spindexer))
                     .until(() -> feeder.isHopperEmpty())
                     .withTimeout(FeederConstants.IS_HOPPER_EMPTY_BUFFER_TIME)));
+
+    NamedCommands.registerCommand(
+        "Set Launching (No Wait)",
+        new InstantCommand(() -> launcher.setScoring())
+            .andThen(new WaitCommand(0.2))
+            .andThen(new InstantCommand(() -> feeder.setRunning()))
+            .andThen(new WaitCommand(0.2))
+            .andThen(new InstantCommand(() -> spindexer.setRunning())));
 
     NamedCommands.registerCommand(
         "Stop Launching",
