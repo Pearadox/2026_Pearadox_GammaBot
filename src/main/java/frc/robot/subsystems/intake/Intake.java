@@ -42,7 +42,7 @@ public class Intake extends SubsystemBase {
   private static LoggedTunableNumber rollerkV = new LoggedTunableNumber("Intake/roller kv", 0.05);
   private static LoggedTunableNumber pivotkp = new LoggedTunableNumber("Intake/pivot kp", 0.5);
   private static LoggedTunableNumber pivotkd = new LoggedTunableNumber("Intake/pivotkd", 0.0);
-  private static LoggedTunableNumber pivotkg = new LoggedTunableNumber("Intake/pivot kg", -0.5);
+  private static LoggedTunableNumber pivotkg = new LoggedTunableNumber("Intake/pivot kg", -0.45);
 
   @Override
   public void periodic() {
@@ -71,6 +71,10 @@ public class Intake extends SubsystemBase {
     // MechVisualizer.getInstance()
     //     .updatePositionDegrees(Units.rotationsToDegrees(inputs.pivot1MotorData.position()));
 
+    Logger.recordOutput(
+        "Intake/Target Position Rots",
+        Units.degreesToRotations(StateConfig.INTAKE_STATE_MAP.get(intakeState).angleDeg())
+            * IntakeConstants.GEARING);
     Logger.recordOutput(
         "Intake/Target Position Degrees", StateConfig.INTAKE_STATE_MAP.get(intakeState).angleDeg());
     // Logger.recordOutput("Intake/VoltageOut", inputs.roller1MotorData.appliedVolts());
@@ -111,6 +115,10 @@ public class Intake extends SubsystemBase {
 
   public void setFlow() {
     intakeState = IntakeState.FLOW_STATE;
+  }
+
+  public void setHold() {
+    intakeState = IntakeState.HOLD_STATE;
   }
 
   public void setDeployed() {

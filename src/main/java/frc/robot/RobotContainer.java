@@ -232,6 +232,7 @@ public class RobotContainer {
         .onFalse(new InstantCommand(() -> intake.setDeployed()));
     drivercontroller.povUp().onTrue(new InstantCommand(() -> intake.setStowed()));
     drivercontroller.povDown().onTrue(new InstantCommand(() -> intake.setDeployed()));
+    drivercontroller.povLeft().onTrue(new InstantCommand(() -> intake.setHold()));
     // drivercontroller
     //     .povLeft()
     //     .onTrue(new InstantCommand(() -> intake.setOuttaking()))

@@ -14,7 +14,8 @@ public class IntakeConstants {
     DEPLOYED,
     INTAKING,
     OUTTAKING,
-    FLOW_STATE // pivot stowed but rollers still going
+    FLOW_STATE, // pivot stowed but rollers still going
+    HOLD_STATE
   }
 
   /**
@@ -26,11 +27,13 @@ public class IntakeConstants {
   public static record StateConfig(double angleDeg, double voltage) {
     public static final Map<IntakeState, StateConfig> INTAKE_STATE_MAP =
         Map.of(
-            IntakeState.STOWED, new StateConfig(12, 0),
-            IntakeState.DEPLOYED, new StateConfig(118, 0),
-            IntakeState.INTAKING, new StateConfig(12, 5.0), // 4V
-            IntakeState.OUTTAKING, new StateConfig(118, -5.0), // -4V
-            IntakeState.FLOW_STATE, new StateConfig(12, 4.0));
+            IntakeState.STOWED, new StateConfig(7, 0),
+            IntakeState.DEPLOYED, new StateConfig(120, 0),
+            IntakeState.INTAKING, new StateConfig(120, 7.0), // 4V
+            IntakeState.OUTTAKING, new StateConfig(120, -7.0), // -4V
+            IntakeState.FLOW_STATE, new StateConfig(7, 4.0),
+            IntakeState.HOLD_STATE, new StateConfig(Units.rotationsToDegrees(8) / IntakeConstants.GEARING, 7)
+            );
   }
 
   // public static record StateConfig(double angleDeg, double amps, double maxDuty) {
@@ -105,10 +108,14 @@ public class IntakeConstants {
     PIVOT_SLOT0_CONFIGS.kI = 0.0;
     PIVOT_SLOT0_CONFIGS.kD = 0.03;
 
-    PIVOT_CONFIG.MotionMagic.MotionMagicCruiseVelocity = 15.0;
+    PIVOT_CONFIG.MotionMagic.MotionMagicCruiseVelocity = 40.0;
+    PIVOT_CONFIG.MotionMagic.MotionMagicAcceleration = 150;
     PIVOT_CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
     PIVOT_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+    PIVOT_CONFIG.Voltage.PeakForwardVoltage = 4;
+    PIVOT_CONFIG.Voltage.PeakReverseVoltage = -4;
 
     // PIVOT_CONFIG.MotorOutput.PeakReverseDutyCycle = -0.5;
     // PIVOT_CONFIG.MotorOutput.PeakForwardDutyCycle = 0.5;
