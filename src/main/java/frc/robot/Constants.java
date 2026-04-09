@@ -360,7 +360,7 @@ public final class Constants {
 
   public static final class LEDConstants {
     public static final int LED_PORT = 9; // TODO : change later
-    public static final int NUM_LEDS = 49;
+    public static final int NUM_LEDS = 49 + 47;
 
     public static final Frequency SCROLL_FREQ = Percent.per(Second).of(50);
     public static final Time BLINK_PERIOD = Seconds.of(0.5);
