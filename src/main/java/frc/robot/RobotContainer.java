@@ -59,7 +59,7 @@ import frc.robot.subsystems.turret.TurretIOReal;
 import frc.robot.subsystems.turret.TurretIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
-import frc.robot.subsystems.vision.VisionIOLimelight;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.util.DriveHelpers;
 import frc.robot.util.LoggedTracer;
 import lombok.Getter;
@@ -113,10 +113,9 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation)
-                // new VisionIOPhotonVision(
-                //     VisionConstants.camera1Name, VisionConstants.robotToCamera1)
-                );
+                // new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation)
+                new VisionIOPhotonVision(
+                    VisionConstants.camera1Name, VisionConstants.robotToCamera1));
 
         break;
 
@@ -196,8 +195,8 @@ public class RobotContainer {
         new RunCommand(
             () -> {
               LoggedTracer.reset();
-              MovingShotSolver.getInstance()
-                  .solve(drive::getPose, drive::getChassisSpeeds);
+              MovingShotSolver.getInstance().solve(drive::getPose, drive::getChassisSpeeds);
+
               LoggedTracer.record("MovingShotSolve");
             },
             vision));
