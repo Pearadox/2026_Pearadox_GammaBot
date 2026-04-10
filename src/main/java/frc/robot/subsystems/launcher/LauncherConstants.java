@@ -15,10 +15,10 @@ import lombok.Getter;
 /** Constants for the launcher */
 public class LauncherConstants {
   public static enum LauncherState {
-    OFF(Units.degreesToRadians(60)),
+    OFF(Units.degreesToRadians(40)),
     MANUAL(Units.degreesToRadians(20)),
-    IDLE(Units.degreesToRadians(40)),
-    SELF_DIRECTING(Units.degreesToRadians(40));
+    IDLE(Units.degreesToRadians(20)),
+    SELF_DIRECTING(Units.degreesToRadians(30));
     // PASSING(Units.degreesToRadians(25)); // TODO: find proper hood angles
 
     @Getter private final double hoodAngleRads;
@@ -117,7 +117,7 @@ public class LauncherConstants {
   public static final int ROLLER_SEGMENT_COUNT = 20;
   public static final int SIM_LINE_WIDTH = 5;
 
-  public static final DCMotor HOOD_MOTOR = DCMotor.getKrakenX60(1);
+  public static final DCMotor HOOD_MOTOR = DCMotor.getKrakenX44(1);
   public static final double HOOD_LENGTH_METERS =
       Units.inchesToMeters(10); // TODO: get better values
   public static final double HOOD_MASS_KG = Units.lbsToKilograms(3); // TODO: get better values

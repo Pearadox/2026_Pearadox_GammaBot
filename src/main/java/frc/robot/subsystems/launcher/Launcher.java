@@ -8,6 +8,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.drivers.MovingShotSolver;
 import frc.robot.subsystems.launcher.LauncherConstants.LauncherState;
 import frc.robot.util.LoggedTunableNumber;
 import lombok.Getter;
@@ -29,7 +30,7 @@ public class Launcher extends SubsystemBase {
 
   private final LoggedTunableNumber tunableffAmps = new LoggedTunableNumber("Launcher/ffamps", 0);
   private final LoggedTunableNumber manualDefaultVelocity =
-      new LoggedTunableNumber("Launcher/Manual Mode Default Velocity", 0);
+      new LoggedTunableNumber("Launcher/Manual Mode Default Velocity", LauncherConstants.DEFAULT_VELOCITY_SETPOINT_RPS);
   private final LoggedTunableNumber idleDefaultVelocity =
       new LoggedTunableNumber("Launcher/Idle Mode Default Velocity", 20);
   private final LoggedTunableNumber hoodAngleDegs =
@@ -59,7 +60,7 @@ public class Launcher extends SubsystemBase {
   private final LoggedTunableNumber hoodkG =
       new LoggedTunableNumber("Hood/kG", LauncherConstants.HOOD_CONFIG_SLOT0.kG);
   private final LoggedTunableNumber kGOffset =
-      new LoggedTunableNumber("Launcher/kG-AngleOffset-Deg", LauncherConstants.HOOD_KG_OFFSET_DEG);
+      new LoggedTunableNumber("Hood/kG-AngleOffset-Deg", LauncherConstants.HOOD_KG_OFFSET_DEG);
 
   public Launcher(LauncherIO io) {
     this.io = io;
@@ -74,38 +75,38 @@ public class Launcher extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Launcher", inputs);
 
-    // double desiredVelocity;
-    // if (launcherState == LauncherState.SELF_DIRECTING) {
-    //   desiredVelocity = MovingShotSolver.getShotSolution().speed();
-    // } else if (launcherState == LauncherState.MANUAL) {
-    //   desiredVelocity = manualDefaultVelocity.get();
-    // } else if (launcherState == LauncherState.IDLE) {
-    //   desiredVelocity = idleDefaultVelocity.get();
-    // } else {
-    //   desiredVelocity = 0;
-    // }
+    double desiredVelocity;
+    if (launcherState == LauncherState.SELF_DIRECTING) {
+      desiredVelocity = MovingShotSolver.getShotSolution().speed();
+    } else if (launcherState == LauncherState.MANUAL) {
+      desiredVelocity = manualDefaultVelocity.get();
+    } else if (launcherState == LauncherState.IDLE) {
+      desiredVelocity = idleDefaultVelocity.get();
+    } else {
+      desiredVelocity = 0;
+    }
 
-    // desiredVelocity = Math.abs(desiredVelocity + rpsAdjust);
+    desiredVelocity = Math.abs(desiredVelocity + rpsAdjust);
 
-    // if (desiredVelocity < LauncherConstants.SHOOTER_VELOCITY_DEADBAND) {
-    //   desiredVelocity = 0;
-    //   turnLauncherOff();
-    // } else {
-    //   setVelocity(desiredVelocity, tunableffAmps.get());
-    // }
+    if (desiredVelocity < LauncherConstants.SHOOTER_VELOCITY_DEADBAND) {
+      desiredVelocity = 0;
+      turnLauncherOff();
+    } else {
+      setVelocity(desiredVelocity, tunableffAmps.get());
+    }
 
     // LauncherVisualizer.getInstance()
     //     .updateFlywheelPositionDeg(Units.rotationsToDegrees(inputs.launcher1Data.position()));
-    LauncherVisualizer.getInstance()
-        .updateHoodPositionDeg(
-            Units.rotationsToDegrees(inputs.hoodData.position() / LauncherConstants.HOOD_GEARING));
+    // LauncherVisualizer.getInstance()
+    //     .updateHoodPositionDeg(
+    //         Units.rotationsToDegrees(inputs.hoodData.position() / LauncherConstants.HOOD_GEARING));
 
     Logger.recordOutput("Launcher/adjust", rpsAdjust);
-    Logger.recordOutput("Debug/getLauncherVelocity", getLauncherVelocity());
+    Logger.recordOutput("Launcher/launcherVelocity", getLauncherVelocity());
     Logger.recordOutput("Hood/kG-Value", getkG());
 
-    // io.runLauncherVelocity(manualDefaultVelocity.get());
-    io.setLauncherVoltage(manualDefaultVelocity.get() * (12.0 / 100.0));
+    io.runLauncherVelocity(manualDefaultVelocity.get());
+    // io.setLauncherVoltage(manualDefaultVelocity.get() * (12.0 / 100.0));
     io.setHoodAngleRads(Units.degreesToRadians(hoodAngleDegs.get()), getkG());
 
     if (kP.hasChanged(hashCode())
@@ -125,7 +126,6 @@ public class Launcher extends SubsystemBase {
         || hoodkG.hasChanged(hashCode())) {
       io.setHoodPIDFF(hoodkP.get(), hoodkI.get(), hoodkD.get(), hoodkS.get(), hoodkG.get());
     }
-    // io.setHoodAngleRads(launcherState.getHoodAngleRads());
   }
 
   /** velocity will be calculated from aim assist command factory */

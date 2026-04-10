@@ -40,8 +40,6 @@ public class LauncherIOSim extends LauncherIOTalonFX {
     super();
     launcherSimState = launcher1Leader.getSimState();
     hoodSimState = hood.getSimState();
-    // hoodServoHubSim = new ServoHubSim(hoodServoHub);
-    // hoodServoHubSim.enable();
   }
 
   public void updateInputs(LauncherIOInputs inputs) {
@@ -49,20 +47,21 @@ public class LauncherIOSim extends LauncherIOTalonFX {
 
     launcherSimState.setSupplyVoltage(12);
     launcherPhysicsSim.setInputVoltage(launcherSimState.getMotorVoltage());
+    
+    hoodSimState.setSupplyVoltage(12);
+    hoodPhysicsSim.setInputVoltage(hoodSimState.getMotorVoltage());
+    
+    launcherPhysicsSim.update(Constants.UPDATE_FREQ_SEC);
+    hoodPhysicsSim.update(Constants.UPDATE_FREQ_SEC);
 
     launcherSimState.setRawRotorPosition(
         Units.radiansToRotations(launcherPhysicsSim.getAngleRads()));
     launcherSimState.setRotorVelocity(
         Units.radiansToRotations(launcherPhysicsSim.getVelocityRadPerSec()));
 
-    hoodSimState.setSupplyVoltage(12);
-    hoodPhysicsSim.setInputVoltage(hoodSimState.getMotorVoltage());
-
-    launcherPhysicsSim.update(Constants.UPDATE_FREQ_SEC);
-    hoodPhysicsSim.update(Constants.UPDATE_FREQ_SEC);
-
     hoodSimState.setRawRotorPosition(
         (hoodPhysicsSim.getAngleRads() - LauncherConstants.HOOD_MIN_ANGLE_RADS));
-    hoodSimState.setRotorVelocity(hoodPhysicsSim.getVelocityRadPerSec());
+    hoodSimState.setRotorVelocity(
+        Units.radiansToRotations(hoodPhysicsSim.getVelocityRadPerSec()));
   }
 }
