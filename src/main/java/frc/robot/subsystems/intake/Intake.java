@@ -34,15 +34,16 @@ public class Intake extends SubsystemBase {
 
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
-  private static LoggedTunableNumber loggedIntakeRollerVoltage =
-      new LoggedTunableNumber("Intake/Voltage", 4.0);
+  // private static LoggedTunableNumber loggedIntakeRollerVoltage =
+  //     new LoggedTunableNumber("Intake/Voltage", 4.0);
   // private static LoggedTunableNumber rps = new LoggedTunableNumber("Intake/rps", 100.0);
   // private static LoggedTunableNumber ffamps = new LoggedTunableNumber("Intake/ffamps", 30.0);
   private static LoggedTunableNumber rollerkP = new LoggedTunableNumber("Intake/roller kp", 0.05);
   private static LoggedTunableNumber rollerkV = new LoggedTunableNumber("Intake/roller kv", 0.05);
   private static LoggedTunableNumber pivotkp = new LoggedTunableNumber("Intake/pivot kp", 0.5);
   private static LoggedTunableNumber pivotkd = new LoggedTunableNumber("Intake/pivotkd", 0.0);
-  private static LoggedTunableNumber pivotkg = new LoggedTunableNumber("Intake/pivot kg", -0.45);
+  // might need retuning
+  private static LoggedTunableNumber pivotkg = new LoggedTunableNumber("Intake/pivot kg", -0.45); 
 
   @Override
   public void periodic() {

@@ -32,8 +32,8 @@ public class IntakeConstants {
             IntakeState.INTAKING, new StateConfig(120, 7.0), // 4V
             IntakeState.OUTTAKING, new StateConfig(120, -7.0), // -4V
             IntakeState.FLOW_STATE, new StateConfig(7, 4.0),
-            IntakeState.HOLD_STATE, new StateConfig(Units.rotationsToDegrees(8) / IntakeConstants.GEARING, 7)
-            );
+            IntakeState.HOLD_STATE,
+                new StateConfig(Units.rotationsToDegrees(8) / IntakeConstants.GEARING, 7));
   }
 
   // public static record StateConfig(double angleDeg, double amps, double maxDuty) {
@@ -53,8 +53,8 @@ public class IntakeConstants {
   public static final int ROLLER_STATOR_CURRENT_LIMIT = 60;
 
   // pivot constants
-  public static final int PIVOT_1_LEADER_ID = 31;
-  public static final int PIVOT_2_FOLLOWER_ID = 32;
+  public static final int PIVOT_1_LEADER_ID = 32;
+  public static final int PIVOT_2_FOLLOWER_ID = 31;
 
   public static final int PIVOT_SUPPLY_CURRENT_LIMIT = 50; // changed 3/17/26 for #119
   public static final int PIVOT_STATOR_CURRENT_LIMIT = 60;
@@ -110,7 +110,7 @@ public class IntakeConstants {
 
     PIVOT_CONFIG.MotionMagic.MotionMagicCruiseVelocity = 40.0;
     PIVOT_CONFIG.MotionMagic.MotionMagicAcceleration = 150;
-    PIVOT_CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    PIVOT_CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     PIVOT_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 

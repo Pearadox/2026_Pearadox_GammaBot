@@ -2,7 +2,6 @@ package frc.robot.subsystems.leds;
 
 import static edu.wpi.first.units.Units.Seconds;
 
-import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -51,7 +50,7 @@ public class LEDStrip extends SubsystemBase {
     if (DriverStation.getMatchTime() > 30
         && DriverStation.getMatchTime() % 25 <= 5
         && Robot.getAlliance() == Alliance.Blue) {
-      setBreathingWithBreathePeriod(Color.kFirstRed,1);
+      setBreathingWithBreathePeriod(Color.kFirstRed, 1);
     } else if (DriverStation.getMatchTime() > 30
         && DriverStation.getMatchTime() % 25 <= 5
         && Robot.getAlliance() == Alliance.Red) {
