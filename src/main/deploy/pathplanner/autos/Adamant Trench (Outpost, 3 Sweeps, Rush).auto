@@ -7,106 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "DBump-NZone1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop Intaking"
+            "pathName": "OTrench-NZone-Rush"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "DepotScoop1"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "DepotSlowIntake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Set Intaking"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop Intaking"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "NZone_Reverse-DBump-AllianZone1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Set Launching"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.5
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop Launching"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Depot_Space-Depot"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Cross Depot"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 1.2
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Set Intaking"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "pathName": "NZone-OTrench-AllianZone-Rush"
           }
         },
         {
@@ -119,12 +26,54 @@
           "type": "named",
           "data": {
             "name": "Set Launching"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set Intaking"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "OTrench-NZone2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NZone-OTrench-AllianZone2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set Launching"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "OTrench-NZone4-1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set Intaking"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "OTrench-NZone-4-2"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Runnables",
+  "folder": "WIP",
   "choreoAuto": false
 }
