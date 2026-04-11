@@ -30,7 +30,8 @@ public class Launcher extends SubsystemBase {
 
   private final LoggedTunableNumber tunableffAmps = new LoggedTunableNumber("Launcher/ffamps", 0);
   private final LoggedTunableNumber manualDefaultVelocity =
-      new LoggedTunableNumber("Launcher/Manual Mode Default Velocity", LauncherConstants.DEFAULT_VELOCITY_SETPOINT_RPS);
+      new LoggedTunableNumber(
+          "Launcher/Manual Mode Default Velocity", LauncherConstants.DEFAULT_VELOCITY_SETPOINT_RPS);
   private final LoggedTunableNumber idleDefaultVelocity =
       new LoggedTunableNumber("Launcher/Idle Mode Default Velocity", 20);
   private final LoggedTunableNumber hoodAngleDegs =
@@ -104,7 +105,8 @@ public class Launcher extends SubsystemBase {
     //         Units.rotationsToDegrees(
     //             LauncherConstants.angularPositiontoRotations(inputs.hoodServo1Position)));
     // LoggedTracer.record("LauncherViz");
-    //         Units.rotationsToDegrees(inputs.hoodData.position() / LauncherConstants.HOOD_GEARING));
+    //         Units.rotationsToDegrees(inputs.hoodData.position() /
+    // LauncherConstants.HOOD_GEARING));
 
     Logger.recordOutput("Launcher/adjust", rpsAdjust);
     Logger.recordOutput("Launcher/launcherVelocity", getLauncherVelocity());
