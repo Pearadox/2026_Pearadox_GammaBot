@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.051997146932953,
-        "y": 0.5739087018544944
+        "x": 3.778710843373494,
+        "y": 0.5599879518072293
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.373509272467901,
-        "y": 0.26338088445078456
+        "x": 8.10022296890844,
+        "y": 0.24946013440351938
       },
       "isLocked": false,
       "linkedName": "OTrench Shooting Spot"
@@ -40,7 +40,14 @@
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Set Intaking",
+      "waypointRelativePos": 0.10620347394540817,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
