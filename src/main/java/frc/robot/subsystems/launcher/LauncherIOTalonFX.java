@@ -137,7 +137,7 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
     hoodConfigs.Slot0.kI = kI;
     hoodConfigs.Slot0.kD = kD;
     hoodConfigs.Slot0.kS = kS;
-    hoodConfigs.Slot0.kG = kG;
+    // hoodConfigs.Slot0.kG = kG;
 
     PhoenixUtil.tryUntilOk(5, () -> hood.getConfigurator().apply(hoodConfigs));
   }

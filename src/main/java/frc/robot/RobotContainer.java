@@ -13,7 +13,6 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.events.EventTrigger;
 import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -65,12 +64,11 @@ import frc.robot.subsystems.turret.TurretIOReal;
 import frc.robot.subsystems.turret.TurretIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.DriveHelpers;
 import frc.robot.util.LoggedTracer;
 import lombok.Getter;
 import lombok.Setter;
-import org.littletonrobotics.junction.Logger;
 
 public class RobotContainer {
   // Subsystems
@@ -120,9 +118,11 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                // new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation)
-                new VisionIOPhotonVision(
-                    VisionConstants.camera1Name, VisionConstants.robotToCamera1));
+                new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation),
+                new VisionIOLimelight(VisionConstants.camera1Name, drive::getRotation)
+                // new VisionIOPhotonVision(
+                //     VisionConstants.camera1Name, VisionConstants.robotToCamera1)
+                );
 
         break;
 
@@ -195,7 +195,9 @@ public class RobotContainer {
         new RobotVisualizer(
             turret::getTurretAngleRads,
             launcher::getHoodAngleRads,
-            () -> VisualizerConstants.INTAKE_STARTING_ANGLE - Units.degreesToRadians(intake.getAngleDegs()));
+            () ->
+                VisualizerConstants.INTAKE_STARTING_ANGLE
+                    - Units.degreesToRadians(intake.getAngleDegs()));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -207,9 +209,9 @@ public class RobotContainer {
               MovingShotSolver.getInstance().solve(drive::getPose, drive::getChassisSpeeds);
               LoggedTracer.record("MovingShotSolve");
 
-            //   Logger.recordOutput(
-            //       "Odometry/test",
-            //       new Pose3d(drive.getPose()).transformBy(visualizer.getLlTransform()));
+              //   Logger.recordOutput(
+              //       "Odometry/test",
+              //       new Pose3d(drive.getPose()).transformBy(visualizer.getLlTransform()));
             },
             vision));
     ledStrip.setDefaultCommand(new RunCommand(() -> ledStrip.isHubActive(), ledStrip));
@@ -272,11 +274,9 @@ public class RobotContainer {
                     launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d)
                 .alongWith(launcher.score()))
         .onFalse(
-            new InstantCommand(
-                () -> {
-                  feeder.setStopped();
-                  spindexer.setStopped();
-                }));
+            new InstantCommand(() -> spindexer.setStopped())
+                .andThen(new WaitCommand(0.2))
+                .andThen(new InstantCommand(() -> feeder.setStopped())));
 
     drivercontroller
         .rightBumper()

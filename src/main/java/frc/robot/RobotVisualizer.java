@@ -68,6 +68,7 @@ public class RobotVisualizer {
     // return (VisualizerConstants.MAX_HOPPER_EXTENSION / Units.degreesToRadians(125)) * intakeAngle
     // + VisualizerConstants.MAX_HOPPER_EXTENSION;
     return VisualizerConstants.MAX_HOPPER_EXTENSION
-        * Math.cos((Math.PI / 2.0 * intakeAngle) / VisualizerConstants.INTAKE_STARTING_ANGLE) - VisualizerConstants.MAX_HOPPER_EXTENSION;
+            * Math.cos((Math.PI / 2.0 * intakeAngle) / VisualizerConstants.INTAKE_STARTING_ANGLE)
+        - VisualizerConstants.MAX_HOPPER_EXTENSION;
   }
 }

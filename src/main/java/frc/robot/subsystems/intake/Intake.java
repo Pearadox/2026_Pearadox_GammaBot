@@ -40,10 +40,10 @@ public class Intake extends SubsystemBase {
   // private static LoggedTunableNumber ffamps = new LoggedTunableNumber("Intake/ffamps", 30.0);
   private static LoggedTunableNumber rollerkP = new LoggedTunableNumber("Intake/roller kp", 0.05);
   private static LoggedTunableNumber rollerkV = new LoggedTunableNumber("Intake/roller kv", 0.05);
-  private static LoggedTunableNumber pivotkp = new LoggedTunableNumber("Intake/pivot kp", 0.5);
+  private static LoggedTunableNumber pivotkp = new LoggedTunableNumber("Intake/pivot kp", 0.4);
   private static LoggedTunableNumber pivotkd = new LoggedTunableNumber("Intake/pivotkd", 0.0);
   // might need retuning
-  private static LoggedTunableNumber pivotkg = new LoggedTunableNumber("Intake/pivot kg", -0.45);
+  private static LoggedTunableNumber pivotkg = new LoggedTunableNumber("Intake/pivot kg", 0); // -0.45
 
   @Override
   public void periodic() {

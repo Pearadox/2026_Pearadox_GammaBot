@@ -92,24 +92,24 @@ public class MovingShotSolver {
   }
 
   private final LoggedTunableNumber rpsMultiplier =
-      new LoggedTunableNumber("SOTM/Rps Multiplier", 2.0);
+      new LoggedTunableNumber("SOTM/Rps Multiplier", 2.37);
   private final LoggedTunableNumber farRpsMultiplier =
-      new LoggedTunableNumber("SOTM/far Rps Multiplier", 2.05);
-  private final LoggedTunableNumber turretDx = new LoggedTunableNumber("SOTM/Turret dx", -0.135);
-  private final LoggedTunableNumber turretDy = new LoggedTunableNumber("SOTM/Turret dy", -0.14);
+      new LoggedTunableNumber("SOTM/far Rps Multiplier", 2.4);
+  private final LoggedTunableNumber turretDx = new LoggedTunableNumber("SOTM/Turret dx", -0.146);
+  private final LoggedTunableNumber turretDy = new LoggedTunableNumber("SOTM/Turret dy", -0.133);
   private final LoggedTunableNumber shooterHeightInches =
-      new LoggedTunableNumber("SOTM/Launch Height inches", 22.5);
+      new LoggedTunableNumber("SOTM/Launch Height inches", 16);
   private final LoggedTunableNumber normalShotAngleDegrees =
-      new LoggedTunableNumber("SOTM/normalShotAngleDegrees", 65);
+      new LoggedTunableNumber("SOTM/normalShotAngleDegrees", 67);
   private final LoggedTunableNumber farShotAngleDegrees =
-      new LoggedTunableNumber("SOTM/farShotAngleDegrees", 55);
+      new LoggedTunableNumber("SOTM/farShotAngleDegrees", 57);
   private final LoggedTunableNumber farShotMinDistanceMeters =
-      new LoggedTunableNumber("SOTM/farShotMinDistance", 3.0);
+      new LoggedTunableNumber("SOTM/farShotMinDistance", 4.5);
 
   //   private final Debouncer hoodAngleDebouncer = new Debouncer(0.5, DebounceType.kBoth);
   // new LoggedTunableNumber("SOTM/Launch Angle Degs", 72);
-  private final LoggedTunableNumber hoodAngleDegrees =
-      new LoggedTunableNumber("SOTM/Launch Angle Degs", 71);
+  //   private final LoggedTunableNumber hoodAngleDegrees =
+  //       new LoggedTunableNumber("SOTM/Launch Angle Degs", 71);
 
   // may need to be tuned
   private final LoggedTunableNumber shotLatency = new LoggedTunableNumber("SOTM/shot latency", 0.1);

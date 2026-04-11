@@ -40,7 +40,7 @@ public class Launcher extends SubsystemBase {
   private final LoggedTunableNumber defaultHoodAngleDegs =
       new LoggedTunableNumber(
           "Launcher/Default Hood Angle Degrees",
-          Units.radiansToDegrees(LauncherConstants.HOOD_MIN_ANGLE_RADS));
+          15);
 
   private final LoggedTunableNumber kP = new LoggedTunableNumber("Launcher/kP", 99999);
   private final LoggedTunableNumber kD = new LoggedTunableNumber("Launcher/kD", 0);
@@ -103,7 +103,8 @@ public class Launcher extends SubsystemBase {
       LauncherVisualizer.getInstance()
           .updateFlywheelPositionDeg(Units.rotationsToDegrees(inputs.launcher1Data.position()));
       LauncherVisualizer.getInstance()
-          .updateHoodPositionDeg(Units.radiansToDegrees(getHoodAngleRads() - LauncherConstants.HOOD_MIN_ANGLE_RADS));
+          .updateHoodPositionDeg(
+              Units.radiansToDegrees(getHoodAngleRads() - LauncherConstants.HOOD_MIN_ANGLE_RADS));
     }
 
     Logger.recordOutput("Launcher/adjust", rpsAdjust);
@@ -152,7 +153,7 @@ public class Launcher extends SubsystemBase {
   }
 
   public double getkG() {
-    return LauncherConstants.HOOD_CONFIG_SLOT0.kG * Math.cos(getHoodAngleRads());
+    return hoodkG.get() * Math.cos(getHoodAngleRads());
   }
 
   public double getHoodAngleRads() {
