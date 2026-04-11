@@ -28,8 +28,8 @@ public class LauncherConstants {
     }
   }
 
-  public static final int LAUNCHER_1_CAN_ID = 32;
-  public static final int LAUNCHER_2_CAN_ID = 33;
+  public static final int LAUNCHER_1_CAN_ID = 21;
+  public static final int LAUNCHER_2_CAN_ID = 22;
 
   public static final double SHOOTER_VELOCITY_DEADBAND = 3.0; // in rps
   public static final double SHOOTER_MAX_VELOCITY = 100.0; // in rps

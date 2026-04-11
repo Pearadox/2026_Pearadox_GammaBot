@@ -15,8 +15,8 @@ public final class TurretConstants {
   public static final int TURRET_STATOR_CURRENT_LIMIT = 60;
 
   public static final double TURRET_STARTING_ANGLE = Units.degreesToRadians(0);
-  public static final double TURRET_MIN_ANGLE = Units.degreesToRadians(-365);
-  public static final double TURRET_MAX_ANGLE = Units.degreesToRadians(60);
+  public static final double TURRET_MIN_ANGLE = Units.degreesToRadians(-270);
+  public static final double TURRET_MAX_ANGLE = Units.degreesToRadians(120);
 
   public static final double SAFETY_LIMIT = Units.degreesToRadians(5);
   public static final double TURRET_SAFE_MIN = TURRET_MIN_ANGLE + SAFETY_LIMIT;
@@ -47,7 +47,7 @@ public final class TurretConstants {
   public static final double FF_CHASSIS_ROT_VELOCITY_LIMIT = 1.5 * Math.PI; // rad/s
 
   public static final int TURRET_CANCODER_ID = 26;
-  public static final double TURRET_CANCODER_OFFSET_ROTS = -0.4352;
+  public static final double TURRET_CANCODER_OFFSET_ROTS = -0.1184;
   // -0.4106 + 0.3637 - 0.3508 - 0.220;
   // 0; // 0.4229; // 0.012451; // -0.217041; // 0.223145;
 
