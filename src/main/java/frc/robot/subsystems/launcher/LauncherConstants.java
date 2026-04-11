@@ -89,7 +89,7 @@ public class LauncherConstants {
     HOOD_CONFIG.CurrentLimits.SupplyCurrentLimit = HOOD_SUPPLY_CURRENT;
 
     HOOD_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    HOOD_CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; // TODO: find
+    HOOD_CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     HOOD_CONFIG.Voltage.PeakForwardVoltage = 4;
     HOOD_CONFIG.Voltage.PeakReverseVoltage = -4;

@@ -114,8 +114,8 @@ public class IntakeConstants {
 
     PIVOT_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-    PIVOT_CONFIG.Voltage.PeakForwardVoltage = 3;
-    PIVOT_CONFIG.Voltage.PeakReverseVoltage = -3;
+    PIVOT_CONFIG.Voltage.PeakForwardVoltage = 4;
+    PIVOT_CONFIG.Voltage.PeakReverseVoltage = -4;
 
     // PIVOT_CONFIG.MotorOutput.PeakReverseDutyCycle = -0.5;
     // PIVOT_CONFIG.MotorOutput.PeakForwardDutyCycle = 0.5;

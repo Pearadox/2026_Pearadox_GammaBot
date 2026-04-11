@@ -96,7 +96,7 @@ public abstract class IntakeIOTalonFX implements IntakeIO {
   public void runPositionDegrees(double degrees, double ffvolts) {
     pivot1Leader.setControl(
         pivotPositionVoltage
-            .withPosition(-Units.degreesToRotations(degrees) * IntakeConstants.GEARING)
+            .withPosition(Units.degreesToRotations(degrees) * IntakeConstants.GEARING)
             .withFeedForward(ffvolts));
     // pivotMotor.setControl(new PositionVoltage(Units.degreesToRotations(degrees)));
 

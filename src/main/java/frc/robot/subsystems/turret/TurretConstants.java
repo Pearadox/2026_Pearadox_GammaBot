@@ -8,15 +8,17 @@ import edu.wpi.first.math.util.Units;
 
 public final class TurretConstants {
   public static final int TURRET_ID = 20;
-  public static final double TURRET_GEAR_RATIO = 500. / 9.; // ~55.55:1, (100/9)(50/20)(32/16)
+  public static final double TURRET_GEAR_RATIO = 45.0; // (90/10)(40/16)(32/16)
   public static final double TURRET_P_COEFFICIENT = 2 * Math.PI / TURRET_GEAR_RATIO;
 
   public static final int TURRET_SUPPLY_CURRENT_LIMIT = 50; // changed 3/17/26 for #119
   public static final int TURRET_STATOR_CURRENT_LIMIT = 60;
 
+  // changed the field relative offset instead, but turret now zeroes facing 90 CW from intake side
   public static final double TURRET_STARTING_ANGLE = Units.degreesToRadians(0);
-  public static final double TURRET_MIN_ANGLE = Units.degreesToRadians(-270);
-  public static final double TURRET_MAX_ANGLE = Units.degreesToRadians(120);
+
+  public static final double TURRET_MIN_ANGLE = Units.degreesToRadians(-275);   // absolute min is prob near -540 
+  public static final double TURRET_MAX_ANGLE = Units.degreesToRadians(155); // absolute max is near 180
 
   public static final double SAFETY_LIMIT = Units.degreesToRadians(5);
   public static final double TURRET_SAFE_MIN = TURRET_MIN_ANGLE + SAFETY_LIMIT;
@@ -47,11 +49,11 @@ public final class TurretConstants {
   public static final double FF_CHASSIS_ROT_VELOCITY_LIMIT = 1.5 * Math.PI; // rad/s
 
   public static final int TURRET_CANCODER_ID = 26;
+  // a wild robonauts appeared!
   public static final double TURRET_CANCODER_OFFSET_ROTS = -0.1184;
-  // -0.4106 + 0.3637 - 0.3508 - 0.220;
-  // 0; // 0.4229; // 0.012451; // -0.217041; // 0.223145;
 
-  public static final double TURRET_TO_CANCODER_RATIO = 3. / 10.;
+  // now geared 1:1 with turret, (90/10)(15/45)(15/45)
+  public static final double TURRET_TO_CANCODER_RATIO = 1.0; 
 
   public static final TalonFXConfiguration getTurretConfig() {
     TalonFXConfiguration config = new TalonFXConfiguration();
