@@ -73,14 +73,14 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
     // Logger.recordOutput(
     //     "Launcher/CurrentDrawStator", launcher1Leader.getStatorCurrent().getValueAsDouble());
   }
-  
+
   public void runLauncherVelocity(double velocityRPS) {
     launcher1Leader.setControl(
-      velocityVoltageRequest.withVelocity(velocityRPS).withEnableFOC(false));
+        velocityVoltageRequest.withVelocity(velocityRPS).withEnableFOC(false));
     launcher2Follower.setControl(launcher2Control);
     Logger.recordOutput("Launcher/VelocitySetpointRPS", velocityRPS);
   }
-  
+
   public void setLauncherVoltage(double voltage) {
     launcher1Leader.setControl(voltageRequest.withOutput(voltage));
     launcher2Follower.setControl(launcher2Control);
@@ -94,7 +94,8 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
   public void setHoodAngleRads(double angleRads, double feedforward) {
     if (angleRads <= LauncherConstants.HOOD_MAX_ANGLE_RADS
         && angleRads >= LauncherConstants.HOOD_MIN_ANGLE_RADS) {
-      double setpoint = Units.radiansToRotations(angleRads - LauncherConstants.HOOD_MIN_ANGLE_RADS)
+      double setpoint =
+          Units.radiansToRotations(angleRads - LauncherConstants.HOOD_MIN_ANGLE_RADS)
               * LauncherConstants.HOOD_GEARING;
       hood.setControl(hoodControl.withPosition(setpoint).withFeedForward(feedforward));
       Logger.recordOutput("Hood/AngleSetpointRots", setpoint);

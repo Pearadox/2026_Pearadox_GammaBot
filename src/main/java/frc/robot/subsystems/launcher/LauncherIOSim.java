@@ -47,10 +47,10 @@ public class LauncherIOSim extends LauncherIOTalonFX {
 
     launcherSimState.setSupplyVoltage(12);
     launcherPhysicsSim.setInputVoltage(launcherSimState.getMotorVoltage());
-    
+
     hoodSimState.setSupplyVoltage(12);
     hoodPhysicsSim.setInputVoltage(hoodSimState.getMotorVoltage());
-    
+
     launcherPhysicsSim.update(Constants.UPDATE_FREQ_SEC);
     hoodPhysicsSim.update(Constants.UPDATE_FREQ_SEC);
 
@@ -61,7 +61,6 @@ public class LauncherIOSim extends LauncherIOTalonFX {
 
     hoodSimState.setRawRotorPosition(
         (hoodPhysicsSim.getAngleRads() - LauncherConstants.HOOD_MIN_ANGLE_RADS));
-    hoodSimState.setRotorVelocity(
-        Units.radiansToRotations(hoodPhysicsSim.getVelocityRadPerSec()));
+    hoodSimState.setRotorVelocity(Units.radiansToRotations(hoodPhysicsSim.getVelocityRadPerSec()));
   }
 }

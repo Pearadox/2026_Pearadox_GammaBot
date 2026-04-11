@@ -32,8 +32,8 @@ public class IntakeConstants {
             IntakeState.INTAKING, new StateConfig(120, 7.0), // 4V
             IntakeState.OUTTAKING, new StateConfig(120, -7.0), // -4V
             IntakeState.FLOW_STATE, new StateConfig(7, 4.0),
-            IntakeState.HOLD_STATE, new StateConfig(Units.rotationsToDegrees(8) / IntakeConstants.GEARING, 7)
-            );
+            IntakeState.HOLD_STATE,
+                new StateConfig(Units.rotationsToDegrees(8) / IntakeConstants.GEARING, 7));
   }
 
   // public static record StateConfig(double angleDeg, double amps, double maxDuty) {
