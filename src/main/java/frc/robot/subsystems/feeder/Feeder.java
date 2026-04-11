@@ -10,12 +10,15 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.feeder.FeederConstants.FeederState;
 import frc.robot.subsystems.feeder.FeederConstants.StateConfig;
+import frc.robot.util.LoggedTunableNumber;
 
 public class Feeder extends SubsystemBase {
-
   private final FeederIO io;
   private final FeederIOInputsAutoLogged inputs = new FeederIOInputsAutoLogged();
   private FeederState feederState = FeederState.STOPPED;
+
+  // TODO: try lowering later
+  private static LoggedTunableNumber feederVolts = new LoggedTunableNumber("Feeder/On Voltage", -11); 
 
   private Debouncer canRangeDebouncer = new Debouncer(0.1, DebounceType.kFalling);
   private boolean isDetectedDebounced = false;
@@ -42,7 +45,12 @@ public class Feeder extends SubsystemBase {
     // Logger.recordOutput("Feeder/CanRange/FuelIsDetected", isDetectedDebounced());
     // Logger.recordOutput("Feeder/CanRange/Number of Fuel", getFuelCount());
     // Logger.recordOutput("Feeder/CanRange/Signal", canRangeGetSignalStrength());
-    io.runFeederVoltage(StateConfig.FEEDER_STATE_MAP.get(feederState).voltage());
+
+    if (feederState == FeederState.RUNNING) {
+      io.runFeederVoltage(feederVolts.get());
+    } else {
+      io.runFeederVoltage(StateConfig.FEEDER_STATE_MAP.get(feederState).voltage());
+    }
     // updateFuelCount();
   }
 

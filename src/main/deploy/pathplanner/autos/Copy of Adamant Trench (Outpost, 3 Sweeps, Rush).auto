@@ -17,22 +17,9 @@
           }
         },
         {
-          "type": "race",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Set Launching"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Jostle Intake"
-                }
-              }
-            ]
+            "name": "Set Launching"
           }
         },
         {
@@ -48,22 +35,9 @@
           }
         },
         {
-          "type": "race",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Set Launching"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Jostle Intake"
-                }
-              }
-            ]
+            "name": "Set Launching"
           }
         },
         {

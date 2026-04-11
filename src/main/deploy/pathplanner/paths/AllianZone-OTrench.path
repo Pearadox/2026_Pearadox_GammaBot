@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.86123823109843,
-        "y": 0.18582453637660645
+        "x": 2.685325842696629,
+        "y": 0.4783370786516845
       },
       "isLocked": false,
       "linkedName": "Outpost AllianZone"
     },
     {
       "anchor": {
-        "x": 4.427218259629101,
-        "y": 0.5739087018544944
+        "x": 3.778710843373494,
+        "y": 0.5599879518072293
       },
       "prevControl": {
-        "x": 3.236861626248216,
-        "y": 0.6256633380884443
+        "x": 3.0420112359550564,
+        "y": 0.9675056179775288
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "OTrench Shooting Spot"
     }
   ],
   "rotationTargets": [],

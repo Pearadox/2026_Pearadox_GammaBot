@@ -92,17 +92,17 @@ public class MovingShotSolver {
   }
 
   private final LoggedTunableNumber rpsMultiplier =
-      new LoggedTunableNumber("SOTM/Rps Multiplier", 2.37);
+      new LoggedTunableNumber("SOTM/Rps Multiplier", 2.2); // 2.37
   private final LoggedTunableNumber farRpsMultiplier =
-      new LoggedTunableNumber("SOTM/far Rps Multiplier", 2.4);
+      new LoggedTunableNumber("SOTM/far Rps Multiplier", 2.28); // 2.4
   private final LoggedTunableNumber turretDx = new LoggedTunableNumber("SOTM/Turret dx", -0.146);
   private final LoggedTunableNumber turretDy = new LoggedTunableNumber("SOTM/Turret dy", -0.133);
   private final LoggedTunableNumber shooterHeightInches =
       new LoggedTunableNumber("SOTM/Launch Height inches", 16);
   private final LoggedTunableNumber normalShotAngleDegrees =
-      new LoggedTunableNumber("SOTM/normalShotAngleDegrees", 67);
+      new LoggedTunableNumber("SOTM/normalShotAngleDegrees", 68); // 67
   private final LoggedTunableNumber farShotAngleDegrees =
-      new LoggedTunableNumber("SOTM/farShotAngleDegrees", 57);
+      new LoggedTunableNumber("SOTM/farShotAngleDegrees", 60); // 57
   private final LoggedTunableNumber farShotMinDistanceMeters =
       new LoggedTunableNumber("SOTM/farShotMinDistance", 4.5);
 

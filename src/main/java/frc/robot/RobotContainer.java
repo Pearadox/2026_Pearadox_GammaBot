@@ -40,7 +40,6 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.feeder.Feeder;
-import frc.robot.subsystems.feeder.FeederConstants;
 import frc.robot.subsystems.feeder.FeederIO;
 import frc.robot.subsystems.feeder.FeederIOReal;
 import frc.robot.subsystems.feeder.FeederIOSim;
@@ -190,6 +189,10 @@ public class RobotContainer {
 
     autoChooser.addOption(
         "DTrench-NZone-2.5-Sweeps", new PathPlannerAuto("OTrench-NZone-2.5-Sweeps", true));
+
+    autoChooser.addOption(
+        "Adamant Trench (Depot, 3 Sweeps, Rush)",
+        new PathPlannerAuto("Adamant Trench (Outpost, 3 Sweeps, Rush)", true));
 
     visualizer =
         new RobotVisualizer(
@@ -398,8 +401,17 @@ public class RobotContainer {
             .andThen(new WaitCommand(0.2))
             .andThen(
                 (new RunCommand(() -> spindexer.setRunning(), spindexer))
-                    .until(() -> feeder.isHopperEmpty())
-                    .withTimeout(FeederConstants.IS_HOPPER_EMPTY_BUFFER_TIME)));
+                    .until(() -> feeder.isHopperEmpty()))
+            // .withTimeout(FeederConstants.IS_HOPPER_EMPTY_BUFFER_TIME))
+            .finallyDo(
+                (bool) ->
+                    new InstantCommand(() -> feeder.setStopped())
+                        .andThen(
+                            (new InstantCommand(
+                                () -> {
+                                  spindexer.setStopped();
+                                  launcher.setOff();
+                                })))));
 
     NamedCommands.registerCommand(
         "Set Launching (No Wait)",
@@ -424,6 +436,15 @@ public class RobotContainer {
     NamedCommands.registerCommand("Stop Intaking", new InstantCommand(() -> intake.setDeployed()));
     NamedCommands.registerCommand("Stow Intake", new InstantCommand(() -> intake.setStowed()));
     NamedCommands.registerCommand("Flow Intake", new InstantCommand(() -> intake.setFlow()));
+    NamedCommands.registerCommand(
+        "Jostle Intake",
+        new RunCommand(() -> intake.setIntaking(), intake)
+            .withTimeout(1)
+            .andThen(new RunCommand(() -> intake.setFlow(), intake).withTimeout(1))
+            .andThen(new RunCommand(() -> intake.setIntaking(), intake).withTimeout(1))
+            .andThen(new RunCommand(() -> intake.setFlow(), intake).withTimeout(1))
+            .andThen(new RunCommand(() -> intake.setIntaking(), intake).withTimeout(1))
+            .finallyDo((bool) -> new InstantCommand(() -> intake.setIntaking(), intake)));
 
     new EventTrigger("Set Intaking").onTrue(new InstantCommand(() -> intake.setIntaking()));
   }
