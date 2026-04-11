@@ -43,7 +43,7 @@ public class Intake extends SubsystemBase {
   private static LoggedTunableNumber pivotkp = new LoggedTunableNumber("Intake/pivot kp", 0.5);
   private static LoggedTunableNumber pivotkd = new LoggedTunableNumber("Intake/pivotkd", 0.0);
   // might need retuning
-  private static LoggedTunableNumber pivotkg = new LoggedTunableNumber("Intake/pivot kg", -0.45); 
+  private static LoggedTunableNumber pivotkg = new LoggedTunableNumber("Intake/pivot kg", -0.45);
 
   @Override
   public void periodic() {

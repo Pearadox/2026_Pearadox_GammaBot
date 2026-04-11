@@ -17,8 +17,10 @@ public final class TurretConstants {
   // changed the field relative offset instead, but turret now zeroes facing 90 CW from intake side
   public static final double TURRET_STARTING_ANGLE = Units.degreesToRadians(0);
 
-  public static final double TURRET_MIN_ANGLE = Units.degreesToRadians(-275);   // absolute min is prob near -540 
-  public static final double TURRET_MAX_ANGLE = Units.degreesToRadians(155); // absolute max is near 180
+  public static final double TURRET_MIN_ANGLE =
+      Units.degreesToRadians(-275); // absolute min is prob near -540
+  public static final double TURRET_MAX_ANGLE =
+      Units.degreesToRadians(155); // absolute max is near 180
 
   public static final double SAFETY_LIMIT = Units.degreesToRadians(5);
   public static final double TURRET_SAFE_MIN = TURRET_MIN_ANGLE + SAFETY_LIMIT;
@@ -53,7 +55,7 @@ public final class TurretConstants {
   public static final double TURRET_CANCODER_OFFSET_ROTS = -0.1184;
 
   // now geared 1:1 with turret, (90/10)(15/45)(15/45)
-  public static final double TURRET_TO_CANCODER_RATIO = 1.0; 
+  public static final double TURRET_TO_CANCODER_RATIO = 1.0;
 
   public static final TalonFXConfiguration getTurretConfig() {
     TalonFXConfiguration config = new TalonFXConfiguration();

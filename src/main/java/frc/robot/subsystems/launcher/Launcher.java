@@ -34,9 +34,10 @@ public class Launcher extends SubsystemBase {
           "Launcher/Manual Mode Default Velocity", LauncherConstants.DEFAULT_VELOCITY_SETPOINT_RPS);
   private final LoggedTunableNumber idleDefaultVelocity =
       new LoggedTunableNumber("Launcher/Idle Mode Default Velocity", 20);
-  private final LoggedTunableNumber hoodAngleDegs =
+
+  private final LoggedTunableNumber defaultHoodAngleDegs =
       new LoggedTunableNumber(
-          "Launcher/Hood angle Degrees",
+          "Launcher/Default Hood Angle Degrees",
           Units.radiansToDegrees(LauncherConstants.HOOD_MIN_ANGLE_RADS));
 
   private final LoggedTunableNumber kP = new LoggedTunableNumber("Launcher/kP", 99999);
@@ -112,24 +113,17 @@ public class Launcher extends SubsystemBase {
     Logger.recordOutput("Launcher/launcherVelocity", getLauncherVelocity());
     Logger.recordOutput("Hood/kG-Value", getkG());
 
-    // io.setHoodAngleRads(launcherState.getHoodAngleRads());
-
     double desiredHoodAngleRads;
     if (launcherState == LauncherState.SELF_DIRECTING) {
       desiredHoodAngleRads = MovingShotSolver.getShotSolution().hoodAngleRadians();
     } else {
-      desiredHoodAngleRads = Units.degreesToRadians(defaultStateAngleDegrees.get());
+      desiredHoodAngleRads = Units.degreesToRadians(defaultHoodAngleDegs.get());
     }
-    io.setHoodAngleRads(desiredHoodAngleRads);
+    io.setHoodAngleRads(desiredHoodAngleRads, getkG());
     // desiredHoodAngleRads = RobotContainer.hoodAngleTesting;
     // io.setHoodAngleRads(desiredHoodAngleRads);
 
     Logger.recordOutput("Hood/Desired-Angle", desiredHoodAngleRads);
-    Logger.recordOutput("Hood/Servo-Position", inputs.hoodServo1Position);
-    Logger.recordOutput(
-        "Hood/Current-Angle",
-        LauncherConstants.angularPositiontoRotations(inputs.hoodServo1Position)
-            / LauncherConstants.HOOD_GEARING); // 5 because 1.0 position -> 5 rotations
 
     if (kP.hasChanged(hashCode())
         || kD.hasChanged(hashCode())
@@ -137,6 +131,7 @@ public class Launcher extends SubsystemBase {
         || kV.hasChanged(hashCode())) {
       io.setLauncherPIDFF(kP.get(), kD.get(), kS.get(), kV.get());
     }
+
     if (statorCurrentLimit.hasChanged(hashCode()) || supplyCurrentLimit.hasChanged(hashCode())) {
       io.setCurrentLimits(statorCurrentLimit.get(), supplyCurrentLimit.get());
     }
