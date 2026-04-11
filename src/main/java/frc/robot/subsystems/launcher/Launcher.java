@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems.launcher;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -95,10 +94,15 @@ public class Launcher extends SubsystemBase {
       setVelocity(desiredVelocity, tunableffAmps.get());
     }
 
+    // this is taking 3-4 ms each cycle
+    // LoggedTracer.reset();
     // LauncherVisualizer.getInstance()
     //     .updateFlywheelPositionDeg(Units.rotationsToDegrees(inputs.launcher1Data.position()));
     // LauncherVisualizer.getInstance()
     //     .updateHoodPositionDeg(
+    //         Units.rotationsToDegrees(
+    //             LauncherConstants.angularPositiontoRotations(inputs.hoodServo1Position)));
+    // LoggedTracer.record("LauncherViz");
     //         Units.rotationsToDegrees(inputs.hoodData.position() / LauncherConstants.HOOD_GEARING));
 
     Logger.recordOutput("Launcher/adjust", rpsAdjust);

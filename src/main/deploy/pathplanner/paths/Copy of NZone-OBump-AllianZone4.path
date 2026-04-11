@@ -1,0 +1,91 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 6.62679029957204,
+        "y": 4.132039942938659
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.422627683618366,
+        "y": 4.344329986736781
+      },
+      "isLocked": false,
+      "linkedName": "NZone4"
+    },
+    {
+      "anchor": {
+        "x": 5.941041369472182,
+        "y": 4.287303851640513
+      },
+      "prevControl": {
+        "x": 6.161261372807419,
+        "y": 4.589746331852695
+      },
+      "nextControl": {
+        "x": 5.598199937180769,
+        "y": 3.816457372976782
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.656390870185448,
+        "y": 2.8769900142653353
+      },
+      "prevControl": {
+        "x": 6.066352783933702,
+        "y": 3.309946077832273
+      },
+      "nextControl": {
+        "x": 5.24641359832694,
+        "y": 2.4440177311747395
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.978088445078458,
+        "y": 2.3853209700427964
+      },
+      "prevControl": {
+        "x": 4.069534551551303,
+        "y": 2.490878450097485
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Outpost AllianZone2"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.248700519792081,
+      "rotationDegrees": -90.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0.0,
+    "rotation": -90.0
+  },
+  "reversed": false,
+  "folder": "To Alliance Zone",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 95.981
+  },
+  "useDefaultConstraints": true
+}

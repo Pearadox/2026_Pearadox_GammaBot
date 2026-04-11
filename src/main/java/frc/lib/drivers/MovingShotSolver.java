@@ -1,5 +1,8 @@
 package frc.lib.drivers;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -36,21 +39,23 @@ public class MovingShotSolver {
     HUB(Hub.topCenterPointRed, Hub.topCenterPointBlue),
     DEPOT_CORNER(
         new Translation3d(
-            LinesVertical.redHubCenterX + 1, LinesHorizontal.leftBumpStart - 0.25, 2.0),
+            LinesVertical.redHubCenterX + 1.67, LinesHorizontal.leftBumpStart - 0.25, 2.0),
         new Translation3d(
-            LinesVertical.blueHubCenterX - 1,
+            LinesVertical.blueHubCenterX - 1.67,
             FieldConstants.fieldWidth - (LinesHorizontal.leftBumpStart - 0.25),
             2.0)),
     OUTPOST_CORNER(
         new Translation3d(
-            LinesVertical.redHubCenterX + 1, LinesHorizontal.rightBumpEnd + 0.25, 2.0),
+            LinesVertical.redHubCenterX + 1.67, LinesHorizontal.rightBumpEnd + 0.25, 2.0),
         new Translation3d(
-            LinesVertical.blueHubCenterX - 1,
+            LinesVertical.blueHubCenterX - 1.67,
             FieldConstants.fieldWidth - (LinesHorizontal.rightBumpEnd + 0.25),
             2.0));
 
     private final Translation3d redLocation;
     private final Translation3d blueLocation;
+
+    private static Debouncer fieldZoneDebouncer = new Debouncer(0.5, DebounceType.kBoth);
 
     private Goal(Translation3d red, Translation3d blue) {
       this.redLocation = red;
@@ -67,8 +72,9 @@ public class MovingShotSolver {
       boolean isRedAlliance = alliance == Alliance.Red;
 
       boolean inAllianceZone =
-          (!isRedAlliance && robotX < LinesVertical.allianceZone)
-              || (isRedAlliance && robotX > LinesVertical.oppAllianceZone);
+          fieldZoneDebouncer.calculate(
+              (!isRedAlliance && robotX < LinesVertical.allianceZone + 1)
+                  || (isRedAlliance && robotX > LinesVertical.oppAllianceZone - 1));
 
       if (inAllianceZone) {
         return HUB;
@@ -85,13 +91,21 @@ public class MovingShotSolver {
   }
 
   private final LoggedTunableNumber rpsMultiplier =
-      new LoggedTunableNumber("SOTM/Rps Multiplier", 2);
+      new LoggedTunableNumber("SOTM/Rps Multiplier", 2.0);
   private final LoggedTunableNumber turretDx = new LoggedTunableNumber("SOTM/Turret dx", -0.135);
   private final LoggedTunableNumber turretDy = new LoggedTunableNumber("SOTM/Turret dy", -0.14);
   private final LoggedTunableNumber shooterHeightInches =
-      new LoggedTunableNumber("SOTM/Launch Height in", 22.5);
+      new LoggedTunableNumber("SOTM/Launch Height inches", 22.5);
+
   private final LoggedTunableNumber hoodAngleDegrees =
-      new LoggedTunableNumber("SOTM/Launch Angle Degs", 72);
+      new LoggedTunableNumber("SOTM/Launch Angle Degs", 71);
+
+  // may need to be tuned
+  private final LoggedTunableNumber shotLatency = new LoggedTunableNumber("SOTM/shot latency", 0.1);
+  private final double robotLoopTimeSeconds = 0.02;
+  private ChassisSpeeds prevFieldRelativeSpeeds = new ChassisSpeeds();
+  private double prevAccelerationX = 0;
+  private double prevAccelerationY = 0;
 
   private static final double MPSToRPSConversion =
       LauncherConstants.LAUNCHER_GEARING / LauncherConstants.ROLLER_CIRCUMFERENCE_METERS;
@@ -111,7 +125,49 @@ public class MovingShotSolver {
     ChassisSpeeds fieldRelativeSpeeds =
         ChassisSpeeds.fromRobotRelativeSpeeds(robotRelative, curPose.getRotation());
 
-    Goal goal = Goal.findTarget(curPose, alliance);
+    // translational acceleration handling for SOTM below
+    // (currently doesn't support rotational acceleration handling)
+
+    double latency = shotLatency.get();
+
+    double robotVx = fieldRelativeSpeeds.vxMetersPerSecond;
+    double robotVy = fieldRelativeSpeeds.vyMetersPerSecond;
+    double robotOmega = fieldRelativeSpeeds.omegaRadiansPerSecond;
+
+    double robotAccelerationX =
+        MathUtil.clamp(
+            (robotVx - prevFieldRelativeSpeeds.vxMetersPerSecond) / robotLoopTimeSeconds, -2, 2);
+    double robotAccelerationY =
+        MathUtil.clamp(
+            (robotVy - prevFieldRelativeSpeeds.vyMetersPerSecond) / robotLoopTimeSeconds, -2, 2);
+
+    robotAccelerationX = 0.6 * prevAccelerationX + 0.4 * robotAccelerationX;
+    robotAccelerationY = 0.6 * prevAccelerationY + 0.4 * robotAccelerationY;
+
+    prevAccelerationX = robotAccelerationX;
+    prevAccelerationY = robotAccelerationY;
+
+    Logger.recordOutput("SOTM/AccelerationX", robotAccelerationX);
+    Logger.recordOutput("SOTM/AccelerationY", robotAccelerationY);
+
+    double predictedRobotX =
+        curPose.getX() + robotVx * latency + 0.5 * robotAccelerationX * latency * latency;
+
+    double predictedRobotY =
+        curPose.getY() + robotVy * latency + 0.5 * robotAccelerationY * latency * latency;
+
+    prevFieldRelativeSpeeds = new ChassisSpeeds(robotVx, robotVy, robotOmega);
+
+    double predictedRobotVx = robotVx + robotAccelerationX * latency;
+    double predictedRobotVy = robotVy + robotAccelerationY * latency;
+
+    Pose2d predictedRobotPose = new Pose2d(predictedRobotX, predictedRobotY, curPose.getRotation());
+    // not finding predictedRotation above yet
+
+    Goal goal = Goal.findTarget(predictedRobotPose, alliance);
+
+    // end of acceleration handling
+
     Translation3d goalTranslation = goal.getLocation(alliance);
     double goalXMeters = goalTranslation.getX();
     double goalYMeters = goalTranslation.getY();
@@ -129,7 +185,7 @@ public class MovingShotSolver {
         [dyTurretFieldRelative]   [sin(theta)  cos(theta)][dyTurretRelativeToRobot]
     */
 
-    double thetaRobot = curPose.getRotation().getRadians();
+    double thetaRobot = predictedRobotPose.getRotation().getRadians();
     double dxTurretFieldRelative =
         dxTurretRobotRelative * Math.cos(thetaRobot) - dyTurretRobotRelative * Math.sin(thetaRobot);
     double dyTurretFieldRelative =
@@ -137,8 +193,8 @@ public class MovingShotSolver {
 
     // Actual turret position in field coordinates
 
-    double turretXMeters = curPose.getX() + dxTurretFieldRelative;
-    double turretYMeters = curPose.getY() + dyTurretFieldRelative;
+    double turretXMeters = predictedRobotX + dxTurretFieldRelative;
+    double turretYMeters = predictedRobotY + dyTurretFieldRelative;
 
     // Derive NM calculations from turret displacement instead of robot center
 
@@ -148,10 +204,7 @@ public class MovingShotSolver {
 
     double hoodAngleRadians = Math.toRadians(hoodAngleDegrees.get());
 
-    double robotVx = fieldRelativeSpeeds.vxMetersPerSecond;
-    double robotVy = fieldRelativeSpeeds.vyMetersPerSecond;
-
-    Logger.recordOutput("SOTM/distnace to target", Math.hypot(Dx, Dy));
+    Logger.recordOutput("SOTM/lateral dist to target", Math.hypot(Dx, Dy));
 
     double ToF =
         1.0 + Math.hypot(Dx, Dy) / 15.0 * (3.0 - 1.0); // Initial guess of ToF for Newton's Method
@@ -160,8 +213,8 @@ public class MovingShotSolver {
     for (int i = 0; i < Constants.NEWTONS_METHOD_NUM_STEPS; i++) {
       // recalculating closer approximate value of ToF after each "step"
 
-      double vxLaunch = (Dx / ToF) - robotVx;
-      double vyLaunch = (Dy / ToF) - robotVy;
+      double vxLaunch = (Dx / ToF) - predictedRobotVx;
+      double vyLaunch = (Dy / ToF) - predictedRobotVy;
 
       double horizontalSpeed = Math.hypot(vxLaunch, vyLaunch);
 
@@ -174,8 +227,8 @@ public class MovingShotSolver {
       double dt = 1e-4; // "small" dt to estimate derivative
       double t2 = ToF + dt;
 
-      double vx2 = (Dx / t2) - robotVx;
-      double vy2 = (Dy / t2) - robotVy;
+      double vx2 = (Dx / t2) - predictedRobotVx;
+      double vy2 = (Dy / t2) - predictedRobotVy;
       double h2 = Math.hypot(vx2, vy2);
       double vz2 = h2 * Math.tan(hoodAngleRadians);
 
@@ -193,8 +246,8 @@ public class MovingShotSolver {
 
     // Compute final launch velocity (m/s) components
 
-    double vxLaunchMPS = (Dx / ToF) - robotVx;
-    double vyLaunchMPS = (Dy / ToF) - robotVy;
+    double vxLaunchMPS = (Dx / ToF) - predictedRobotVx;
+    double vyLaunchMPS = (Dy / ToF) - predictedRobotVy;
 
     double totalHorizontalSpeedMPS = Math.hypot(vxLaunchMPS, vyLaunchMPS);
     double vzLaunchMPS = totalHorizontalSpeedMPS * Math.tan(hoodAngleRadians);
@@ -207,11 +260,12 @@ public class MovingShotSolver {
 
     double shooterSpeedRPS = shooterSpeedMPS * MPSToRPSConversion;
 
-    double targetXOffsetMeters = goalXMeters - robotVx * ToF;
-    double targetYOffsetMeters = goalYMeters - robotVy * ToF;
+    double targetXOffsetMeters = goalXMeters - predictedRobotVx * ToF;
+    double targetYOffsetMeters = goalYMeters - predictedRobotVy * ToF;
     Pose2d targetPose = new Pose2d(targetXOffsetMeters, targetYOffsetMeters, new Rotation2d());
 
-    double outputtedShooterVelocity = Math.min(100, rpsMultiplier.get() * shooterSpeedRPS);
+    double outputtedShooterVelocity =
+        MathUtil.clamp(rpsMultiplier.get() * shooterSpeedRPS, 40, 100);
 
     // Compute field-relative turret angle
 
@@ -230,3 +284,11 @@ public class MovingShotSolver {
         new ShotSolution(ToF, outputtedShooterVelocity, fieldRelativeTurretAngleRot2d);
   }
 }
+
+// potential filter below:
+
+// robotAccelerationX = 0.7 * prevAx + 0.3 * robotAccelerationX;
+// robotAccelerationY = 0.7 * prevAy + 0.3 * robotAccelerationY;
+
+// prevAx = robotAccelerationX;
+// prevAy = robotAccelerationY;

@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 // import frc.robot.subsystems.intake.MechVisualizer;
 import frc.robot.subsystems.launcher.LauncherVisualizer;
+import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.util.EnergyTracker;
 import frc.robot.util.LoggedTracer;
 import frc.robot.util.PhoenixUtil;
@@ -39,6 +40,7 @@ public class Robot extends LoggedRobot {
   private RobotContainer robotContainer;
   @AutoLogOutput @Getter private static Alliance alliance;
   @Getter private static boolean isHubCurrentlyActive = true;
+  private double enabledTimestamp = 0;
 
   public Robot() {
     // Record metadata
@@ -112,8 +114,13 @@ public class Robot extends LoggedRobot {
     // Return to non-RT thread priority (do not modify the first argument)
     // Threads.setCurrentThreadPriority(false, 10);
 
-    // robotContainer.visualizer.periodic();
+    LoggedTracer.reset();
+    robotContainer.visualizer.periodic();
+    LoggedTracer.record("Visualizer");
+
+    LoggedTracer.reset();
     EnergyTracker.periodic();
+    LoggedTracer.record("EnergyTracker");
 
     Optional<Alliance> allianceOptional = DriverStation.getAlliance();
     alliance = allianceOptional.orElse(Alliance.Blue);
@@ -126,8 +133,15 @@ public class Robot extends LoggedRobot {
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
-    // robotContainer.vision.captureRewind();
-    // robotContainer.vision.throttleLimelights();
+    double currentTime = RobotController.getFPGATime();
+    int secondsEnabledFor = (int) Math.ceil((currentTime - enabledTimestamp) / 1e6);
+    // only record rewinds if enabled for at least 10s
+    if (enabledTimestamp > 0 && secondsEnabledFor >= VisionConstants.MIN_REWIND_LENGTH_SECONDS) {
+      robotContainer.vision.captureRewind(
+          Math.min(secondsEnabledFor, VisionConstants.MAX_REWIND_LENGTH_SECONDS));
+    }
+
+    robotContainer.vision.throttleLimelights();
   }
 
   /** This function is called periodically when disabled. */
@@ -137,7 +151,8 @@ public class Robot extends LoggedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    // robotContainer.vision.unthrottleLimelights();
+    robotContainer.vision.unthrottleLimelights();
+    enabledTimestamp = RobotController.getFPGATime();
 
     autonomousCommand = robotContainer.getAutonomousCommand();
 
@@ -162,10 +177,12 @@ public class Robot extends LoggedRobot {
       autonomousCommand.cancel();
     }
 
-    // robotContainer.vision.unthrottleLimelights();
-    // robotContainer.spindexer.setStopped();
-    // robotContainer.feeder.setStopped();
-    // robotContainer.launcher.setIdle();
+    robotContainer.vision.unthrottleLimelights();
+    enabledTimestamp = RobotController.getFPGATime();
+
+    robotContainer.spindexer.setStopped();
+    robotContainer.feeder.setStopped();
+    robotContainer.launcher.setIdle();
 
     Optional<Alliance> allianceOptional = DriverStation.getAlliance();
     alliance = allianceOptional.orElse(Alliance.Blue);

@@ -88,6 +88,7 @@ public abstract class IntakeIOTalonFX implements IntakeIO {
 
   @Override
   public void runRollersVolts(double volts) {
+    // TODO: try enabling FOC or switching to velocity torque
     roller1Leader.setControl(rollerVoltage.withOutput(volts).withEnableFOC(false));
   }
 

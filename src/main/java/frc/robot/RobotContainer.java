@@ -8,8 +8,12 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.events.EventTrigger;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -17,9 +21,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.lib.drivers.MovingShotSolver;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.ShootOnTheMove;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -28,10 +37,20 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.feeder.Feeder;
+import frc.robot.subsystems.feeder.FeederConstants;
 import frc.robot.subsystems.feeder.FeederIO;
 import frc.robot.subsystems.feeder.FeederIOReal;
 import frc.robot.subsystems.feeder.FeederIOSim;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeConstants;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOReal;
+import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.launcher.Launcher;
+import frc.robot.subsystems.launcher.LauncherIO;
+import frc.robot.subsystems.launcher.LauncherIOReal;
+import frc.robot.subsystems.launcher.LauncherIOSim;
+import frc.robot.subsystems.leds.LEDStrip;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.intake.IntakeIOSim;
@@ -39,21 +58,33 @@ import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerIO;
 import frc.robot.subsystems.spindexer.SpindexerIOReal;
 import frc.robot.subsystems.spindexer.SpindexerIOSim;
+import frc.robot.subsystems.turret.Turret;
+import frc.robot.subsystems.turret.TurretIO;
+import frc.robot.subsystems.turret.TurretIOReal;
+import frc.robot.subsystems.turret.TurretIOSim;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionConstants;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
 // import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.util.DriveHelpers;
+import frc.robot.util.LoggedTracer;
+import lombok.Getter;
+import lombok.Setter;
 
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
   public final Feeder feeder;
   private final Intake intake;
-  //   public final Launcher launcher;
+  public final Launcher launcher;
   public final Spindexer spindexer;
-  //   private final Turret turret;
-  //   public final Vision vision;
+  private final Turret turret;
+  public final Vision vision;
+  public static final LEDStrip ledStrip = LEDStrip.getInstance();
 
   // Visualizer
-  //   public final RobotVisualizer visualizer;
+  public final RobotVisualizer visualizer;
+  @Getter @Setter private double robotSpeedMultiplier = 1.0;
 
   // Controller
   private final CommandXboxController drivercontroller = new CommandXboxController(0);
@@ -66,7 +97,6 @@ public class RobotContainer {
   public RobotContainer() {
 
     // Register named commands for PathPlanner
-    registerNamedCommands();
 
     switch (Constants.currentMode) {
       case REAL:
@@ -83,16 +113,15 @@ public class RobotContainer {
 
         feeder = new Feeder(new FeederIOReal());
         intake = new Intake(new IntakeIOReal());
-        // launcher = new Launcher(new LauncherIOReal());
+        launcher = new Launcher(new LauncherIOReal());
         spindexer = new Spindexer(new SpindexerIOReal());
-        // turret = new Turret(new TurretIOReal(), drive::getChassisSpeeds, drive::getRotation);
-        // vision =
-        //     new Vision(
-        //         drive::addVisionMeasurement,
-        //         new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation)
-        //         // new VisionIOPhotonVision(
-        //         //     VisionConstants.camera1Name, VisionConstants.robotToCamera1)
-        //         );
+        turret = new Turret(new TurretIOReal(), drive::getChassisSpeeds, drive::getRotation);
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                // new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation)
+                new VisionIOPhotonVision(
+                    VisionConstants.camera1Name, VisionConstants.robotToCamera1));
 
         break;
 
@@ -108,10 +137,10 @@ public class RobotContainer {
 
         feeder = new Feeder(new FeederIOSim());
         intake = new Intake(new IntakeIOSim());
-        // launcher = new Launcher(new LauncherIOSim());
+        launcher = new Launcher(new LauncherIOSim());
         spindexer = new Spindexer(new SpindexerIOSim());
-        // turret = new Turret(new TurretIOSim(), drive::getChassisSpeeds, drive::getRotation);
-        // vision = new Vision(drive::addVisionMeasurement);
+        turret = new Turret(new TurretIOSim(), drive::getChassisSpeeds, drive::getRotation);
+        vision = new Vision(drive::addVisionMeasurement);
 
         break;
 
@@ -127,14 +156,15 @@ public class RobotContainer {
 
         feeder = new Feeder(new FeederIO() {});
         intake = new Intake(new IntakeIO() {});
-        // launcher = new Launcher(new LauncherIO() {});
+        launcher = new Launcher(new LauncherIO() {});
         spindexer = new Spindexer(new SpindexerIO() {});
-        // turret = new Turret(new TurretIO() {}, drive::getChassisSpeeds, drive::getRotation);
-        // vision = new Vision(drive::addVisionMeasurement);
+        turret = new Turret(new TurretIO() {}, drive::getChassisSpeeds, drive::getRotation);
+        vision = new Vision(drive::addVisionMeasurement);
 
         break;
     }
 
+    registerNamedCommands();
     // Set up auto routines
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Super auto chooser", autoChooser);
@@ -155,22 +185,30 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    // visualizer =
-    //     new RobotVisualizer(
-    //         turret::getTurretAngleRads,
-    //         () -> 0, // TODO: replace with hood angle supplier
-    //         () -> 0, // TODO: replace with spindexer angle supplier
-    //         () -> Units.degreesToRadians(90 - intake.getAngleDegs()),
-    //         () -> 0 // TODO: replace with climber displacement supplier
-    //         );
+    autoChooser.addOption(
+        "DTrench-NZone-2.5-Sweeps", new PathPlannerAuto("OTrench-NZone-2.5-Sweeps", true));
+
+    visualizer =
+        new RobotVisualizer(
+            turret::getTurretAngleRads,
+            () -> 0, // TODO: replace with hood angle supplier
+            () -> 0, // TODO: replace with spindexer angle supplier
+            () -> Units.degreesToRadians(90 - intake.getAngleDegs()),
+            () -> 0 // TODO: replace with climber displacement supplier
+            );
 
     // Configure the button bindings
     configureButtonBindings();
 
-    // vision.setDefaultCommand(
-    //     new RunCommand(
-    //         () -> MovingShotSolver.getInstance().solve(drive::getPose, drive::getChassisSpeeds),
-    //         vision));
+    vision.setDefaultCommand(
+        new RunCommand(
+            () -> {
+              LoggedTracer.reset();
+              MovingShotSolver.getInstance().solve(drive::getPose, drive::getChassisSpeeds);
+              LoggedTracer.record("MovingShotSolve");
+            },
+            vision));
+    ledStrip.setDefaultCommand(new RunCommand(() -> ledStrip.isHubActive(), ledStrip));
   }
 
   /**
@@ -185,8 +223,8 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -drivercontroller.getLeftY(),
-            () -> -drivercontroller.getLeftX(),
+            () -> -drivercontroller.getLeftY() * getRobotSpeedMultiplier(),
+            () -> -drivercontroller.getLeftX() * getRobotSpeedMultiplier(),
             () -> -drivercontroller.getRightX()));
 
     // Switch to X pattern when X button is pressed
@@ -213,18 +251,39 @@ public class RobotContainer {
                 () -> -drivercontroller.getLeftX(),
                 () -> DriveHelpers.findClosestCorner(drive::getPose)));
 
-    // drivercontroller
-    //     .rightBumper()
-    //     .whileTrue(
-    //         new ShootOnTheMove(
-    //                 launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d)
-    //             .alongWith(launcher.score()))
-    //     .onFalse(
-    //         new InstantCommand(
-    //             () -> {
-    //               feeder.setStopped();
-    //               spindexer.setStopped();
-    //             }));
+    drivercontroller
+        .y()
+        .toggleOnTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -drivercontroller.getLeftY(),
+                () -> -drivercontroller.getLeftX(),
+                () ->
+                    DriveHelpers.getCourseRotation2d(drive::getChassisSpeeds, drive::getRotation)));
+
+    drivercontroller
+        .rightBumper()
+        .whileTrue(
+            new ShootOnTheMove(
+                    launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d)
+                .alongWith(launcher.score()))
+        .onFalse(
+            new InstantCommand(
+                () -> {
+                  feeder.setStopped();
+                  spindexer.setStopped();
+                }));
+
+    drivercontroller
+        .rightBumper()
+        .whileTrue(
+            Commands.startEnd(
+                () -> {
+                  setRobotSpeedMultiplier(0.7);
+                },
+                () -> {
+                  setRobotSpeedMultiplier(1.0);
+                }));
 
     drivercontroller
         .leftBumper()
@@ -232,91 +291,85 @@ public class RobotContainer {
         .onFalse(new InstantCommand(() -> intake.setDeployed()));
     drivercontroller.povUp().onTrue(new InstantCommand(() -> intake.setStowed()));
     drivercontroller.povDown().onTrue(new InstantCommand(() -> intake.setDeployed()));
-    drivercontroller.povLeft().onTrue(new InstantCommand(() -> intake.setHold()));
-    // drivercontroller
-    //     .povLeft()
-    //     .onTrue(new InstantCommand(() -> intake.setOuttaking()))
-    //     .onFalse(new InstantCommand(() -> intake.setDeployed()));
-
     drivercontroller
-        .y()
-        .whileTrue(new InstantCommand(() -> spindexer.setRunning(), spindexer))
-        .onFalse(new InstantCommand(() -> spindexer.setStopped(), spindexer));
+        .povLeft()
+        .onTrue(new InstantCommand(() -> intake.setOuttaking()))
+        .onFalse(new InstantCommand(() -> intake.setDeployed()));
 
     drivercontroller
         .b()
-        .whileTrue(new InstantCommand(() -> feeder.setRunning()))
-        .onFalse(new InstantCommand(() -> feeder.setStopped()));
+        .whileTrue(new RunCommand(() -> spindexer.setReverse(), spindexer))
+        .onFalse(new InstantCommand(() -> spindexer.setStopped(), spindexer));
 
-    // // Op Bindings
-    // opController.a().onTrue(new InstantCommand(() -> launcher.setIdle()));
-    // opController
-    //     .b()
-    //     .onTrue(
-    //         new InstantCommand(
-    //             () -> {
-    //               launcher.setOff();
-    //               spindexer.setStopped();
-    //               feeder.setStopped();
-    //             }));
-    opController.y().onTrue(new InstantCommand(() -> launcher.zeroHood()).ignoringDisable(true));
+    // Op Bindings
+    opController.a().onTrue(new InstantCommand(() -> launcher.setIdle()));
+    opController
+        .b()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  launcher.setOff();
+                  spindexer.setStopped();
+                  feeder.setStopped();
+                }));
+    opController.y().onTrue(new InstantCommand(() -> launcher.setManual()));
 
-    // opController.povLeft().whileTrue(new RunCommand(() -> turret.adjustRotationBy(+0.01)));
-    // opController.povRight().whileTrue(new RunCommand(() -> turret.adjustRotationBy(-0.01)));
+    opController.povLeft().whileTrue(new RunCommand(() -> turret.adjustRotationBy(+0.01)));
+    opController.povRight().whileTrue(new RunCommand(() -> turret.adjustRotationBy(-0.01)));
 
-    // opController.povUp().whileTrue(new RunCommand(() -> intake.adjustVoltsBy(+0.1)));
-    // opController.povDown().whileTrue(new RunCommand(() -> intake.adjustVoltsBy(-0.1)));
+    opController.povUp().whileTrue(new RunCommand(() -> intake.adjustVoltsBy(+0.1)));
+    opController.povDown().whileTrue(new RunCommand(() -> intake.adjustVoltsBy(-0.1)));
 
-    // Trigger intakeAdjust = new Trigger(() -> Math.abs(opController.getLeftY()) > 0.9);
-    // intakeAdjust.whileTrue(
-    //     new RunCommand(
-    //         () ->
-    //             intake.adjustPivotAngleBy(
-    //                 Math.signum(-opController.getLeftY())
-    //                     * IntakeConstants.OP_ADJUST_INCREMENT_DEGREES)));
+    Trigger intakeAdjust = new Trigger(() -> Math.abs(opController.getLeftY()) > 0.9);
+    intakeAdjust.whileTrue(
+        new RunCommand(
+            () ->
+                intake.adjustPivotAngleBy(
+                    Math.signum(-opController.getLeftY())
+                        * IntakeConstants.OP_ADJUST_INCREMENT_DEGREES)));
 
-    // Trigger launcherAdjust = new Trigger(() -> Math.abs(opController.getRightY()) > 0.9);
-    // launcherAdjust.whileTrue(
-    //     new RunCommand(
-    //         () ->
-    //             launcher.adjustRPSBy(
-    //                 Math.signum(opController.getRightY())
-    //                     * IntakeConstants.OP_ADJUST_INCREMENT_DEGREES)));
+    Trigger launcherAdjust = new Trigger(() -> Math.abs(opController.getRightY()) > 0.9);
+    launcherAdjust.whileTrue(
+        new RunCommand(
+            () ->
+                launcher.adjustRPSBy(
+                    Math.signum(opController.getRightY())
+                        * IntakeConstants.OP_ADJUST_INCREMENT_DEGREES)));
 
-    // turret.setDefaultCommand(
-    //     new RunCommand(
-    //         () ->
-    //             turret.followFieldCentricTarget(
-    //                 () -> MovingShotSolver.getShotSolution().turretAngle()),
-    //         turret));
+    turret.setDefaultCommand(
+        new RunCommand(
+            () ->
+                turret.followFieldCentricTarget(
+                    () -> MovingShotSolver.getShotSolution().turretAngle()),
+            turret));
 
-    // opController
-    //     .back()
-    //     .onTrue(
-    //         new RunCommand( // same as default cmd btw
-    //             () ->
-    //                 turret.followFieldCentricTarget(
-    //                     () -> MovingShotSolver.getShotSolution().turretAngle()),
-    //             turret));
+    opController
+        .back()
+        .onTrue(
+            new RunCommand( // same as default cmd btw
+                () ->
+                    turret.followFieldCentricTarget(
+                        () -> MovingShotSolver.getShotSolution().turretAngle()),
+                turret));
 
-    // opController.leftBumper().onTrue(new RunCommand(() -> turret.goToZero(), turret));
-    // opController.rightBumper().onTrue(new RunCommand(() -> turret.goToTestSetpoint(), turret));
+    opController.leftBumper().onTrue(new RunCommand(() -> turret.goToZero(), turret));
+    opController.rightBumper().onTrue(new RunCommand(() -> turret.goToTestSetpoint(), turret));
 
-    // opController
-    //     .start()
-    //     .onTrue(
-    //         new InstantCommand(
-    //                 () -> {
-    //                   if (!turret.isHasZeroed()) {
-    //                     // Zeroes the turret and sets it to brake mode
-    //                     turret.requestZero();
-    //                   } else {
-    //                     // If the start button is pressed a second time,
-    //                     // set it back to coast mode so it can be rezeroed
-    //                     turret.undoZero();
-    //                   }
-    //                 })
-    //             .ignoringDisable(true));
+    opController
+        .start()
+        .onTrue(
+            new InstantCommand(
+                    () -> {
+                      if (!turret.isHasZeroed()) {
+                        // Zeroes the turret and sets it to brake mode
+                        turret.requestZero();
+                      } else {
+                        // If the start button is pressed a second time,
+                        // set it back to coast mode so it can be rezeroed
+                        turret.undoZero();
+                      }
+                    })
+                .ignoringDisable(true));
   }
 
   /**
@@ -329,34 +382,45 @@ public class RobotContainer {
   }
 
   public void registerNamedCommands() {
-    // // Feeder Commands
-    // NamedCommands.registerCommand(
-    //     "Set Launching",
-    //     new InstantCommand(() -> launcher.setScoring())
-    //         .andThen(new WaitCommand(0.2))
-    //         .andThen(new InstantCommand(() -> feeder.setRunning()))
-    //         .andThen(new WaitCommand(0.2))
-    //         .andThen(
-    //             (new InstantCommand(
-    //                 () -> {
-    //                   spindexer.setRunning();
-    //                 }))));
-    // NamedCommands.registerCommand(
-    //     "Stop Launching",
-    //     new InstantCommand(() -> feeder.setStopped())
-    //         .andThen(
-    //             (new InstantCommand(
-    //                 () -> {
-    //                   spindexer.setStopped();
-    //                   launcher.setOff();
-    //                 }))));
+    // Timer Commands
+    NamedCommands.registerCommand("Start Timer", new InstantCommand(() -> feeder.startTimer()));
 
-    // // Intake Commands
-    // NamedCommands.registerCommand("Set Intaking", new InstantCommand(() ->
-    // intake.setIntaking()));
-    // NamedCommands.registerCommand("Stop Intaking", new InstantCommand(() ->
-    // intake.setDeployed()));
-    // NamedCommands.registerCommand("Stow Intake", new InstantCommand(() -> intake.setStowed()));
-    // NamedCommands.registerCommand("Flow Intake", new InstantCommand(() -> intake.setFlow()));
+    // Launching Sequence Commands
+    NamedCommands.registerCommand(
+        "Set Launching",
+        new InstantCommand(() -> launcher.setScoring())
+            .andThen(new WaitCommand(0.2))
+            .andThen(new InstantCommand(() -> feeder.setRunning()))
+            .andThen(new WaitCommand(0.2))
+            .andThen(
+                (new RunCommand(() -> spindexer.setRunning(), spindexer))
+                    .until(() -> feeder.isHopperEmpty())
+                    .withTimeout(FeederConstants.IS_HOPPER_EMPTY_BUFFER_TIME)));
+
+    NamedCommands.registerCommand(
+        "Set Launching (No Wait)",
+        new InstantCommand(() -> launcher.setScoring())
+            .andThen(new WaitCommand(0.2))
+            .andThen(new InstantCommand(() -> feeder.setRunning()))
+            .andThen(new WaitCommand(0.2))
+            .andThen(new InstantCommand(() -> spindexer.setRunning())));
+
+    NamedCommands.registerCommand(
+        "Stop Launching",
+        new InstantCommand(() -> feeder.setStopped())
+            .andThen(
+                (new InstantCommand(
+                    () -> {
+                      spindexer.setStopped();
+                      launcher.setOff();
+                    }))));
+
+    // Intake Commands
+    NamedCommands.registerCommand("Set Intaking", new InstantCommand(() -> intake.setIntaking()));
+    NamedCommands.registerCommand("Stop Intaking", new InstantCommand(() -> intake.setDeployed()));
+    NamedCommands.registerCommand("Stow Intake", new InstantCommand(() -> intake.setStowed()));
+    NamedCommands.registerCommand("Flow Intake", new InstantCommand(() -> intake.setFlow()));
+
+    new EventTrigger("Set Intaking").onTrue(new InstantCommand(() -> intake.setIntaking()));
   }
 }

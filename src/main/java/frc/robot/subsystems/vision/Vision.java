@@ -176,9 +176,9 @@ public class Vision extends SubsystemBase {
         Matrix<N3, N1> visionMeasurementStdDevs);
   }
 
-  public void captureRewind() {
+  public void captureRewind(int time) {
     for (VisionIO camera : io) {
-      camera.captureRewind();
+      camera.captureRewind(time);
     }
   }
 

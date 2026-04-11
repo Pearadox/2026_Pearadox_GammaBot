@@ -6,6 +6,7 @@ package frc.robot.subsystems.feeder;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.feeder.FeederConstants.FeederState;
 import frc.robot.subsystems.feeder.FeederConstants.StateConfig;
@@ -17,20 +18,26 @@ public class Feeder extends SubsystemBase {
   private final FeederIOInputsAutoLogged inputs = new FeederIOInputsAutoLogged();
   private FeederState feederState = FeederState.STOPPED;
 
-  private Debouncer canRangeDebouncer = new Debouncer(0.06, DebounceType.kFalling);
+  private Debouncer canRangeDebouncer = new Debouncer(0.1, DebounceType.kFalling);
+  private boolean isDetectedDebounced = false;
+
   private int fuelCount = 0;
   private boolean lastDetected = false;
+  private boolean hasSeenFuel = false;
+
+  private Timer timer = new Timer();
 
   /** Creates a new Feeder. */
   public Feeder(FeederIO io) {
     this.io = io;
-    // canRange.getConfigurator().apply(FeederConstants.canRangeConfig);
+    timer.start();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     io.updateInputs(inputs);
+    isDetectedDebounced = canRangeDebouncer.calculate(inputs.canRangeIsDetected);
     Logger.processInputs("FeederInputs", inputs);
     Logger.recordOutput("Feeder/CanRange/Distance from Fuel", canRangeGetDistanceMeters());
     Logger.recordOutput("Feeder/CanRange/FuelIsDetected", isDetectedDebounced());
@@ -48,8 +55,24 @@ public class Feeder extends SubsystemBase {
     feederState = FeederState.RUNNING;
   }
 
+  // CANRange methods
   public boolean isDetectedDebounced() {
-    return canRangeDebouncer.calculate(inputs.canRangeIsDetected);
+    return isDetectedDebounced;
+  }
+
+  public void updateFuelCount() {
+
+    if (isDetectedDebounced && !lastDetected) {
+      fuelCount++;
+      hasSeenFuel = true; // solves the edge case where we don't see fuel
+    }
+
+    // reset timer any time fuel is detected
+    if (isDetectedDebounced && hasSeenFuel) {
+      timer.reset();
+    }
+
+    lastDetected = isDetectedDebounced;
   }
 
   public double canRangeGetDistanceMeters() {
@@ -60,16 +83,23 @@ public class Feeder extends SubsystemBase {
     return inputs.canRangeSignal;
   }
 
-  public void updateFuelCount() {
-    boolean isDetectedDebounced = isDetectedDebounced();
-    if (isDetectedDebounced && !lastDetected) {
-      fuelCount++;
-    }
-    lastDetected = isDetectedDebounced;
-  }
-
   public int getFuelCount() {
     return fuelCount;
+  }
+
+  public boolean isHopperEmpty() {
+    return hasSeenFuel
+        && !isDetectedDebounced
+        && getTimestamp() > FeederConstants.IS_HOPPER_EMPTY_BUFFER_TIME;
+  }
+
+  // timer methods
+  public double getTimestamp() {
+    return timer.get();
+  }
+
+  public void startTimer() {
+    timer.start();
   }
 
   // public void launch() {

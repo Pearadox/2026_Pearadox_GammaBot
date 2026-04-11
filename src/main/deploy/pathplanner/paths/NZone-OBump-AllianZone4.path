@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.394,
-        "y": 4.494
+        "x": 6.62679029957204,
+        "y": 4.132039942938659
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.704422253922965,
-        "y": 2.42413694721826
+        "x": 6.937212553495005,
+        "y": 2.0621768901569197
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "NZone4"
     },
     {
       "anchor": {
