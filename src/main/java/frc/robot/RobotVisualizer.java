@@ -53,15 +53,15 @@ public class RobotVisualizer {
     Logger.recordOutput(
         "RobotVisualizer/Components", new Transform3d[] {turret, hoodTransform, intake, hopper});
 
-    llTransform =
-        turret.plus(
-            new Transform3d(
-                0,
-                VisualizerConstants.LIMELIGHT_TO_CENTER_OF_TURRET,
-                VisualizerConstants.LIMELIGHT_HEIGHT,
-                new Rotation3d(0, Math.toRadians(-20), Math.toRadians(90))));
+    // llTransform =
+    //     turret.plus(
+    //         new Transform3d(
+    //             0,
+    //             VisualizerConstants.LIMELIGHT_TO_CENTER_OF_TURRET,
+    //             VisualizerConstants.LIMELIGHT_HEIGHT,
+    //             new Rotation3d(0, Math.toRadians(-20), Math.toRadians(90))));
 
-    Logger.recordOutput("RobotVisualizer/LL", llTransform);
+    // Logger.recordOutput("RobotVisualizer/LL", llTransform);
   }
 
   private static double getHopperExtension(double intakeAngle) {

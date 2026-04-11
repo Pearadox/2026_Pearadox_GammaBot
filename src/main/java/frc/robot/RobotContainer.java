@@ -207,9 +207,9 @@ public class RobotContainer {
               MovingShotSolver.getInstance().solve(drive::getPose, drive::getChassisSpeeds);
               LoggedTracer.record("MovingShotSolve");
 
-              Logger.recordOutput(
-                  "Odometry/test",
-                  new Pose3d(drive.getPose()).transformBy(visualizer.getLlTransform()));
+            //   Logger.recordOutput(
+            //       "Odometry/test",
+            //       new Pose3d(drive.getPose()).transformBy(visualizer.getLlTransform()));
             },
             vision));
     ledStrip.setDefaultCommand(new RunCommand(() -> ledStrip.isHubActive(), ledStrip));
