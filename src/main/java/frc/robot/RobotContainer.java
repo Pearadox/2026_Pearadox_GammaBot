@@ -11,11 +11,14 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.events.EventTrigger;
+import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -27,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.drivers.MovingShotSolver;
+import frc.robot.Constants.VisualizerConstants;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ShootOnTheMove;
 import frc.robot.generated.TunerConstants;
@@ -66,6 +70,7 @@ import frc.robot.util.DriveHelpers;
 import frc.robot.util.LoggedTracer;
 import lombok.Getter;
 import lombok.Setter;
+import org.littletonrobotics.junction.Logger;
 
 public class RobotContainer {
   // Subsystems
@@ -138,6 +143,8 @@ public class RobotContainer {
         turret = new Turret(new TurretIOSim(), drive::getChassisSpeeds, drive::getRotation);
         vision = new Vision(drive::addVisionMeasurement);
 
+        DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
+
         break;
 
       default:
@@ -187,11 +194,8 @@ public class RobotContainer {
     visualizer =
         new RobotVisualizer(
             turret::getTurretAngleRads,
-            () -> 0, // TODO: replace with hood angle supplier
-            () -> 0, // TODO: replace with spindexer angle supplier
-            () -> Units.degreesToRadians(90 - intake.getAngleDegs()),
-            () -> 0 // TODO: replace with climber displacement supplier
-            );
+            launcher::getHoodAngleRads,
+            () -> VisualizerConstants.INTAKE_STARTING_ANGLE - Units.degreesToRadians(intake.getAngleDegs()));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -201,8 +205,11 @@ public class RobotContainer {
             () -> {
               LoggedTracer.reset();
               MovingShotSolver.getInstance().solve(drive::getPose, drive::getChassisSpeeds);
-
               LoggedTracer.record("MovingShotSolve");
+
+              Logger.recordOutput(
+                  "Odometry/test",
+                  new Pose3d(drive.getPose()).transformBy(visualizer.getLlTransform()));
             },
             vision));
     ledStrip.setDefaultCommand(new RunCommand(() -> ledStrip.isHubActive(), ledStrip));

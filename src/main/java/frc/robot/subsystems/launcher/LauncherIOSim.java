@@ -32,7 +32,7 @@ public class LauncherIOSim extends LauncherIOTalonFX {
           LauncherConstants.HOOD_LENGTH_METERS,
           Double.NEGATIVE_INFINITY,
           Double.POSITIVE_INFINITY,
-          true,
+          false,
           LauncherConstants.HOOD_MIN_ANGLE_RADS);
   private TalonFXSimState hoodSimState;
 
@@ -60,7 +60,11 @@ public class LauncherIOSim extends LauncherIOTalonFX {
         Units.radiansToRotations(launcherPhysicsSim.getVelocityRadPerSec()));
 
     hoodSimState.setRawRotorPosition(
-        (hoodPhysicsSim.getAngleRads() - LauncherConstants.HOOD_MIN_ANGLE_RADS));
-    hoodSimState.setRotorVelocity(Units.radiansToRotations(hoodPhysicsSim.getVelocityRadPerSec()));
+        Units.radiansToRotations(
+                hoodPhysicsSim.getAngleRads() - LauncherConstants.HOOD_MIN_ANGLE_RADS)
+            * LauncherConstants.HOOD_GEARING);
+    hoodSimState.setRotorVelocity(
+        Units.radiansToRotations(hoodPhysicsSim.getVelocityRadPerSec())
+            * LauncherConstants.HOOD_GEARING);
   }
 }

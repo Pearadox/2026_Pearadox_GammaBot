@@ -97,7 +97,7 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
       double setpoint =
           Units.radiansToRotations(angleRads - LauncherConstants.HOOD_MIN_ANGLE_RADS)
               * LauncherConstants.HOOD_GEARING;
-      // hood.setControl(hoodControl.withPosition(setpoint).withFeedForward(feedforward));
+      hood.setControl(hoodControl.withPosition(setpoint).withFeedForward(feedforward));
       Logger.recordOutput("Hood/AngleSetpointRots", setpoint);
       Logger.recordOutput(
           "Hood/HoodError", Math.abs(setpoint - hood.getPosition().getValueAsDouble()));
