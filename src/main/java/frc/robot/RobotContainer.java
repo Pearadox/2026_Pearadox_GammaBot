@@ -65,7 +65,6 @@ import frc.robot.subsystems.turret.TurretIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
-// import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.util.DriveHelpers;
 import frc.robot.util.LoggedTracer;
 import lombok.Getter;
@@ -205,6 +204,7 @@ public class RobotContainer {
             () -> {
               LoggedTracer.reset();
               MovingShotSolver.getInstance().solve(drive::getPose, drive::getChassisSpeeds);
+
               LoggedTracer.record("MovingShotSolve");
             },
             vision));

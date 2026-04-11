@@ -110,9 +110,24 @@ public class Launcher extends SubsystemBase {
     Logger.recordOutput("Launcher/launcherVelocity", getLauncherVelocity());
     Logger.recordOutput("Hood/kG-Value", getkG());
 
-    io.runLauncherVelocity(manualDefaultVelocity.get());
-    // io.setLauncherVoltage(manualDefaultVelocity.get() * (12.0 / 100.0));
-    io.setHoodAngleRads(Units.degreesToRadians(hoodAngleDegs.get()), getkG());
+    // io.setHoodAngleRads(launcherState.getHoodAngleRads());
+
+    double desiredHoodAngleRads;
+    if (launcherState == LauncherState.SELF_DIRECTING) {
+      desiredHoodAngleRads = MovingShotSolver.getShotSolution().hoodAngleRadians();
+    } else {
+      desiredHoodAngleRads = Units.degreesToRadians(defaultStateAngleDegrees.get());
+    }
+    io.setHoodAngleRads(desiredHoodAngleRads);
+    // desiredHoodAngleRads = RobotContainer.hoodAngleTesting;
+    // io.setHoodAngleRads(desiredHoodAngleRads);
+
+    Logger.recordOutput("Hood/Desired-Angle", desiredHoodAngleRads);
+    Logger.recordOutput("Hood/Servo-Position", inputs.hoodServo1Position);
+    Logger.recordOutput(
+        "Hood/Current-Angle",
+        LauncherConstants.angularPositiontoRotations(inputs.hoodServo1Position)
+            / LauncherConstants.HOOD_GEARING); // 5 because 1.0 position -> 5 rotations
 
     if (kP.hasChanged(hashCode())
         || kD.hasChanged(hashCode())
