@@ -9,9 +9,7 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.util.Units;
 
 public class VisionConstants {
   // AprilTag layout
@@ -19,8 +17,8 @@ public class VisionConstants {
       AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
   // Camera names, must match names configured on coprocessor
-  public static String camera0Name = "limelight-lemon";
-  public static String camera1Name = "OV9281";
+  public static String camera0Name = "limelight-pearl";
+  public static String camera1Name = "limelight-pearr";
 
   // Robot to camera transforms
   // (Not used by Limelight, configure in web UI instead)
@@ -30,12 +28,12 @@ public class VisionConstants {
   //     Units.inchesToMeters(14 - 2.75),
   //     Units.inchesToMeters(9.403),
   //     new Rotation3d(0, -Units.degreesToRadians(20), Math.PI));
-  public static Transform3d robotToCamera1 =
-      new Transform3d(
-          -Units.inchesToMeters(10.547),
-          -Units.inchesToMeters(2.928),
-          Units.inchesToMeters(14.537),
-          new Rotation3d(0.0, 0.0, -(Math.PI * 0.5)));
+  public static Transform3d robotToCamera1 = Transform3d.kZero;
+  // new Transform3d(
+  //     -Units.inchesToMeters(10.547),
+  //     -Units.inchesToMeters(2.928),
+  //     Units.inchesToMeters(14.537),
+  //     new Rotation3d(0.0, 0.0, -(Math.PI * 0.5)));
 
   // Basic filtering thresholds
   public static double maxAmbiguity = 0.3;

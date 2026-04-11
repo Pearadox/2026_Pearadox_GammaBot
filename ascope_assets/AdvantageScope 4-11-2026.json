@@ -1,0 +1,167 @@
+{
+  "hubs": [
+    {
+      "x": -8,
+      "y": -8,
+      "width": 1552,
+      "height": 880,
+      "state": {
+        "sidebar": {
+          "width": 371,
+          "expanded": [
+            "/AdvantageKit",
+            "/AdvantageKit/RealOutputs",
+            "/AdvantageKit/RealOutputs/Odometry",
+            "/AdvantageKit/RealOutputs/RobotVisualizer",
+            "/AdvantageKit/Vision",
+            "/AdvantageKit/Vision/Camera0",
+            "/AdvantageKit/Vision/Camera0/PoseObservations",
+            "/AdvantageKit/RealOutputs/Vision",
+            "/AdvantageKit/RealOutputs/Vision/Camera0",
+            "/Tuning",
+            "/Tuning/Vision",
+            "/AdvantageKit/Turret",
+            "/AdvantageKit/Intake",
+            "/AdvantageKit/Intake/Pivot1MotorData",
+            "/AdvantageKit/Intake/Pivot2MotorData",
+            "/AdvantageKit/RealOutputs/Intake",
+            "/Tuning/Intake",
+            "/Tuning/Launcher",
+            "/AdvantageKit/RealOutputs/Hood",
+            "/AdvantageKit/Launcher",
+            "/AdvantageKit/Launcher/HoodData",
+            "/AdvantageKit/Launcher/Launcher1Data",
+            "/Tuning/Turret",
+            "/SmartDashboard",
+            "/SmartDashboard/Launcher Sim",
+            "/AdvantageKit/RealOutputs/Launcher",
+            "/Tuning/Hood"
+          ]
+        },
+        "tabs": {
+          "selected": 1,
+          "tabs": [
+            {
+              "type": 0,
+              "title": "",
+              "controller": null,
+              "controllerUUID": "yhgidfatzebercyopm2idzsfpi5c9vfg",
+              "renderer": "",
+              "controlsHeight": 0
+            },
+            {
+              "type": 3,
+              "title": "3D Field",
+              "controller": {
+                "sources": [
+                  {
+                    "type": "robot",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Odometry/Robot",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "model": "Pearsephone"
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/RobotVisualizer/Components",
+                    "logType": "Transform3d[]",
+                    "visible": true,
+                    "options": {}
+                  }
+                ],
+                "game": "FRC:2026 Field"
+              },
+              "controllerUUID": "jynahbbbi4xrt9r9yfow2kq46kvlepi4",
+              "renderer": {
+                "cameraIndex": -2,
+                "orbitFov": 50,
+                "cameraPosition": [
+                  1.668215797640002,
+                  3.848427341202469,
+                  0.8962650839672678
+                ],
+                "cameraTarget": [
+                  -3.3405230549143754,
+                  -2.0131365460237793,
+                  0.8161766766121854
+                ]
+              },
+              "controlsHeight": 136
+            },
+            {
+              "type": 2,
+              "title": "2D Field",
+              "controller": {
+                "sources": [
+                  {
+                    "type": "robot",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Odometry/Robot",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "bumpers": ""
+                    }
+                  },
+                  {
+                    "type": "vision",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Camera0/TagPoses",
+                    "logType": "Pose3d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Camera0/RobotPosesAccepted",
+                    "logType": "Pose3d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00"
+                    }
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Camera0/RobotPosesRejected",
+                    "logType": "Pose3d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff0000"
+                    }
+                  }
+                ],
+                "field": "FRC:2026 Field",
+                "orientation": 0,
+                "size": "large"
+              },
+              "controllerUUID": "t18x2f7eszidhtmqfpaa4enm909czxlv",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
+              "type": 10,
+              "title": "Mechanism",
+              "controller": [
+                {
+                  "type": "mechanism",
+                  "logKey": "NT:/SmartDashboard/Launcher Sim",
+                  "logType": "Mechanism2d",
+                  "visible": true,
+                  "options": {}
+                }
+              ],
+              "controllerUUID": "uqwk1z4fu5c03okv9xhgtsbsxqsm5tek",
+              "renderer": null,
+              "controlsHeight": 200
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "satellites": [],
+  "version": "26.0.0"
+}

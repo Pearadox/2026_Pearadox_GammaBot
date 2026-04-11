@@ -1,0 +1,17 @@
+4/8/26 cad export
+
+file name	mechanism name	coords in onshape
+model 	= 	stationary	N/A
+model_0 = 	turret		-0.133350 0.146050 .
+model_1 =	hood		0.029545 . 0.446088
+model_2 =	intake arm	. 0.279344 0.213924
+model_3 = 	hopper lin ext 	N/A
+
+
+limelight is 0.185652m from center of turret rotation, and is 0.476693m above the ground
+
+
+switch (x, y, z) in onshape coords to:
+(-y, x, z) for the zero in code
+and
+(y, -x, -z) for the zero in the json

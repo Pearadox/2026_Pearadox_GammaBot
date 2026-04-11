@@ -11,11 +11,13 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.events.EventTrigger;
+import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -27,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.drivers.MovingShotSolver;
+import frc.robot.Constants.VisualizerConstants;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ShootOnTheMove;
 import frc.robot.generated.TunerConstants;
@@ -37,7 +40,6 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.feeder.Feeder;
-import frc.robot.subsystems.feeder.FeederConstants;
 import frc.robot.subsystems.feeder.FeederIO;
 import frc.robot.subsystems.feeder.FeederIOReal;
 import frc.robot.subsystems.feeder.FeederIOSim;
@@ -61,8 +63,7 @@ import frc.robot.subsystems.turret.TurretIOReal;
 import frc.robot.subsystems.turret.TurretIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
-// import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.DriveHelpers;
 import frc.robot.util.LoggedTracer;
 import lombok.Getter;
@@ -116,9 +117,11 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                // new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation)
-                new VisionIOPhotonVision(
-                    VisionConstants.camera1Name, VisionConstants.robotToCamera1));
+                new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation),
+                new VisionIOLimelight(VisionConstants.camera1Name, drive::getRotation)
+                // new VisionIOPhotonVision(
+                //     VisionConstants.camera1Name, VisionConstants.robotToCamera1)
+                );
 
         break;
 
@@ -138,6 +141,8 @@ public class RobotContainer {
         spindexer = new Spindexer(new SpindexerIOSim());
         turret = new Turret(new TurretIOSim(), drive::getChassisSpeeds, drive::getRotation);
         vision = new Vision(drive::addVisionMeasurement);
+
+        DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
 
         break;
 
@@ -185,14 +190,17 @@ public class RobotContainer {
     autoChooser.addOption(
         "DTrench-NZone-2.5-Sweeps", new PathPlannerAuto("OTrench-NZone-2.5-Sweeps", true));
 
+    autoChooser.addOption(
+        "Adamant Trench (Depot, 3 Sweeps, Rush)",
+        new PathPlannerAuto("Adamant Trench (Outpost, 3 Sweeps, Rush)", true));
+
     visualizer =
         new RobotVisualizer(
             turret::getTurretAngleRads,
-            () -> 0, // TODO: replace with hood angle supplier
-            () -> 0, // TODO: replace with spindexer angle supplier
-            () -> Units.degreesToRadians(90 - intake.getAngleDegs()),
-            () -> 0 // TODO: replace with climber displacement supplier
-            );
+            launcher::getHoodAngleRads,
+            () ->
+                VisualizerConstants.INTAKE_STARTING_ANGLE
+                    - Units.degreesToRadians(intake.getAngleDegs()));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -203,6 +211,10 @@ public class RobotContainer {
               LoggedTracer.reset();
               MovingShotSolver.getInstance().solve(drive::getPose, drive::getChassisSpeeds);
               LoggedTracer.record("MovingShotSolve");
+
+              //   Logger.recordOutput(
+              //       "Odometry/test",
+              //       new Pose3d(drive.getPose()).transformBy(visualizer.getLlTransform()));
             },
             vision));
     ledStrip.setDefaultCommand(new RunCommand(() -> ledStrip.isHubActive(), ledStrip));
@@ -265,11 +277,9 @@ public class RobotContainer {
                     launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d)
                 .alongWith(launcher.score()))
         .onFalse(
-            new InstantCommand(
-                () -> {
-                  feeder.setStopped();
-                  spindexer.setStopped();
-                }));
+            new InstantCommand(() -> spindexer.setStopped())
+                .andThen(new WaitCommand(0.2))
+                .andThen(new InstantCommand(() -> feeder.setStopped())));
 
     drivercontroller
         .rightBumper()
@@ -391,8 +401,17 @@ public class RobotContainer {
             .andThen(new WaitCommand(0.2))
             .andThen(
                 (new RunCommand(() -> spindexer.setRunning(), spindexer))
-                    .until(() -> feeder.isHopperEmpty())
-                    .withTimeout(FeederConstants.IS_HOPPER_EMPTY_BUFFER_TIME)));
+                    .until(() -> feeder.isHopperEmpty()))
+            // .withTimeout(FeederConstants.IS_HOPPER_EMPTY_BUFFER_TIME))
+            .finallyDo(
+                (bool) ->
+                    new InstantCommand(() -> feeder.setStopped())
+                        .andThen(
+                            (new InstantCommand(
+                                () -> {
+                                  spindexer.setStopped();
+                                  launcher.setOff();
+                                })))));
 
     NamedCommands.registerCommand(
         "Set Launching (No Wait)",
@@ -417,6 +436,15 @@ public class RobotContainer {
     NamedCommands.registerCommand("Stop Intaking", new InstantCommand(() -> intake.setDeployed()));
     NamedCommands.registerCommand("Stow Intake", new InstantCommand(() -> intake.setStowed()));
     NamedCommands.registerCommand("Flow Intake", new InstantCommand(() -> intake.setFlow()));
+    NamedCommands.registerCommand(
+        "Jostle Intake",
+        new RunCommand(() -> intake.setIntaking(), intake)
+            .withTimeout(1)
+            .andThen(new RunCommand(() -> intake.setFlow(), intake).withTimeout(1))
+            .andThen(new RunCommand(() -> intake.setIntaking(), intake).withTimeout(1))
+            .andThen(new RunCommand(() -> intake.setFlow(), intake).withTimeout(1))
+            .andThen(new RunCommand(() -> intake.setIntaking(), intake).withTimeout(1))
+            .finallyDo((bool) -> new InstantCommand(() -> intake.setIntaking(), intake)));
 
     new EventTrigger("Set Intaking").onTrue(new InstantCommand(() -> intake.setIntaking()));
   }

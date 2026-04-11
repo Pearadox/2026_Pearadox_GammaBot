@@ -10,22 +10,14 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
-import lombok.Getter;
 
 /** Constants for the launcher */
 public class LauncherConstants {
   public static enum LauncherState {
-    OFF(Units.degreesToRadians(40)),
-    MANUAL(Units.degreesToRadians(20)),
-    IDLE(Units.degreesToRadians(20)),
-    SELF_DIRECTING(Units.degreesToRadians(30));
-    // PASSING(Units.degreesToRadians(25)); // TODO: find proper hood angles
-
-    @Getter private final double hoodAngleRads;
-
-    private LauncherState(double angle) {
-      hoodAngleRads = angle;
-    }
+    OFF,
+    MANUAL,
+    IDLE,
+    SELF_DIRECTING,
   }
 
   public static final int LAUNCHER_1_CAN_ID = 21;
@@ -78,29 +70,30 @@ public class LauncherConstants {
   public static final double HOOD_MIN_ANGLE_RADS = Units.degreesToRadians(10);
   public static final double HOOD_MAX_ANGLE_RADS = Units.degreesToRadians(40);
 
-  public static final TalonFXConfiguration HOOD_CONFIG = new TalonFXConfiguration();
+  public static final TalonFXConfiguration HOOD_CONFIG = HOOD_CONFIG();
   public static final Slot0Configs HOOD_CONFIG_SLOT0 = HOOD_CONFIG.Slot0;
 
   public static final TalonFXConfiguration HOOD_CONFIG() {
-    HOOD_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
-    HOOD_CONFIG.CurrentLimits.StatorCurrentLimit = HOOD_STATOR_CURRENT;
+    TalonFXConfiguration hoodConfig = new TalonFXConfiguration();
+    hoodConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    hoodConfig.CurrentLimits.StatorCurrentLimit = HOOD_STATOR_CURRENT;
 
-    HOOD_CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
-    HOOD_CONFIG.CurrentLimits.SupplyCurrentLimit = HOOD_SUPPLY_CURRENT;
+    hoodConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    hoodConfig.CurrentLimits.SupplyCurrentLimit = HOOD_SUPPLY_CURRENT;
 
-    HOOD_CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    HOOD_CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    hoodConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    hoodConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-    HOOD_CONFIG.Voltage.PeakForwardVoltage = 4;
-    HOOD_CONFIG.Voltage.PeakReverseVoltage = -4;
+    hoodConfig.Voltage.PeakForwardVoltage = 4;
+    hoodConfig.Voltage.PeakReverseVoltage = -4;
 
-    HOOD_CONFIG_SLOT0.kP = 4; // TODO: tune
-    HOOD_CONFIG_SLOT0.kI = 1.18; // TODO: tune
-    HOOD_CONFIG_SLOT0.kD = 0.1323; // TODO: tune
-    HOOD_CONFIG_SLOT0.kG = 0.254;
-    HOOD_CONFIG_SLOT0.kS = 0.07115;
+    hoodConfig.Slot0.kP = 4; // TODO: tune
+    hoodConfig.Slot0.kI = 1.18; // TODO: tune
+    hoodConfig.Slot0.kD = 0.1323; // TODO: tune
+    // HOOD_CONFIG_SLOT0.kG = 0.254;
+    hoodConfig.Slot0.kS = 0.07115;
 
-    return HOOD_CONFIG;
+    return hoodConfig;
   }
 
   public static final double HOOD_KG_OFFSET_DEG = 40.0;

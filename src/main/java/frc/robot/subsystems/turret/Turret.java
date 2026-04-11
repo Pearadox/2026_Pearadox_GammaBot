@@ -10,6 +10,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants;
+import frc.robot.Constants.Mode;
 import frc.robot.util.LoggedTunableNumber;
 import java.util.function.Supplier;
 import lombok.Getter;
@@ -31,20 +33,21 @@ public class Turret extends SubsystemBase {
     turretRotationAdjust -= adj;
   }
 
-  private final LoggedTunableNumber kP = new LoggedTunableNumber("Turret/kP", 6.7); // 4
+  private final LoggedTunableNumber kP =
+      new LoggedTunableNumber("Turret/kP", Constants.currentMode == Mode.SIM ? 3.0 : 6.7);
   private final LoggedTunableNumber kI = new LoggedTunableNumber("Turret/kI", 0.0);
-  private final LoggedTunableNumber kD = new LoggedTunableNumber("Turret/kD", 0.0); // 0
+  private final LoggedTunableNumber kD = new LoggedTunableNumber("Turret/kD", 0.0);
   private final LoggedTunableNumber kS = new LoggedTunableNumber("Turret/kS", 0.0);
   private final LoggedTunableNumber kV = new LoggedTunableNumber("Turret/kV", 0.0);
   private final LoggedTunableNumber kA = new LoggedTunableNumber("Turret/kA", 0.0);
-  private final LoggedTunableNumber kOmega = new LoggedTunableNumber("Turret/kOmega", 0.0); // 0.2
+  private final LoggedTunableNumber kOmega = new LoggedTunableNumber("Turret/kOmega", 0.0);
   private final LoggedTunableNumber mmCruiseVel =
       new LoggedTunableNumber("Turret/mmCruiseVel", 85); // 85
   private final LoggedTunableNumber mmAcceleration = new LoggedTunableNumber("Turret/mmAcc", 450);
   private final LoggedTunableNumber testSetpoint =
       new LoggedTunableNumber("Turret/test Setpoint", -90);
   private final LoggedTunableNumber fieldRelOffset =
-      new LoggedTunableNumber("Turret/fieldreloffset", 90); // turret now zeros facing right
+      new LoggedTunableNumber("Turret/fieldreloffset", -90); // turret now zeros facing right
   @AutoLogOutput private boolean shouldApplyFF = true;
 
   private final SysIdRoutine sysId;

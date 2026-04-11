@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.drivers.MovingShotSolver;
+import frc.robot.Constants;
+import frc.robot.Constants.Mode;
 import frc.robot.subsystems.launcher.LauncherConstants.LauncherState;
 import frc.robot.util.LoggedTunableNumber;
 import lombok.Getter;
@@ -34,10 +36,9 @@ public class Launcher extends SubsystemBase {
           "Launcher/Manual Mode Default Velocity", LauncherConstants.DEFAULT_VELOCITY_SETPOINT_RPS);
   private final LoggedTunableNumber idleDefaultVelocity =
       new LoggedTunableNumber("Launcher/Idle Mode Default Velocity", 20);
-  private final LoggedTunableNumber hoodAngleDegs =
-      new LoggedTunableNumber(
-          "Launcher/Hood angle Degrees",
-          Units.radiansToDegrees(LauncherConstants.HOOD_MIN_ANGLE_RADS));
+
+  private final LoggedTunableNumber defaultHoodAngleDegs =
+      new LoggedTunableNumber("Launcher/Default Hood Angle Degrees", 17.5);
 
   private final LoggedTunableNumber kP = new LoggedTunableNumber("Launcher/kP", 99999);
   private final LoggedTunableNumber kD = new LoggedTunableNumber("Launcher/kD", 0);
@@ -96,25 +97,29 @@ public class Launcher extends SubsystemBase {
       setVelocity(desiredVelocity, tunableffAmps.get());
     }
 
-    // this is taking 3-4 ms each cycle
-    // LoggedTracer.reset();
-    // LauncherVisualizer.getInstance()
-    //     .updateFlywheelPositionDeg(Units.rotationsToDegrees(inputs.launcher1Data.position()));
-    // LauncherVisualizer.getInstance()
-    //     .updateHoodPositionDeg(
-    //         Units.rotationsToDegrees(
-    //             LauncherConstants.angularPositiontoRotations(inputs.hoodServo1Position)));
-    // LoggedTracer.record("LauncherViz");
-    //         Units.rotationsToDegrees(inputs.hoodData.position() /
-    // LauncherConstants.HOOD_GEARING));
+    if (Constants.currentMode == Mode.SIM) {
+      LauncherVisualizer.getInstance()
+          .updateFlywheelPositionDeg(Units.rotationsToDegrees(inputs.launcher1Data.position()));
+      LauncherVisualizer.getInstance()
+          .updateHoodPositionDeg(
+              Units.radiansToDegrees(getHoodAngleRads() - LauncherConstants.HOOD_MIN_ANGLE_RADS));
+    }
 
     Logger.recordOutput("Launcher/adjust", rpsAdjust);
     Logger.recordOutput("Launcher/launcherVelocity", getLauncherVelocity());
     Logger.recordOutput("Hood/kG-Value", getkG());
 
-    io.runLauncherVelocity(manualDefaultVelocity.get());
-    // io.setLauncherVoltage(manualDefaultVelocity.get() * (12.0 / 100.0));
-    io.setHoodAngleRads(Units.degreesToRadians(hoodAngleDegs.get()), getkG());
+    double desiredHoodAngleRads;
+    if (launcherState == LauncherState.SELF_DIRECTING) {
+      desiredHoodAngleRads = MovingShotSolver.getShotSolution().hoodAngleRadians();
+    } else {
+      desiredHoodAngleRads = Units.degreesToRadians(defaultHoodAngleDegs.get());
+    }
+    io.setHoodAngleRads(desiredHoodAngleRads, getkG());
+    // desiredHoodAngleRads = RobotContainer.hoodAngleTesting;
+    // io.setHoodAngleRads(desiredHoodAngleRads);
+
+    Logger.recordOutput("Hood/Desired-Angle", desiredHoodAngleRads);
 
     if (kP.hasChanged(hashCode())
         || kD.hasChanged(hashCode())
@@ -122,6 +127,7 @@ public class Launcher extends SubsystemBase {
         || kV.hasChanged(hashCode())) {
       io.setLauncherPIDFF(kP.get(), kD.get(), kS.get(), kV.get());
     }
+
     if (statorCurrentLimit.hasChanged(hashCode()) || supplyCurrentLimit.hasChanged(hashCode())) {
       io.setCurrentLimits(statorCurrentLimit.get(), supplyCurrentLimit.get());
     }
@@ -145,10 +151,12 @@ public class Launcher extends SubsystemBase {
   }
 
   public double getkG() {
-    return LauncherConstants.HOOD_CONFIG_SLOT0.kG
-        * Math.cos(
-            Units.rotationsToRadians(inputs.hoodData.position() / LauncherConstants.HOOD_GEARING)
-                + Units.degreesToRadians(kGOffset.get()));
+    return hoodkG.get() * Math.cos(getHoodAngleRads());
+  }
+
+  public double getHoodAngleRads() {
+    return Units.rotationsToRadians(inputs.hoodData.position() / LauncherConstants.HOOD_GEARING)
+        + Units.degreesToRadians(kGOffset.get());
   }
   // this is the CORRECT method to turn launcher off
   private void turnLauncherOff() {

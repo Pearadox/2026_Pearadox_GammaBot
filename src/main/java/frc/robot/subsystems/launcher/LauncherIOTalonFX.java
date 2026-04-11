@@ -97,7 +97,7 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
       double setpoint =
           Units.radiansToRotations(angleRads - LauncherConstants.HOOD_MIN_ANGLE_RADS)
               * LauncherConstants.HOOD_GEARING;
-      // hood.setControl(hoodControl.withPosition(setpoint).withFeedForward(feedforward));
+      hood.setControl(hoodControl.withPosition(setpoint).withFeedForward(feedforward));
       Logger.recordOutput("Hood/AngleSetpointRots", setpoint);
       Logger.recordOutput(
           "Hood/HoodError", Math.abs(setpoint - hood.getPosition().getValueAsDouble()));
@@ -137,7 +137,7 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
     hoodConfigs.Slot0.kI = kI;
     hoodConfigs.Slot0.kD = kD;
     hoodConfigs.Slot0.kS = kS;
-    hoodConfigs.Slot0.kG = kG;
+    // hoodConfigs.Slot0.kG = kG;
 
     PhoenixUtil.tryUntilOk(5, () -> hood.getConfigurator().apply(hoodConfigs));
   }
