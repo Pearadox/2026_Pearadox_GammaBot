@@ -9,9 +9,7 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.util.Units;
 
 public class VisionConstants {
   // AprilTag layout
@@ -31,11 +29,11 @@ public class VisionConstants {
   //     Units.inchesToMeters(9.403),
   //     new Rotation3d(0, -Units.degreesToRadians(20), Math.PI));
   public static Transform3d robotToCamera1 = Transform3d.kZero;
-      // new Transform3d(
-      //     -Units.inchesToMeters(10.547),
-      //     -Units.inchesToMeters(2.928),
-      //     Units.inchesToMeters(14.537),
-      //     new Rotation3d(0.0, 0.0, -(Math.PI * 0.5)));
+  // new Transform3d(
+  //     -Units.inchesToMeters(10.547),
+  //     -Units.inchesToMeters(2.928),
+  //     Units.inchesToMeters(14.537),
+  //     new Rotation3d(0.0, 0.0, -(Math.PI * 0.5)));
 
   // Basic filtering thresholds
   public static double maxAmbiguity = 0.3;

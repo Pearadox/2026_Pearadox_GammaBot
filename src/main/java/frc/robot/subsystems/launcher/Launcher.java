@@ -38,9 +38,7 @@ public class Launcher extends SubsystemBase {
       new LoggedTunableNumber("Launcher/Idle Mode Default Velocity", 20);
 
   private final LoggedTunableNumber defaultHoodAngleDegs =
-      new LoggedTunableNumber(
-          "Launcher/Default Hood Angle Degrees",
-          15);
+      new LoggedTunableNumber("Launcher/Default Hood Angle Degrees", 17.5);
 
   private final LoggedTunableNumber kP = new LoggedTunableNumber("Launcher/kP", 99999);
   private final LoggedTunableNumber kD = new LoggedTunableNumber("Launcher/kD", 0);
