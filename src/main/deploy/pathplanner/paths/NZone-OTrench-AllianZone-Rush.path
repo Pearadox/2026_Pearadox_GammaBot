@@ -3,42 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.843024251069899,
-        "y": 3.6015549215406564
+        "x": 8.257,
+        "y": 3.589
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.843024251069899,
-        "y": 4.6015549215406555
+        "x": 8.101797432239657,
+        "y": 1.6866333808844511
       },
       "isLocked": false,
-      "linkedName": "Outpost NZone Center"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.5,
-        "y": 3.6
+        "x": 4.051997146932953,
+        "y": 0.5739087018544944
       },
       "prevControl": {
-        "x": 8.5,
-        "y": 4.6
+        "x": 7.558373751783167,
+        "y": 0.5221540656205423
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "OTrench Shooting Spot"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.9296375266524535,
-      "rotationDegrees": -90.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.5,
+    "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -46,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 1.5,
-    "rotation": -90.0
+    "velocity": 0,
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Sweeps & Scoops",
+  "folder": "To Alliance Zone",
   "idealStartingState": {
-    "velocity": 1.5,
-    "rotation": 90.8550973962666
+    "velocity": 0,
+    "rotation": 106.54000000000002
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.83,
-        "y": 3.6
+        "x": 7.843024251069899,
+        "y": 3.6015549215406564
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.584251069900143,
-        "y": 1.828958630527818
+        "x": 7.597275320970041,
+        "y": 1.8305135520684743
       },
       "isLocked": false,
       "linkedName": "Outpost NZone Center"
@@ -48,7 +48,7 @@
   "folder": "To Alliance Zone",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 90.8550973962666
   },
   "useDefaultConstraints": true
 }
