@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.9910271041369465,
-        "y": 2.372382310984309
+        "x": 2.978088445078458,
+        "y": 2.3853209700427964
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.86123823109843,
-        "y": 0.18582453637660645
+        "x": 2.8482995720399416,
+        "y": 0.1987631954350939
       },
       "isLocked": false,
-      "linkedName": "Outpost AllianZone"
+      "linkedName": "Outpost AllianZone2"
     },
     {
       "anchor": {
@@ -48,7 +48,7 @@
   "folder": "To Trench",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -0.5787255656077434
+    "rotation": -90.0
   },
   "useDefaultConstraints": false
 }

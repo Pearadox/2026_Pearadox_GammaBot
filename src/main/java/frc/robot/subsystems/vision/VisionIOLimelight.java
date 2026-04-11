@@ -161,9 +161,9 @@ public class VisionIOLimelight implements VisionIO {
   }
 
   @Override
-  public void captureRewind() {
+  public void captureRewind(int time) {
     rewindArray[0] = ++numRewinds;
-    rewindArray[1] = VisionConstants.REWIND_LENGTH_SECONDS;
+    rewindArray[1] = time;
 
     rewindPublisher.set(rewindArray);
   }

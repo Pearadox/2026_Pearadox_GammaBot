@@ -3,47 +3,44 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.440156918687589,
-        "y": 0.6127246790299581
+        "x": 4.051997146932953,
+        "y": 0.5739087018544944
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.648944365192582,
-        "y": 0.4315834522111266
+        "x": 8.373509272467901,
+        "y": 0.26338088445078456
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "OTrench Shooting Spot"
     },
     {
       "anchor": {
-        "x": 6.62679029957204,
-        "y": 4.132039942938659
+        "x": 6.937318116975749,
+        "y": 3.5498002853067057
       },
       "prevControl": {
-        "x": 6.769115549215405,
-        "y": 2.7734807417974325
+        "x": 6.963195435092723,
+        "y": 3.1098858773181166
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NZone4"
+      "linkedName": "Outpost NZone Center 2"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.5031982942430684,
-      "rotationDegrees": 97.125
+      "waypointRelativePos": 0.17057569296375408,
+      "rotationDegrees": 5.207061757510973
+    },
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 78.62185829687743
     }
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Set Intaking",
-      "waypointRelativePos": 0.20796758946657914,
-      "endWaypointRelativePos": null,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -54,7 +51,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 95.981
+    "rotation": 98.32565033042698
   },
   "reversed": false,
   "folder": "To Neutral Zone",

@@ -1,0 +1,67 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Set Intaking"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "OTrench-NZone"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NZone-OTrench-AllianZone"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Flow Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set Launching"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set Intaking"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "OTrench-NZone2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NZone-OTrench-AllianZone2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set Launching"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "WIP",
+  "choreoAuto": false
+}

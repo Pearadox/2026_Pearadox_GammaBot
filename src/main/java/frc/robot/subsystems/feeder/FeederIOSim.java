@@ -36,7 +36,7 @@ public class FeederIOSim implements FeederIO {
     feederControl = new VoltageOut(0.0);
   }
 
-  public void updateInputs(FeederIOInputsAutoLogged inputs) {
+  public void updateInputs(FeederIOInputs inputs) {
     updateSim();
     inputs.feederData = feeder.getData();
   }

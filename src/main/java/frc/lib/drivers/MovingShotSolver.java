@@ -108,6 +108,8 @@ public class MovingShotSolver {
 
   //   private final Debouncer hoodAngleDebouncer = new Debouncer(0.5, DebounceType.kBoth);
   // new LoggedTunableNumber("SOTM/Launch Angle Degs", 72);
+  private final LoggedTunableNumber hoodAngleDegrees =
+      new LoggedTunableNumber("SOTM/Launch Angle Degs", 71);
 
   // may need to be tuned
   private final LoggedTunableNumber shotLatency = new LoggedTunableNumber("SOTM/shot latency", 0.1);

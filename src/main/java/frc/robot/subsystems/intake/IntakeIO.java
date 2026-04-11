@@ -6,9 +6,10 @@ import org.littletonrobotics.junction.AutoLog;
 public interface IntakeIO {
   @AutoLog
   public static class IntakeIOInputs {
-    public MotorData rollerMotorData = new MotorData();
+    public MotorData roller1MotorData = new MotorData();
     public MotorData roller2MotorData = new MotorData();
-    public MotorData pivotMotorData = new MotorData();
+    public MotorData pivot1MotorData = new MotorData();
+    public MotorData pivot2MotorData = new MotorData();
   }
 
   public default void updateInputs(IntakeIOInputs inputs) {}
@@ -21,5 +22,8 @@ public interface IntakeIO {
 
   public default void runPositionDegrees(double degrees, double ffvolts) {}
 
-  public default void setPIDFF(double rollerkp, double kv, double pivotkp, double pivotkd) {}
+  public default void runPositionDegreesWithoutFF(double degrees) {}
+
+  public default void setPIDFF(
+      double rollerkp, double kv, double pivotkp, double pivotkd, double pivotkg) {}
 }

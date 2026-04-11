@@ -25,7 +25,7 @@ public class FeederConstants {
     public static final Map<FeederState, StateConfig> FEEDER_STATE_MAP =
         Map.of(
             FeederState.STOPPED, new StateConfig(0),
-            FeederState.RUNNING, new StateConfig(-12));
+            FeederState.RUNNING, new StateConfig(-6));
   }
 
   // feeder constants
@@ -35,7 +35,7 @@ public class FeederConstants {
   public static final int FEEDER_STATOR_CURRENT_LIMIT = 60;
 
   public static final double FEEDER_GEARING =
-      12.0 / 48.0; // ratio of teeth on motor to teeth on pulley (originally 11/24 -> (12/20))
+      1.0 / 4.0; // ratio of teeth on motor to teeth on pulley (originally 11/24 -> (12/20))
 
   public static final DCMotor FEEDER_MOTOR = DCMotor.getKrakenX60(1);
   public static final double FEEDER_ACTIVE_VOLTAGE = -5.414;

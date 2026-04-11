@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.launcher;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
@@ -16,6 +17,7 @@ public class LauncherVisualizer {
   private final LoggedMechanism2d mech2d = new LoggedMechanism2d(3, 3);
 
   private final LoggedMechanismRoot2d root = mech2d.getRoot("Launcher", 1, 1.5);
+  private final LoggedMechanismRoot2d root2 = mech2d.getRoot("fda", 1, 1.5);
 
   private final CircleSim flywheelSim =
       new CircleSim(
@@ -28,7 +30,7 @@ public class LauncherVisualizer {
           new Color8Bit(Color.kGoldenrod));
 
   private LoggedMechanismLigament2d hood =
-      root.append(
+      root2.append(
           new LoggedMechanismLigament2d(
               "Hood",
               1,
@@ -60,7 +62,8 @@ public class LauncherVisualizer {
   }
 
   public void updateHoodPositionDeg(double angleDeg) {
-    hoodAngleDeg = angleDeg;
-    hood.setAngle(hoodAngleDeg);
+    // this.hoodAngleDeg = angleDeg + Units.radiansToDegrees(LauncherConstants.HOOD_MIN_ANGLE_RADS);
+    this.hoodAngleDeg = angleDeg;
+    hood.setAngle(hoodAngleDeg + Units.radiansToDegrees(LauncherConstants.HOOD_MIN_ANGLE_RADS));
   }
 }

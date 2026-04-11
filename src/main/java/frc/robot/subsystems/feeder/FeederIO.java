@@ -18,7 +18,7 @@ public interface FeederIO {
     public double canRangeSignal = 0.0;
   }
 
-  public default void updateInputs(FeederIOInputsAutoLogged inputs) {}
+  public default void updateInputs(FeederIOInputs inputs) {}
 
   /**
    * @param voltage voltage to run the feeder at

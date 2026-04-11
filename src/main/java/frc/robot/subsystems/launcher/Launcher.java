@@ -30,12 +30,13 @@ public class Launcher extends SubsystemBase {
 
   private final LoggedTunableNumber tunableffAmps = new LoggedTunableNumber("Launcher/ffamps", 0);
   private final LoggedTunableNumber manualDefaultVelocity =
-      new LoggedTunableNumber(
-          "Launcher/Manual Mode Default Velocity", LauncherConstants.DEFAULT_VELOCITY_SETPOINT_RPS);
+      new LoggedTunableNumber("Launcher/Manual Mode Default Velocity", LauncherConstants.DEFAULT_VELOCITY_SETPOINT_RPS);
   private final LoggedTunableNumber idleDefaultVelocity =
       new LoggedTunableNumber("Launcher/Idle Mode Default Velocity", 20);
-  private final LoggedTunableNumber defaultStateAngleDegrees =
-      new LoggedTunableNumber("Launcher/defaultStateAngle", 20);
+  private final LoggedTunableNumber hoodAngleDegs =
+      new LoggedTunableNumber(
+          "Launcher/Hood angle Degrees",
+          Units.radiansToDegrees(LauncherConstants.HOOD_MIN_ANGLE_RADS));
 
   private final LoggedTunableNumber kP = new LoggedTunableNumber("Launcher/kP", 99999);
   private final LoggedTunableNumber kD = new LoggedTunableNumber("Launcher/kD", 0);
@@ -48,11 +49,25 @@ public class Launcher extends SubsystemBase {
       new LoggedTunableNumber(
           "Launcher/Supply Current Limit", LauncherConstants.LAUNCHER_SUPPLY_CURRENT_LIMIT);
 
+  private final LoggedTunableNumber hoodkP =
+      new LoggedTunableNumber("Hood/kP", LauncherConstants.HOOD_CONFIG_SLOT0.kP);
+  private final LoggedTunableNumber hoodkI =
+      new LoggedTunableNumber("Hood/kI", LauncherConstants.HOOD_CONFIG_SLOT0.kI);
+  private final LoggedTunableNumber hoodkD =
+      new LoggedTunableNumber("Hood/kD", LauncherConstants.HOOD_CONFIG_SLOT0.kD);
+  private final LoggedTunableNumber hoodkS =
+      new LoggedTunableNumber("Hood/kS", LauncherConstants.HOOD_CONFIG_SLOT0.kS);
+  private final LoggedTunableNumber hoodkG =
+      new LoggedTunableNumber("Hood/kG", LauncherConstants.HOOD_CONFIG_SLOT0.kG);
+  private final LoggedTunableNumber kGOffset =
+      new LoggedTunableNumber("Hood/kG-AngleOffset-Deg", LauncherConstants.HOOD_KG_OFFSET_DEG);
+
   public Launcher(LauncherIO io) {
     this.io = io;
 
-    io.setPIDFF(kP.get(), kD.get(), kS.get(), kV.get());
+    io.setLauncherPIDFF(kP.get(), kD.get(), kS.get(), kV.get());
     io.setCurrentLimits(statorCurrentLimit.get(), supplyCurrentLimit.get());
+    io.setHoodPIDFF(hoodkP.get(), hoodkI.get(), hoodkD.get(), hoodkS.get(), hoodkG.get());
   }
 
   @Override
@@ -89,9 +104,11 @@ public class Launcher extends SubsystemBase {
     //         Units.rotationsToDegrees(
     //             LauncherConstants.angularPositiontoRotations(inputs.hoodServo1Position)));
     // LoggedTracer.record("LauncherViz");
+    //         Units.rotationsToDegrees(inputs.hoodData.position() / LauncherConstants.HOOD_GEARING));
 
     Logger.recordOutput("Launcher/adjust", rpsAdjust);
-    Logger.recordOutput("Debug/getLauncherVelocity", getLauncherVelocity());
+    Logger.recordOutput("Launcher/launcherVelocity", getLauncherVelocity());
+    Logger.recordOutput("Hood/kG-Value", getkG());
 
     // io.setHoodAngleRads(launcherState.getHoodAngleRads());
 
@@ -116,10 +133,18 @@ public class Launcher extends SubsystemBase {
         || kD.hasChanged(hashCode())
         || kS.hasChanged(hashCode())
         || kV.hasChanged(hashCode())) {
-      io.setPIDFF(kP.get(), kD.get(), kS.get(), kV.get());
+      io.setLauncherPIDFF(kP.get(), kD.get(), kS.get(), kV.get());
     }
     if (statorCurrentLimit.hasChanged(hashCode()) || supplyCurrentLimit.hasChanged(hashCode())) {
       io.setCurrentLimits(statorCurrentLimit.get(), supplyCurrentLimit.get());
+    }
+
+    if (hoodkP.hasChanged(hashCode())
+        || hoodkI.hasChanged(hashCode())
+        || hoodkD.hasChanged(hashCode())
+        || hoodkS.hasChanged(hashCode())
+        || hoodkG.hasChanged(hashCode())) {
+      io.setHoodPIDFF(hoodkP.get(), hoodkI.get(), hoodkD.get(), hoodkS.get(), hoodkG.get());
     }
   }
 
@@ -132,6 +157,12 @@ public class Launcher extends SubsystemBase {
     return inputs.launcher1Data.velocity();
   }
 
+  public double getkG() {
+    return LauncherConstants.HOOD_CONFIG_SLOT0.kG
+        * Math.cos(
+            Units.rotationsToRadians(inputs.hoodData.position() / LauncherConstants.HOOD_GEARING)
+                + Units.degreesToRadians(kGOffset.get()));
+  }
   // this is the CORRECT method to turn launcher off
   private void turnLauncherOff() {
     io.stopLauncher();
@@ -166,4 +197,12 @@ public class Launcher extends SubsystemBase {
           }
         });
   }
+
+  public void zeroHood() {
+    io.zeroHood();
+  }
+
+  // public void setPassing() {
+  //   launcherState = LauncherState.PASSING;
+  // }
 }

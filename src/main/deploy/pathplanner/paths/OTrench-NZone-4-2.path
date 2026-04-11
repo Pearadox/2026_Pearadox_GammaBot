@@ -3,37 +3,42 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.9910271041369465,
-        "y": 2.372382310984309
+        "x": 5.799,
+        "y": 0.574
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.86123823109843,
-        "y": 0.18582453637660645
+        "x": 5.785777460770328,
+        "y": 1.6090014265335246
       },
       "isLocked": false,
-      "linkedName": "Outpost AllianZone"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.427218259629101,
-        "y": 0.5739087018544944
+        "x": 5.799,
+        "y": 3.472168330955778
       },
       "prevControl": {
-        "x": 3.236861626248216,
-        "y": 0.6256633380884443
+        "x": 5.798716119828815,
+        "y": 2.035977175463623
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.38379530916844284,
+      "rotationDegrees": 90.26248221602822
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 0.75,
+    "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -41,14 +46,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 1.0,
-    "rotation": 0.0
+    "velocity": 0,
+    "rotation": 90.00982106188972
   },
   "reversed": false,
-  "folder": "To Trench",
+  "folder": "To Neutral Zone",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -0.5787255656077434
+    "rotation": 0.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

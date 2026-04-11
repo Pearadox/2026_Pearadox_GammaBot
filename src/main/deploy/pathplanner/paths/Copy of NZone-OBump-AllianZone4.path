@@ -48,16 +48,16 @@
     },
     {
       "anchor": {
-        "x": 3.082,
-        "y": 2.437
+        "x": 2.978088445078458,
+        "y": 2.3853209700427964
       },
       "prevControl": {
-        "x": 4.173446106472846,
-        "y": 2.5425574800546884
+        "x": 4.069534551551303,
+        "y": 2.490878450097485
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Outpost AllianZone2"
     }
   ],
   "rotationTargets": [

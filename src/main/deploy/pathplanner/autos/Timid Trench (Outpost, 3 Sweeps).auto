@@ -13,7 +13,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NZone-OBump-AllianZone3"
+            "pathName": "NZone-OTrench-AllianZone"
           }
         },
         {
@@ -25,25 +25,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Flow Intake"
+            "name": "Set Launching"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Set Launching (No Wait)"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "AllianZone-OTrench"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop Launching"
+            "name": "Set Intaking"
           }
         },
         {
@@ -55,43 +43,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Copy of NZone-OBump-AllianZone4"
+            "pathName": "NZone-OTrench-AllianZone2"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Stop Intaking"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Flow Intake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Set Launching (No Wait)"
+            "name": "Set Launching"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Copy of AllianZone-OTrench"
+            "pathName": "OTrench-NZone4-1"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Stop Launching"
+            "name": "Set Intaking"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "OTrench-NZone"
+            "pathName": "OTrench-NZone-4-2"
           }
         }
       ]

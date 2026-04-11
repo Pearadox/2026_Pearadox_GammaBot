@@ -18,7 +18,7 @@ public class SpindexerConstants {
     public static final Map<SpindexerState, StateConfig> SPINDEXER_STATE_MAP =
         Map.of(
             SpindexerState.STOPPED, new StateConfig(0),
-            SpindexerState.RUNNING, new StateConfig(8),
+            SpindexerState.RUNNING, new StateConfig(4),
             SpindexerState.REVERSE, new StateConfig(-12));
   }
 

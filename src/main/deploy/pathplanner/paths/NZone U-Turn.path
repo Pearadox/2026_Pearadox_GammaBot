@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.83,
-        "y": 3.6
+        "x": 7.843024251069899,
+        "y": 3.6015549215406564
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.83,
-        "y": 4.6
+        "x": 7.843024251069899,
+        "y": 4.6015549215406555
       },
       "isLocked": false,
       "linkedName": "Outpost NZone Center"
@@ -53,7 +53,7 @@
   "folder": "Sweeps & Scoops",
   "idealStartingState": {
     "velocity": 1.5,
-    "rotation": 90.0
+    "rotation": 90.8550973962666
   },
   "useDefaultConstraints": false
 }
