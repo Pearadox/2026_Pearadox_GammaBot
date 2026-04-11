@@ -19,19 +19,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Stop Intaking"
+            "name": "Flow Intake"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Set Launching"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Set Intaking"
           }
         },
         {
@@ -44,6 +38,12 @@
           "type": "path",
           "data": {
             "pathName": "NZone-OTrench-AllianZone2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Flow Intake"
           }
         },
         {
