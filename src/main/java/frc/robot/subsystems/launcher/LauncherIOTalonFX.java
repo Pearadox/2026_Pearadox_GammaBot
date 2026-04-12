@@ -25,7 +25,7 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
 
   protected final VelocityTorqueCurrentFOC launcher1Control;
   protected final VelocityVoltage velocityVoltageRequest;
-  protected final VoltageOut voltageRequest;
+  protected final VoltageOut launcherVoltageRequest;
   protected final Follower launcher2Control;
 
   private final TalonFXConfiguration launcherConfigs;
@@ -34,6 +34,7 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
   private final TalonFXConfiguration hoodConfigs;
 
   protected final PositionVoltage hoodControl;
+  protected final VoltageOut hoodVoltageRequest;
 
   public LauncherIOTalonFX() {
     launcherConfigs = LauncherConstants.LAUNCHER_MOTOR_CONFIG();
@@ -47,7 +48,7 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
 
     launcher1Control = new VelocityTorqueCurrentFOC(0);
     velocityVoltageRequest = new VelocityVoltage(0);
-    voltageRequest = new VoltageOut(0);
+    launcherVoltageRequest = new VoltageOut(0);
     launcher2Control = new Follower(launcher1Leader.getDeviceID(), MotorAlignmentValue.Opposed);
 
     hoodConfigs = LauncherConstants.HOOD_CONFIG();
@@ -55,6 +56,7 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
     hood = new PearadoxTalonFX(LauncherConstants.HOOD_ID, hoodConfigs, Compeartment.HOOD);
 
     hoodControl = new PositionVoltage(0);
+    hoodVoltageRequest = new VoltageOut(0);
   }
 
   public void updateInputs(LauncherIOInputs inputs) {
@@ -82,7 +84,7 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
   }
 
   public void setLauncherVoltage(double voltage) {
-    launcher1Leader.setControl(voltageRequest.withOutput(voltage));
+    launcher1Leader.setControl(launcherVoltageRequest.withOutput(voltage));
     launcher2Follower.setControl(launcher2Control);
   }
 
@@ -105,6 +107,11 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
     } else {
       Logger.recordOutput("Hood/HoodAngle-inRange", false);
     }
+  }
+
+  @Override
+  public void runHoodVolts(double volts) {
+    hood.setControl(hoodVoltageRequest.withOutput(volts));
   }
 
   public void zeroHood() {

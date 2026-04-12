@@ -7,6 +7,7 @@ package frc.robot.subsystems.launcher;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.drivers.MovingShotSolver;
 import frc.robot.Constants;
@@ -38,7 +39,7 @@ public class Launcher extends SubsystemBase {
       new LoggedTunableNumber("Launcher/Idle Mode Default Velocity", 20);
 
   private final LoggedTunableNumber defaultHoodAngleDegs =
-      new LoggedTunableNumber("Launcher/Default Hood Angle Degrees", 17.5);
+      new LoggedTunableNumber("Launcher/Default Hood Angle Degrees", 11);
 
   private final LoggedTunableNumber kP = new LoggedTunableNumber("Launcher/kP", 99999);
   private final LoggedTunableNumber kD = new LoggedTunableNumber("Launcher/kD", 0);
@@ -139,6 +140,10 @@ public class Launcher extends SubsystemBase {
         || hoodkG.hasChanged(hashCode())) {
       io.setHoodPIDFF(hoodkP.get(), hoodkI.get(), hoodkD.get(), hoodkS.get(), hoodkG.get());
     }
+  }
+
+  public Command zeroHoodCommand() {
+    return new RunCommand(() -> io.runHoodVolts(-1)).finallyDo((bool) -> zeroHood());
   }
 
   /** velocity will be calculated from aim assist command factory */

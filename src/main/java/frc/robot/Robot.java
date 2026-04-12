@@ -141,7 +141,7 @@ public class Robot extends LoggedRobot {
           Math.min(secondsEnabledFor, VisionConstants.MAX_REWIND_LENGTH_SECONDS));
     }
 
-    robotContainer.vision.unthrottleLimelights(); // TODO change after done testing
+    robotContainer.vision.throttleLimelights();
   }
 
   /** This function is called periodically when disabled. */

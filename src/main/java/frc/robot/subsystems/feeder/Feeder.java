@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.feeder.FeederConstants.FeederState;
 import frc.robot.subsystems.feeder.FeederConstants.StateConfig;
 import frc.robot.util.LoggedTunableNumber;
+import org.littletonrobotics.junction.Logger;
 
 public class Feeder extends SubsystemBase {
   private final FeederIO io;
@@ -40,19 +41,19 @@ public class Feeder extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     io.updateInputs(inputs);
-    // isDetectedDebounced = canRangeDebouncer.calculate(inputs.canRangeIsDetected);
-    // Logger.processInputs("FeederInputs", inputs);
-    // Logger.recordOutput("Feeder/CanRange/Distance from Fuel", canRangeGetDistanceMeters());
-    // Logger.recordOutput("Feeder/CanRange/FuelIsDetected", isDetectedDebounced());
-    // Logger.recordOutput("Feeder/CanRange/Number of Fuel", getFuelCount());
-    // Logger.recordOutput("Feeder/CanRange/Signal", canRangeGetSignalStrength());
+    isDetectedDebounced = canRangeDebouncer.calculate(inputs.canRangeIsDetected);
+    Logger.processInputs("FeederInputs", inputs);
+    Logger.recordOutput("Feeder/CanRange/Distance from Fuel", canRangeGetDistanceMeters());
+    Logger.recordOutput("Feeder/CanRange/FuelIsDetected", isDetectedDebounced());
+    Logger.recordOutput("Feeder/CanRange/Number of Fuel", getFuelCount());
+    Logger.recordOutput("Feeder/CanRange/Signal", canRangeGetSignalStrength());
 
     if (feederState == FeederState.RUNNING) {
       io.runFeederVoltage(feederVolts.get());
     } else {
       io.runFeederVoltage(StateConfig.FEEDER_STATE_MAP.get(feederState).voltage());
     }
-    // updateFuelCount();
+    updateFuelCount();
   }
 
   public void setStopped() {

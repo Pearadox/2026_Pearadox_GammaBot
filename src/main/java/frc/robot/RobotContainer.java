@@ -113,7 +113,12 @@ public class RobotContainer {
         intake = new Intake(new IntakeIOReal());
         launcher = new Launcher(new LauncherIOReal());
         spindexer = new Spindexer(new SpindexerIOReal());
-        turret = new Turret(new TurretIOReal(), drive::getChassisSpeeds, drive::getRotation);
+        turret =
+            new Turret(
+                new TurretIOReal(),
+                drive::getChassisSpeeds,
+                drive::getRotation,
+                intake::turretHasClearance);
         vision =
             new Vision(
                 drive::addVisionMeasurement,
@@ -139,7 +144,12 @@ public class RobotContainer {
         intake = new Intake(new IntakeIOSim());
         launcher = new Launcher(new LauncherIOSim());
         spindexer = new Spindexer(new SpindexerIOSim());
-        turret = new Turret(new TurretIOSim(), drive::getChassisSpeeds, drive::getRotation);
+        turret =
+            new Turret(
+                new TurretIOSim(),
+                drive::getChassisSpeeds,
+                drive::getRotation,
+                intake::turretHasClearance);
         vision = new Vision(drive::addVisionMeasurement);
 
         DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
@@ -160,7 +170,12 @@ public class RobotContainer {
         intake = new Intake(new IntakeIO() {});
         launcher = new Launcher(new LauncherIO() {});
         spindexer = new Spindexer(new SpindexerIO() {});
-        turret = new Turret(new TurretIO() {}, drive::getChassisSpeeds, drive::getRotation);
+        turret =
+            new Turret(
+                new TurretIO() {},
+                drive::getChassisSpeeds,
+                drive::getRotation,
+                intake::turretHasClearance);
         vision = new Vision(drive::addVisionMeasurement);
 
         break;
@@ -377,6 +392,10 @@ public class RobotContainer {
                       }
                     })
                 .ignoringDisable(true));
+
+    // runs the hood down, then when released, zeroes the hood
+    // if disabled, the hood won't run down
+    opController.x().whileTrue(launcher.zeroHoodCommand().ignoringDisable(true));
   }
 
   /**
@@ -404,14 +423,11 @@ public class RobotContainer {
                     .until(() -> feeder.isHopperEmpty()))
             // .withTimeout(FeederConstants.IS_HOPPER_EMPTY_BUFFER_TIME))
             .finallyDo(
-                (bool) ->
-                    new InstantCommand(() -> feeder.setStopped())
-                        .andThen(
-                            (new InstantCommand(
-                                () -> {
-                                  spindexer.setStopped();
-                                  launcher.setOff();
-                                })))));
+                (bool) -> {
+                  feeder.setStopped();
+                  spindexer.setStopped();
+                  launcher.setOff();
+                }));
 
     NamedCommands.registerCommand(
         "Set Launching (No Wait)",
@@ -444,7 +460,7 @@ public class RobotContainer {
             .andThen(new RunCommand(() -> intake.setIntaking(), intake).withTimeout(1))
             .andThen(new RunCommand(() -> intake.setFlow(), intake).withTimeout(1))
             .andThen(new RunCommand(() -> intake.setIntaking(), intake).withTimeout(1))
-            .finallyDo((bool) -> new InstantCommand(() -> intake.setIntaking(), intake)));
+            .finallyDo((bool) -> intake.setIntaking()));
 
     new EventTrigger("Set Intaking").onTrue(new InstantCommand(() -> intake.setIntaking()));
   }
