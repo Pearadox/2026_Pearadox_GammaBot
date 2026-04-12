@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
 import frc.robot.util.LoggedTunableNumber;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -24,6 +25,7 @@ public class Turret extends SubsystemBase {
 
   private Supplier<ChassisSpeeds> speedsSupplier;
   private Supplier<Rotation2d> robotRotationSupplier;
+  private BooleanSupplier turretHasClearanceSupplier;
 
   @AutoLogOutput @Getter private boolean hasZeroed = false;
 
@@ -55,10 +57,12 @@ public class Turret extends SubsystemBase {
   public Turret(
       TurretIO io,
       Supplier<ChassisSpeeds> chassisSpeedsSupplier,
-      Supplier<Rotation2d> robotRotationSupplier) {
+      Supplier<Rotation2d> robotRotationSupplier,
+      BooleanSupplier turretHasClearanceSupplier) {
     this.io = io;
     this.speedsSupplier = chassisSpeedsSupplier;
     this.robotRotationSupplier = robotRotationSupplier;
+    this.turretHasClearanceSupplier = turretHasClearanceSupplier;
 
     sysId =
         new SysIdRoutine(
@@ -94,7 +98,8 @@ public class Turret extends SubsystemBase {
 
   /** Follows a robot-centric angle. */
   public void followRobotCentricTarget(Supplier<Rotation2d> robotCentricAngleSupplier) {
-    if (!hasZeroed) return;
+    if (!hasZeroed || !turretHasClearanceSupplier.getAsBoolean()) return;
+
     double setpointTurretRads = wrap(robotCentricAngleSupplier.get().getRadians());
     double setpointMotorRots = setpointTurretRads / TurretConstants.TURRET_P_COEFFICIENT;
 
@@ -109,7 +114,8 @@ public class Turret extends SubsystemBase {
   }
 
   public void followFieldCentricTarget(Supplier<Rotation2d> fieldCentricAngleSupplier) {
-    if (!hasZeroed) return;
+    if (!hasZeroed || !turretHasClearanceSupplier.getAsBoolean()) return;
+
     Rotation2d offset =
         Rotation2d.fromDegrees(fieldRelOffset.get() + Units.radiansToDegrees(turretRotationAdjust));
     followRobotCentricTarget(

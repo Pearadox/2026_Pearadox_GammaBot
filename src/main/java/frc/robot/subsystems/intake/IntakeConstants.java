@@ -27,11 +27,11 @@ public class IntakeConstants {
   public static record StateConfig(double angleDeg, double voltage) {
     public static final Map<IntakeState, StateConfig> INTAKE_STATE_MAP =
         Map.of(
-            IntakeState.STOWED, new StateConfig(7, 0),
+            IntakeState.STOWED, new StateConfig(40, 0), // 7 deg
             IntakeState.DEPLOYED, new StateConfig(120, 0),
             IntakeState.INTAKING, new StateConfig(120, 7.0), // 4V
             IntakeState.OUTTAKING, new StateConfig(120, -7.0), // -4V
-            IntakeState.FLOW_STATE, new StateConfig(7, 4.0),
+            IntakeState.FLOW_STATE, new StateConfig(40, 4.0), // 7 deg
             IntakeState.HOLD_STATE,
                 new StateConfig(Units.rotationsToDegrees(8) / IntakeConstants.GEARING, 7));
   }
@@ -70,6 +70,8 @@ public class IntakeConstants {
   public static final double SIM_STARTING_ANGLE_RADS = Units.degreesToRadians(0);
   public static final double SIM_MIN_ANGLE_RADS = Double.NEGATIVE_INFINITY;
   public static final double SIM_MAX_ANGLE_RADS = Double.POSITIVE_INFINITY;
+
+  public static final double MIN_ANGLE_FOR_TURRET_CLEARANCE_DEGS = 5;
 
   // talonFX config for roller motor
   public static final TalonFXConfiguration ROLLER_CONFIG = new TalonFXConfiguration();

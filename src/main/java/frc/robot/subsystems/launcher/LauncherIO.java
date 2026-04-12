@@ -46,5 +46,7 @@ public interface LauncherIO {
 
   public default void setHoodPIDFF(double kP, double kI, double kD, double kS, double kG) {}
 
+  public default void runHoodVolts(double volts) {}
+
   public default void zeroHood() {}
 }

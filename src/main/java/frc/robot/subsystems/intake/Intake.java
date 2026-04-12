@@ -107,6 +107,7 @@ public class Intake extends SubsystemBase {
     return Math.sin(Math.toRadians(getAngleDegs())) * pivotkg.get();
   }
 
+  @AutoLogOutput
   public double getAngleDegs() {
     return Units.rotationsToDegrees(inputs.pivot1MotorData.position()) / IntakeConstants.GEARING;
   }
@@ -137,5 +138,10 @@ public class Intake extends SubsystemBase {
 
   public IntakeState getIntakeState() {
     return intakeState;
+  }
+
+  @AutoLogOutput
+  public boolean turretHasClearance() {
+    return getAngleDegs() > IntakeConstants.MIN_ANGLE_FOR_TURRET_CLEARANCE_DEGS;
   }
 }

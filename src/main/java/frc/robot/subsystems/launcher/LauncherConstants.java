@@ -62,8 +62,8 @@ public class LauncherConstants {
 
   public static final int HOOD_ID = 23;
 
-  public static final double HOOD_STATOR_CURRENT = 80.0;
-  public static final double HOOD_SUPPLY_CURRENT = 80.0; // TODO: tune currents
+  public static final double HOOD_STATOR_CURRENT = 40.0;
+  public static final double HOOD_SUPPLY_CURRENT = 30.0;
 
   public static final double HOOD_GEARING = 261. / 18.; // 14.5
 
@@ -87,9 +87,9 @@ public class LauncherConstants {
     hoodConfig.Voltage.PeakForwardVoltage = 4;
     hoodConfig.Voltage.PeakReverseVoltage = -4;
 
-    hoodConfig.Slot0.kP = 4;
+    hoodConfig.Slot0.kP = 5; // 4
     hoodConfig.Slot0.kI = 1.18;
-    hoodConfig.Slot0.kD = 0.1323;
+    hoodConfig.Slot0.kD = 0.0; // 0.1323
     // HOOD_CONFIG_SLOT0.kG = 0.254;
     hoodConfig.Slot0.kS = 0.07115;
 

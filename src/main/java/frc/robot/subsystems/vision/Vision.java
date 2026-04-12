@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.VisionIO.PoseObservationType;
+import frc.robot.util.LoggedTunableNumber;
 import java.util.LinkedList;
 import java.util.List;
 import org.littletonrobotics.junction.Logger;
@@ -29,6 +30,9 @@ public class Vision extends SubsystemBase {
   private final VisionIO[] io;
   private final VisionIOInputsAutoLogged[] inputs;
   private final Alert[] disconnectedAlerts;
+
+  private final LoggedTunableNumber trenchTagStdDevFactor =
+      new LoggedTunableNumber("Vision/Trench Std Dev Factor", 3.0);
 
   public Vision(VisionConsumer consumer, VisionIO... io) {
     this.consumer = consumer;
@@ -83,11 +87,24 @@ public class Vision extends SubsystemBase {
       List<Pose3d> robotPosesRejected = new LinkedList<>();
 
       // Add tag poses
+      boolean onlySeesTrenchTags = true;
       for (int tagId : inputs[cameraIndex].tagIds) {
         var tagPose = aprilTagLayout.getTagPose(tagId);
         if (tagPose.isPresent()) {
           tagPoses.add(tagPose.get());
         }
+
+        boolean isTrenchTag =
+            tagId == 6
+                || tagId == 7
+                || tagId == 12
+                || tagId == 1
+                || tagId == 17
+                || tagId == 28
+                || tagId == 22
+                || tagId == 23;
+
+        if (!isTrenchTag) onlySeesTrenchTags = false;
       }
 
       // Loop over pose observations
@@ -132,6 +149,9 @@ public class Vision extends SubsystemBase {
           linearStdDev *= cameraStdDevFactors[cameraIndex];
           angularStdDev *= cameraStdDevFactors[cameraIndex];
         }
+        if (onlySeesTrenchTags) {
+          linearStdDev *= trenchTagStdDevFactor.get();
+        }
 
         // Send vision observation
         consumer.accept(
@@ -153,6 +173,9 @@ public class Vision extends SubsystemBase {
       Logger.recordOutput(
           "Vision/Camera" + Integer.toString(cameraIndex) + "/RobotPosesRejected",
           robotPosesRejected.toArray(new Pose3d[0]));
+      Logger.recordOutput(
+          "Vision/Camera" + Integer.toString(cameraIndex) + "/onlySeesTrenchTags",
+          onlySeesTrenchTags);
       allTagPoses.addAll(tagPoses);
       allRobotPoses.addAll(robotPoses);
       allRobotPosesAccepted.addAll(robotPosesAccepted);
