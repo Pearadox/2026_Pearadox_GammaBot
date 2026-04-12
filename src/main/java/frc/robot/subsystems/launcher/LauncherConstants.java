@@ -60,12 +60,12 @@ public class LauncherConstants {
     return LAUNCHER_CONFIG;
   }
 
-  public static final int HOOD_ID = 23; // TODO: get
+  public static final int HOOD_ID = 23;
 
-  public static final double HOOD_STATOR_CURRENT = 80.0; // TODO: tune
-  public static final double HOOD_SUPPLY_CURRENT = 80.0; // TODO: tune
+  public static final double HOOD_STATOR_CURRENT = 80.0;
+  public static final double HOOD_SUPPLY_CURRENT = 80.0; // TODO: tune currents
 
-  public static final double HOOD_GEARING = 261. / 18.; // 14.5; // TODO: tune
+  public static final double HOOD_GEARING = 261. / 18.; // 14.5
 
   public static final double HOOD_MIN_ANGLE_RADS = Units.degreesToRadians(10);
   public static final double HOOD_MAX_ANGLE_RADS = Units.degreesToRadians(40);
@@ -87,9 +87,9 @@ public class LauncherConstants {
     hoodConfig.Voltage.PeakForwardVoltage = 4;
     hoodConfig.Voltage.PeakReverseVoltage = -4;
 
-    hoodConfig.Slot0.kP = 4; // TODO: tune
-    hoodConfig.Slot0.kI = 1.18; // TODO: tune
-    hoodConfig.Slot0.kD = 0.1323; // TODO: tune
+    hoodConfig.Slot0.kP = 4;
+    hoodConfig.Slot0.kI = 1.18;
+    hoodConfig.Slot0.kD = 0.1323;
     // HOOD_CONFIG_SLOT0.kG = 0.254;
     hoodConfig.Slot0.kS = 0.07115;
 
@@ -101,18 +101,15 @@ public class LauncherConstants {
   // SIM
   public static final DCMotor ROLLER_MOTOR = DCMotor.getKrakenX60(1);
   public static final double ROLLER_RADIUS_METERS = Units.inchesToMeters(2.0);
-  public static final double ROLLER_MASS_KG = Units.lbsToKilograms(0.7); // TODO: get weight
+  public static final double ROLLER_MASS_KG = Units.lbsToKilograms(0.6);
   public static final double ROLLER_CIRCUMFERENCE_METERS = Units.inchesToMeters(4.0 * Math.PI);
-  public static final double LAUNCHER_HEIGHT_METERS =
-      Units.inchesToMeters(22.5); // TODO: double check
   public static final double LAUNCHER_ROLLER_MOI = 0.003;
   // 0.5 * ROLLER_MASS_KG * Math.pow(ROLLER_RADIUS_METERS, 2);
   public static final int ROLLER_SEGMENT_COUNT = 20;
   public static final int SIM_LINE_WIDTH = 5;
 
   public static final DCMotor HOOD_MOTOR = DCMotor.getKrakenX44(1);
-  public static final double HOOD_LENGTH_METERS =
-      Units.inchesToMeters(10); // TODO: get better values
-  public static final double HOOD_MASS_KG = Units.lbsToKilograms(3); // TODO: get better values
+  public static final double HOOD_LENGTH_METERS = Units.inchesToMeters(9);
+  public static final double HOOD_MASS_KG = Units.lbsToKilograms(3);
   public static final double HOOD_P_COEFFICIENT = (2 * Math.PI) / LauncherConstants.HOOD_GEARING;
 }
