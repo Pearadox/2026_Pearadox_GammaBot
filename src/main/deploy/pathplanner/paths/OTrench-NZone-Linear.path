@@ -4,36 +4,31 @@
     {
       "anchor": {
         "x": 5.799,
-        "y": 0.574
+        "y": 3.472168330955778
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.785777460770328,
-        "y": 1.6090014265335246
+        "x": 5.837141820193224,
+        "y": 3.175801924587816
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Outpost Linear Hub Stop"
     },
     {
       "anchor": {
         "x": 5.799,
-        "y": 3.472168330955778
+        "y": 1.8418972895863055
       },
       "prevControl": {
-        "x": 5.798716119828815,
-        "y": 2.035977175463623
+        "x": 5.76024871617195,
+        "y": 2.0888757056507012
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Outpost Linear Hub Stop"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.38379530916844284,
-      "rotationDegrees": 90.26248221602822
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -47,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.00982106188972
+    "rotation": 90.0
   },
   "reversed": false,
   "folder": "To Neutral Zone",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 90.00982106188972
   },
   "useDefaultConstraints": true
 }
