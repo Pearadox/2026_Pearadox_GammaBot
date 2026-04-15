@@ -143,7 +143,7 @@ public class Launcher extends SubsystemBase {
   }
 
   public Command zeroHoodCommand() {
-    return new RunCommand(() -> io.runHoodVolts(-1)).finallyDo((bool) -> zeroHood());
+    return new RunCommand(() -> io.runHoodVolts(-0.5)).finallyDo((bool) -> zeroHood());
   }
 
   /** velocity will be calculated from aim assist command factory */
