@@ -83,6 +83,12 @@
           "data": {
             "pathName": "OTrench-NZone-4-2"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "OTrench-NZone-Linear"
+          }
         }
       ]
     }
