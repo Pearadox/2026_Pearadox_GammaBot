@@ -29,8 +29,8 @@ public class IntakeConstants {
         Map.of(
             IntakeState.STOWED, new StateConfig(40, 0), // 7 deg
             IntakeState.DEPLOYED, new StateConfig(120, 0),
-            IntakeState.INTAKING, new StateConfig(120, 7.0), // 4V
-            IntakeState.OUTTAKING, new StateConfig(120, -7.0), // -4V
+            IntakeState.INTAKING, new StateConfig(120, 7.5), // 4V
+            IntakeState.OUTTAKING, new StateConfig(120, -7.5), // -4V
             IntakeState.FLOW_STATE, new StateConfig(40, 4.0), // 7 deg
             IntakeState.HOLD_STATE,
                 new StateConfig(Units.rotationsToDegrees(8) / IntakeConstants.GEARING, 7));
