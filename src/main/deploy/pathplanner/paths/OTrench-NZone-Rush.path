@@ -9,23 +9,23 @@
       "prevControl": null,
       "nextControl": {
         "x": 8.451141226818828,
-        "y": 0.34101283880171335
+        "y": 0.3410128388017134
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.25706134094151,
-        "y": 3.5886162624821685
+        "x": 7.996807228915662,
+        "y": 3.5432530120481935
       },
       "prevControl": {
-        "x": 8.87811697574893,
-        "y": 2.152425106990014
+        "x": 8.617862863723083,
+        "y": 2.1070618565560393
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "OTrench Short Sweep"
     }
   ],
   "rotationTargets": [

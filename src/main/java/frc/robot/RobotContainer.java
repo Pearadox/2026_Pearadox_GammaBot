@@ -455,11 +455,13 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Jostle Intake",
         new RunCommand(() -> intake.setIntaking(), intake)
-            .withTimeout(1)
-            .andThen(new RunCommand(() -> intake.setFlow(), intake).withTimeout(1))
-            .andThen(new RunCommand(() -> intake.setIntaking(), intake).withTimeout(1))
-            .andThen(new RunCommand(() -> intake.setFlow(), intake).withTimeout(1))
-            .andThen(new RunCommand(() -> intake.setIntaking(), intake).withTimeout(1))
+            .withTimeout(1) // purposefully left a little longer so no jamming
+            .andThen(new RunCommand(() -> intake.setFlow(), intake).withTimeout(0.5))
+            .andThen(new RunCommand(() -> intake.setIntaking(), intake).withTimeout(0.5))
+            .andThen(new RunCommand(() -> intake.setFlow(), intake).withTimeout(0.5))
+            .andThen(new RunCommand(() -> intake.setIntaking(), intake).withTimeout(0.5))
+            .andThen(new RunCommand(() -> intake.setFlow(), intake).withTimeout(0.5))
+            .andThen(new RunCommand(() -> intake.setIntaking(), intake).withTimeout(0.5))
             .finallyDo((bool) -> intake.setIntaking()));
 
     new EventTrigger("Set Intaking").onTrue(new InstantCommand(() -> intake.setIntaking()));
