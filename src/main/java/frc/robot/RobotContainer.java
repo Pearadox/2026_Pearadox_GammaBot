@@ -374,8 +374,8 @@ public class RobotContainer {
                         () -> MovingShotSolver.getShotSolution().turretAngle()),
                 turret));
 
-    opController.leftBumper().onTrue(new RunCommand(() -> turret.goToZero(), turret));
-    opController.rightBumper().onTrue(new RunCommand(() -> turret.goToTestSetpoint(), turret));
+    // opController.leftBumper().onTrue(new RunCommand(() -> turret.goToZero(), turret));
+    // opController.rightBumper().onTrue(new RunCommand(() -> turret.goToTestSetpoint(), turret));
 
     opController
         .start()

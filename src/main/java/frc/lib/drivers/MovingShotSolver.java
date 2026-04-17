@@ -39,7 +39,7 @@ public class MovingShotSolver {
 
   private enum HoodMode {
     CLOSE(72),
-    MID_RANGE(62),
+    MID_RANGE(63),
     FAR(54);
 
     private double radians;
@@ -108,10 +108,12 @@ public class MovingShotSolver {
     }
   }
 
-  private final LoggedTunableNumber normalRPSMultiplier =
-      new LoggedTunableNumber("SOTM/normal Rps Multiplier", 2.12); // 2.37 // 2.2 // 2.22 // 2.12
+  private final LoggedTunableNumber closeRPSMultiplier =
+      new LoggedTunableNumber(
+          "SOTM/close Rps Multiplier", 1.61); // 2.37 // 2.2 // 2.22 // 2.12 // 1.9 // 1.7 // 1.58
   private final LoggedTunableNumber midRangeRPSMultiplier =
-      new LoggedTunableNumber("SOTM/mid-range Rps Multiplier", 2.28); // 2.4 // 2.28
+      new LoggedTunableNumber(
+          "SOTM/mid-range Rps Multiplier", 1.71); // 2.4 // 2.28 // 2.278 // 1.5 // 1.7 // 1.7
   private final LoggedTunableNumber farRpsMultiplier =
       new LoggedTunableNumber("SOTM/far Rps Multiplier", 2.8);
 
@@ -308,7 +310,7 @@ public class MovingShotSolver {
     double multiplier;
     if (hoodMode == HoodMode.FAR) multiplier = farRpsMultiplier.get();
     else if (hoodMode == HoodMode.MID_RANGE) multiplier = midRangeRPSMultiplier.get();
-    else multiplier = normalRPSMultiplier.get();
+    else multiplier = closeRPSMultiplier.get();
 
     double outputtedShooterVelocity = MathUtil.clamp(multiplier * shooterSpeedRPS, 40, 118);
 
