@@ -110,10 +110,10 @@ public class MovingShotSolver {
 
   private final LoggedTunableNumber closeRPSMultiplier =
       new LoggedTunableNumber(
-          "SOTM/close Rps Multiplier", 1.61); // 2.37 // 2.2 // 2.22 // 2.12 // 1.9 // 1.7 // 1.58
+          "SOTM/close Rps Multiplier", 1.65); // 2.37 // 2.2 // 2.22 // 2.12 // 1.9 // 1.7 // 1.58
   private final LoggedTunableNumber midRangeRPSMultiplier =
       new LoggedTunableNumber(
-          "SOTM/mid-range Rps Multiplier", 1.71); // 2.4 // 2.28 // 2.278 // 1.5 // 1.7 // 1.7
+          "SOTM/mid-range Rps Multiplier", 1.75); // 2.4 // 2.28 // 2.278 // 1.5 // 1.7 // 1.7
   private final LoggedTunableNumber farRpsMultiplier =
       new LoggedTunableNumber("SOTM/far Rps Multiplier", 2.8);
 
