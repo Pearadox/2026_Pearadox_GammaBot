@@ -3,37 +3,44 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.560156626506024,
-        "y": 4.024072289156626
+        "x": 0.4,
+        "y": 3.771
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.1558313253012056,
-        "y": 4.035
+        "x": 0.4000000000000001,
+        "y": 4.771
       },
       "isLocked": false,
-      "linkedName": "Center"
+      "linkedName": "Tower"
     },
     {
       "anchor": {
-        "x": 0.51,
-        "y": 5.0
+        "x": 0.4,
+        "y": 7.0
       },
       "prevControl": {
-        "x": 2.476987951807229,
-        "y": 5.065566265060241
+        "x": 0.39999999999999986,
+        "y": 6.0
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Depot"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Set Intaking",
+      "waypointRelativePos": 0.26356589147286863,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 2.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -42,13 +49,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 110.0
+    "rotation": 90.0
   },
   "reversed": false,
   "folder": "To Depot",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 45.0
+    "rotation": 90.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
