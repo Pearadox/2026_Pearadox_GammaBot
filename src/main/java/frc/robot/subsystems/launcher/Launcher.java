@@ -36,7 +36,7 @@ public class Launcher extends SubsystemBase {
       new LoggedTunableNumber(
           "Launcher/Manual Mode Default Velocity", LauncherConstants.DEFAULT_VELOCITY_SETPOINT_RPS);
   private final LoggedTunableNumber idleDefaultVelocity =
-      new LoggedTunableNumber("Launcher/Idle Mode Default Velocity", 20);
+      new LoggedTunableNumber("Launcher/Idle Mode Default Velocity", 40);
 
   private final LoggedTunableNumber defaultHoodAngleDegs =
       new LoggedTunableNumber("Launcher/Default Hood Angle Degrees", 11);
@@ -90,6 +90,7 @@ public class Launcher extends SubsystemBase {
     }
 
     desiredVelocity = Math.abs(desiredVelocity + rpsAdjust);
+    // desiredVelocity = 0; FOR TESTING ONLY
 
     if (desiredVelocity < LauncherConstants.SHOOTER_VELOCITY_DEADBAND) {
       desiredVelocity = 0;

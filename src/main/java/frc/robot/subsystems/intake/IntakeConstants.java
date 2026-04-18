@@ -28,12 +28,12 @@ public class IntakeConstants {
   public static record StateConfig(double angleDeg, double voltage) {
     public static final Map<IntakeState, StateConfig> INTAKE_STATE_MAP =
         Map.of(
-            IntakeState.STOWED, new StateConfig(40, 0), // 7 deg
+            IntakeState.STOWED, new StateConfig(60, 0), // 7 deg
             IntakeState.DEPLOYED, new StateConfig(120, 0),
             IntakeState.INTAKING, new StateConfig(120, 7.5), // 4V
             IntakeState.INTAKING_FAST, new StateConfig(120, 12), // for auto
             IntakeState.OUTTAKING, new StateConfig(120, -7.5), // -4V
-            IntakeState.FLOW_STATE, new StateConfig(40, 4.0), // 7 deg
+            IntakeState.FLOW_STATE, new StateConfig(60, 4.0), // 7 deg
             IntakeState.HOLD_STATE,
                 new StateConfig(Units.rotationsToDegrees(8) / IntakeConstants.GEARING, 7));
   }
