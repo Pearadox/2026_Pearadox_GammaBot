@@ -30,7 +30,7 @@ public class LauncherConstants {
   public static final int LAUNCHER_STATOR_CURRENT_LIMIT = 60;
 
   public static final double LAUNCHER_GEARING = 1.0;
-  public static final double DEFAULT_VELOCITY_SETPOINT_RPS = 43; // 51.3
+  public static final double DEFAULT_VELOCITY_SETPOINT_RPS = 46; // 51.3
 
   public static final TalonFXConfiguration LAUNCHER_CONFIG = new TalonFXConfiguration();
   public static final Slot0Configs LAUNCHER_CONFIG_SLOT0 = LAUNCHER_CONFIG.Slot0;

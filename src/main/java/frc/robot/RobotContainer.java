@@ -350,7 +350,7 @@ public class RobotContainer {
         .leftBumper()
         .whileTrue(new InstantCommand(() -> intake.setIntaking()))
         .onFalse(new InstantCommand(() -> intake.setDeployed()));
-    drivercontroller.povUp().onTrue(new InstantCommand(() -> intake.setStowed()));
+    drivercontroller.povUp().onTrue(new InstantCommand(() -> intake.setFlow()));
     drivercontroller.povDown().onTrue(new InstantCommand(() -> intake.setDeployed()));
     drivercontroller
         .povLeft()

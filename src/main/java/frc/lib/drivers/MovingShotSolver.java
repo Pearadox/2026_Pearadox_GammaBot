@@ -312,7 +312,7 @@ public class MovingShotSolver {
     else if (hoodMode == HoodMode.MID_RANGE) multiplier = midRangeRPSMultiplier.get();
     else multiplier = closeRPSMultiplier.get();
 
-    double outputtedShooterVelocity = MathUtil.clamp(multiplier * shooterSpeedRPS, 40, 118);
+    double outputtedShooterVelocity = MathUtil.clamp(multiplier * shooterSpeedRPS, 25, 118);
 
     // Compute field-relative turret angle
 
