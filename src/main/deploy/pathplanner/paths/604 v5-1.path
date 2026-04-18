@@ -4,48 +4,39 @@
     {
       "anchor": {
         "x": 4.440156918687589,
-        "y": 0.6127246790299581
+        "y": 0.613
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.451141226818828,
-        "y": 0.3410128388017134
+        "x": 5.440156918687589,
+        "y": 0.613
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.25706134094151,
-        "y": 3.5886162624821685
+        "x": 7.8,
+        "y": 0.613
       },
       "prevControl": {
-        "x": 8.87811697574893,
-        "y": 2.152425106990014
+        "x": 6.8,
+        "y": 0.6130000000000001
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "end of OTrench NZone Rush"
+      "linkedName": "end of 604 v5"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.13006396588486469,
-      "rotationDegrees": 0.5375928714750497
-    },
-    {
-      "waypointRelativePos": 0.5,
-      "rotationDegrees": 106.541
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.5968939905469276,
+      "minWaypointRelativePos": 0.5488833746898273,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 2.0,
-        "maxAcceleration": 3.0,
+        "maxVelocity": 1.0,
+        "maxAcceleration": 1.5,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -54,16 +45,9 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Set Intaking",
-      "waypointRelativePos": 0.06752194463200575,
-      "endWaypointRelativePos": null,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.5,
+    "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -71,11 +55,11 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 1.0,
-    "rotation": 106.541
+    "velocity": 0.0,
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "To Neutral Zone",
+  "folder": "604 inspired paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

@@ -132,6 +132,10 @@ public class Intake extends SubsystemBase {
     intakeState = IntakeState.INTAKING;
   }
 
+  public void setIntakingFast() {
+    intakeState = IntakeState.INTAKING;
+  }
+
   public void setOuttaking() {
     intakeState = IntakeState.OUTTAKING;
   }
