@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6178990610328654,
-        "y": 2.683016431924882
+        "x": 3.602516853932584,
+        "y": 2.501768901569187
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.679081874152365,
-        "y": 2.3179113039510844
+        "x": 6.663699667052083,
+        "y": 2.1366637735953895
       },
       "isLocked": false,
       "linkedName": "Outpost bump"
@@ -259,7 +259,20 @@
       "name": "Point Towards Zone"
     }
   ],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Set Launching",
+      "waypointRelativePos": 0.5833896016205482,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "Stop Launching",
+      "waypointRelativePos": 7.162727886562895,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.0,
     "maxAcceleration": 3.5,

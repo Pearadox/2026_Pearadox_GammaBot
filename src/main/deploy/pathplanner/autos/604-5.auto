@@ -5,21 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "604 v5-1"
-          }
-        },
-        {
           "type": "wait",
           "data": {
-            "waitTime": 3.0
+            "waitTime": 2.848
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "604 v5-2"
+            "pathName": "604 v3"
           }
         },
         {
