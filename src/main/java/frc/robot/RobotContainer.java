@@ -49,6 +49,7 @@ import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.launcher.Launcher;
+import frc.robot.subsystems.launcher.LauncherConstants.LauncherState;
 import frc.robot.subsystems.launcher.LauncherIO;
 import frc.robot.subsystems.launcher.LauncherIOReal;
 import frc.robot.subsystems.launcher.LauncherIOSim;
@@ -287,10 +288,28 @@ public class RobotContainer {
 
     drivercontroller
         .rightBumper()
+        .and(() -> launcher.getLauncherState() != LauncherState.MANUAL)
         .whileTrue(
             new ShootOnTheMove(
                     launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d)
                 .alongWith(launcher.score()))
+        .onFalse(
+            new InstantCommand(() -> spindexer.setStopped())
+                .andThen(new WaitCommand(0.2))
+                .andThen(new InstantCommand(() -> feeder.setStopped())));
+
+    // Trigger inManualMode = new Trigger(() -> launcher.getLauncherState() ==
+    // LauncherState.MANUAL);
+
+    drivercontroller
+        .rightBumper()
+        .and(() -> launcher.getLauncherState() == LauncherState.MANUAL)
+        .whileTrue(
+            new InstantCommand(
+                () -> {
+                  feeder.setRunning();
+                  spindexer.setRunning();
+                }))
         .onFalse(
             new InstantCommand(() -> spindexer.setStopped())
                 .andThen(new WaitCommand(0.2))
@@ -334,7 +353,16 @@ public class RobotContainer {
                   spindexer.setStopped();
                   feeder.setStopped();
                 }));
-    opController.y().onTrue(new InstantCommand(() -> launcher.setManual()));
+
+    opController
+        .y()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  if (launcher.getLauncherState() == LauncherState.SELF_DIRECTING) {
+                    launcher.setManual();
+                  } else launcher.setIdle();
+                }));
 
     opController.povLeft().whileTrue(new RunCommand(() -> turret.adjustRotationBy(+0.01)));
     opController.povRight().whileTrue(new RunCommand(() -> turret.adjustRotationBy(-0.01)));
