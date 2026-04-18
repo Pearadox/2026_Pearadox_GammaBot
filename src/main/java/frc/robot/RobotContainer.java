@@ -49,6 +49,7 @@ import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.launcher.Launcher;
+import frc.robot.subsystems.launcher.LauncherConstants.LauncherState;
 import frc.robot.subsystems.launcher.LauncherIO;
 import frc.robot.subsystems.launcher.LauncherIOReal;
 import frc.robot.subsystems.launcher.LauncherIOSim;
@@ -285,16 +286,54 @@ public class RobotContainer {
                 () ->
                     DriveHelpers.getCourseRotation2d(drive::getChassisSpeeds, drive::getRotation)));
 
+    // drivercontroller
+    //     .rightBumper()
+    //     .and(() -> launcher.getLauncherState() != LauncherState.MANUAL)
+    //     .whileTrue(
+    //         new ShootOnTheMove(
+    //                 launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d)
+    //             .alongWith(launcher.score()))
+    //     .onFalse(
+    //         new InstantCommand(() -> spindexer.setStopped())
+    //             .andThen(new WaitCommand(0.2))
+    //             .andThen(new InstantCommand(() -> feeder.setStopped())));
+
+    // drivercontroller
+    //     .rightBumper()
+    //     .and(() -> launcher.getLauncherState() == LauncherState.MANUAL)
+    //     .whileTrue(
+    //         new InstantCommand(
+    //             () -> {
+    //               feeder.setRunning();
+    //               spindexer.setRunning();
+    //             }))
+    //     .onFalse(
+    //         new InstantCommand(() -> spindexer.setStopped())
+    //             .andThen(new WaitCommand(0.2))
+    //             .andThen(new InstantCommand(() -> feeder.setStopped())));
+
     drivercontroller
         .rightBumper()
         .whileTrue(
-            new ShootOnTheMove(
-                    launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d)
-                .alongWith(launcher.score()))
-        .onFalse(
-            new InstantCommand(() -> spindexer.setStopped())
-                .andThen(new WaitCommand(0.2))
-                .andThen(new InstantCommand(() -> feeder.setStopped())));
+            Commands.either(
+                Commands.startEnd(
+                    () -> {
+                      feeder.setRunning();
+                      spindexer.setRunning();
+                    },
+                    () -> {
+                      spindexer.setStopped();
+                      feeder.setStopped();
+                    }),
+                new ShootOnTheMove(
+                        launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d)
+                    .alongWith(launcher.score())
+                    .finallyDo(
+                        (b) -> {
+                          spindexer.setStopped();
+                          feeder.setStopped();
+                        }),
+                () -> launcher.getLauncherState() == LauncherState.MANUAL));
 
     drivercontroller
         .rightBumper()
@@ -311,7 +350,7 @@ public class RobotContainer {
         .leftBumper()
         .whileTrue(new InstantCommand(() -> intake.setIntaking()))
         .onFalse(new InstantCommand(() -> intake.setDeployed()));
-    drivercontroller.povUp().onTrue(new InstantCommand(() -> intake.setStowed()));
+    drivercontroller.povUp().onTrue(new InstantCommand(() -> intake.setFlow()));
     drivercontroller.povDown().onTrue(new InstantCommand(() -> intake.setDeployed()));
     drivercontroller
         .povLeft()
@@ -334,7 +373,16 @@ public class RobotContainer {
                   spindexer.setStopped();
                   feeder.setStopped();
                 }));
-    opController.y().onTrue(new InstantCommand(() -> launcher.setManual()));
+
+    opController
+        .y()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  if (launcher.getLauncherState() != LauncherState.MANUAL) {
+                    launcher.setManual();
+                  } else launcher.setIdle();
+                }));
 
     opController.povLeft().whileTrue(new RunCommand(() -> turret.adjustRotationBy(+0.01)));
     opController.povRight().whileTrue(new RunCommand(() -> turret.adjustRotationBy(-0.01)));
