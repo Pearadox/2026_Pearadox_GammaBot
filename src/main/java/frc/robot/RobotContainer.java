@@ -359,7 +359,7 @@ public class RobotContainer {
         .onTrue(
             new InstantCommand(
                 () -> {
-                  if (launcher.getLauncherState() == LauncherState.SELF_DIRECTING) {
+                  if (launcher.getLauncherState() != LauncherState.MANUAL) {
                     launcher.setManual();
                   } else launcher.setIdle();
                 }));
