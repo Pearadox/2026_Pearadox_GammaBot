@@ -286,34 +286,54 @@ public class RobotContainer {
                 () ->
                     DriveHelpers.getCourseRotation2d(drive::getChassisSpeeds, drive::getRotation)));
 
+    // drivercontroller
+    //     .rightBumper()
+    //     .and(() -> launcher.getLauncherState() != LauncherState.MANUAL)
+    //     .whileTrue(
+    //         new ShootOnTheMove(
+    //                 launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d)
+    //             .alongWith(launcher.score()))
+    //     .onFalse(
+    //         new InstantCommand(() -> spindexer.setStopped())
+    //             .andThen(new WaitCommand(0.2))
+    //             .andThen(new InstantCommand(() -> feeder.setStopped())));
+
+    // drivercontroller
+    //     .rightBumper()
+    //     .and(() -> launcher.getLauncherState() == LauncherState.MANUAL)
+    //     .whileTrue(
+    //         new InstantCommand(
+    //             () -> {
+    //               feeder.setRunning();
+    //               spindexer.setRunning();
+    //             }))
+    //     .onFalse(
+    //         new InstantCommand(() -> spindexer.setStopped())
+    //             .andThen(new WaitCommand(0.2))
+    //             .andThen(new InstantCommand(() -> feeder.setStopped())));
+
     drivercontroller
         .rightBumper()
-        .and(() -> launcher.getLauncherState() != LauncherState.MANUAL)
         .whileTrue(
-            new ShootOnTheMove(
-                    launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d)
-                .alongWith(launcher.score()))
-        .onFalse(
-            new InstantCommand(() -> spindexer.setStopped())
-                .andThen(new WaitCommand(0.2))
-                .andThen(new InstantCommand(() -> feeder.setStopped())));
-
-    // Trigger inManualMode = new Trigger(() -> launcher.getLauncherState() ==
-    // LauncherState.MANUAL);
-
-    drivercontroller
-        .rightBumper()
-        .and(() -> launcher.getLauncherState() == LauncherState.MANUAL)
-        .whileTrue(
-            new InstantCommand(
-                () -> {
-                  feeder.setRunning();
-                  spindexer.setRunning();
-                }))
-        .onFalse(
-            new InstantCommand(() -> spindexer.setStopped())
-                .andThen(new WaitCommand(0.2))
-                .andThen(new InstantCommand(() -> feeder.setStopped())));
+            Commands.either(
+                Commands.startEnd(
+                    () -> {
+                      feeder.setRunning();
+                      spindexer.setRunning();
+                    },
+                    () -> {
+                      spindexer.setStopped();
+                      feeder.setStopped();
+                    }),
+                new ShootOnTheMove(
+                        launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d)
+                    .alongWith(launcher.score())
+                    .finallyDo(
+                        (b) -> {
+                          spindexer.setStopped();
+                          feeder.setStopped();
+                        }),
+                () -> launcher.getLauncherState() == LauncherState.MANUAL));
 
     drivercontroller
         .rightBumper()
