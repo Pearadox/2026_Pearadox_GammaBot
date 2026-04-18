@@ -17,15 +17,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "Flow Intake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Set Launching"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Set Launching"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Jostle Intake"
+                }
+              }
+            ]
           }
         },
         {
@@ -41,15 +48,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "Flow Intake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Set Launching"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Set Launching"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Jostle Intake"
+                }
+              }
+            ]
           }
         },
         {
