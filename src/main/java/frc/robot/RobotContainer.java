@@ -340,7 +340,7 @@ public class RobotContainer {
         .whileTrue(
             Commands.startEnd(
                 () -> {
-                  setRobotSpeedMultiplier(0.7);
+                  setRobotSpeedMultiplier(Math.sqrt(0.4));
                 },
                 () -> {
                   setRobotSpeedMultiplier(1.0);
