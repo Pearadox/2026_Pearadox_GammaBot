@@ -47,6 +47,14 @@ public final class Constants {
     REPLAY
   }
 
+  public static final TuningMode currentTuningMode = TuningMode.SOME_ENABLED;
+
+  public static enum TuningMode {
+    ALL_ENABLED,
+    SOME_ENABLED,
+    ALL_DISABLED
+  }
+
   public static final double UPDATE_FREQ_SEC = 0.02;
 
   public static final int NEWTONS_METHOD_NUM_STEPS = 15;

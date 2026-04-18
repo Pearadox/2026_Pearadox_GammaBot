@@ -7,6 +7,8 @@
 
 package frc.robot.util;
 
+import frc.robot.Constants;
+import frc.robot.Constants.TuningMode;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,13 +46,20 @@ public class LoggedTunableNumber implements DoubleSupplier {
    * @param defaultValue Default value
    */
   public LoggedTunableNumber(String dashboardKey, double defaultValue) {
-    this(dashboardKey);
-    initDefault(defaultValue);
+    this(dashboardKey, defaultValue, true);
   }
 
-  public LoggedTunableNumber(String dashboardKey, double defaultValue, boolean tuningMode) {
+  public LoggedTunableNumber(String dashboardKey, double defaultValue, boolean isImportant) {
     this(dashboardKey);
-    this.tuningMode = tuningMode;
+
+    if (Constants.currentTuningMode == TuningMode.ALL_ENABLED) {
+      this.tuningMode = true;
+    } else if (Constants.currentTuningMode == TuningMode.ALL_DISABLED) {
+      this.tuningMode = false;
+    } else {
+      this.tuningMode = isImportant;
+    }
+
     initDefault(defaultValue);
   }
 

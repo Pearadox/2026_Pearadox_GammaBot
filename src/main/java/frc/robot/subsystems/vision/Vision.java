@@ -29,7 +29,7 @@ public class Vision extends SubsystemBase {
   private final Alert[] disconnectedAlerts;
 
   private final LoggedTunableNumber trenchTagStdDevFactor =
-      new LoggedTunableNumber("Vision/Trench Std Dev Factor", 10.5414);
+      new LoggedTunableNumber("Vision/Trench Std Dev Factor", 10.5414, false);
 
   public Vision(VisionConsumer consumer, VisionIO... io) {
     this.consumer = consumer;

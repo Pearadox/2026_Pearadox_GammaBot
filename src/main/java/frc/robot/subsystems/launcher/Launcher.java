@@ -42,15 +42,15 @@ public class Launcher extends SubsystemBase {
       new LoggedTunableNumber("Launcher/Default Hood Angle Degrees", 11);
 
   private final LoggedTunableNumber kP = new LoggedTunableNumber("Launcher/kP", 99999);
-  private final LoggedTunableNumber kD = new LoggedTunableNumber("Launcher/kD", 0);
-  private final LoggedTunableNumber kS = new LoggedTunableNumber("Launcher/kS", 0);
-  private final LoggedTunableNumber kV = new LoggedTunableNumber("Launcher/kV", 0);
+  private final LoggedTunableNumber kD = new LoggedTunableNumber("Launcher/kD", 0, false);
+  private final LoggedTunableNumber kS = new LoggedTunableNumber("Launcher/kS", 0, false);
+  private final LoggedTunableNumber kV = new LoggedTunableNumber("Launcher/kV", 0, false);
   private final LoggedTunableNumber statorCurrentLimit =
       new LoggedTunableNumber(
-          "Launcher/Stator Current Limit", LauncherConstants.LAUNCHER_STATOR_CURRENT_LIMIT);
+          "Launcher/Stator Current Limit", LauncherConstants.LAUNCHER_STATOR_CURRENT_LIMIT, false);
   private final LoggedTunableNumber supplyCurrentLimit =
       new LoggedTunableNumber(
-          "Launcher/Supply Current Limit", LauncherConstants.LAUNCHER_SUPPLY_CURRENT_LIMIT);
+          "Launcher/Supply Current Limit", LauncherConstants.LAUNCHER_SUPPLY_CURRENT_LIMIT, false);
 
   private final LoggedTunableNumber hoodkP =
       new LoggedTunableNumber("Hood/kP", LauncherConstants.HOOD_CONFIG_SLOT0.kP);
