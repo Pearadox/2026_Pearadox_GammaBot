@@ -12,7 +12,7 @@
         "y": 2.4888302425106996
       },
       "isLocked": false,
-      "linkedName": "Outpost bump"
+      "linkedName": "start of 604v3"
     },
     {
       "anchor": {
@@ -150,6 +150,12 @@
     }
   ],
   "eventMarkers": [
+    {
+      "name": "Set Intaking",
+      "waypointRelativePos": 0.3632754342432031,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
     {
       "name": "Set Launching",
       "waypointRelativePos": 0.8588791357191086,
