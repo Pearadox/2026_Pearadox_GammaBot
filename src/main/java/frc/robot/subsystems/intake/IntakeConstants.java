@@ -15,7 +15,8 @@ public class IntakeConstants {
     INTAKING,
     OUTTAKING,
     FLOW_STATE, // pivot stowed but rollers still going
-    HOLD_STATE
+    HOLD_STATE,
+    INTAKING_FAST
   }
 
   /**
@@ -30,6 +31,7 @@ public class IntakeConstants {
             IntakeState.STOWED, new StateConfig(60, 0), // 7 deg
             IntakeState.DEPLOYED, new StateConfig(120, 0),
             IntakeState.INTAKING, new StateConfig(120, 7.5), // 4V
+            IntakeState.INTAKING_FAST, new StateConfig(120, 12), // for auto
             IntakeState.OUTTAKING, new StateConfig(120, -7.5), // -4V
             IntakeState.FLOW_STATE, new StateConfig(60, 4.0), // 7 deg
             IntakeState.HOLD_STATE,

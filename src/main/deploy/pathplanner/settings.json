@@ -3,14 +3,16 @@
   "robotLength": 0.857,
   "holonomicMode": true,
   "pathFolders": [
-    "To Trench",
+    "604 inspired paths",
     "Sweeps & Scoops",
     "To Alliance Zone",
     "To Depot",
     "To Neutral Zone",
-    "To Outpost"
+    "To Outpost",
+    "To Trench"
   ],
   "autoFolders": [
+    "604",
     "Runnables",
     "WIP"
   ],

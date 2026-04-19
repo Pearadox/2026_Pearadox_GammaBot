@@ -1,0 +1,146 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.25706134094151,
+        "y": 3.5886162624821685
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 8.154571875554348,
+        "y": 4.60924961983733
+      },
+      "isLocked": false,
+      "linkedName": "end of OTrench NZone Rush"
+    },
+    {
+      "anchor": {
+        "x": 8.257,
+        "y": 5.7
+      },
+      "prevControl": {
+        "x": 8.167483807344707,
+        "y": 5.245507084744753
+      },
+      "nextControl": {
+        "x": 8.305311449523357,
+        "y": 5.945287594152155
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.912033707865168,
+        "y": 6.521606741573033
+      },
+      "prevControl": {
+        "x": 8.323307311828374,
+        "y": 6.564482695803558
+      },
+      "nextControl": {
+        "x": 9.289127495220487,
+        "y": 6.494143634642371
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 9.5,
+        "y": 5.7
+      },
+      "prevControl": {
+        "x": 9.56836165008564,
+        "y": 6.006728532995201
+      },
+      "nextControl": {
+        "x": 9.317944681587466,
+        "y": 4.8831449259826964
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 9.5,
+        "y": 2.210808988764045
+      },
+      "prevControl": {
+        "x": 10.05491784644333,
+        "y": 3.663836364447893
+      },
+      "nextControl": {
+        "x": 9.082581994932724,
+        "y": 1.1178187518244693
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.847101123595505,
+        "y": 0.5496741573033705
+      },
+      "prevControl": {
+        "x": 8.18847191011236,
+        "y": 0.5700561797752812
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.9983402489626563,
+      "rotationDegrees": 90.1
+    },
+    {
+      "waypointRelativePos": 3.9,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 4.394190871369293,
+      "rotationDegrees": -145.0
+    },
+    {
+      "waypointRelativePos": 4.8,
+      "rotationDegrees": -179.99
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 8.9,
+        "y": 5.8
+      },
+      "rotationOffset": 90.0,
+      "minWaypointRelativePos": 1.3667493796526011,
+      "maxWaypointRelativePos": 3.0,
+      "name": "Point Towards Zone"
+    }
+  ],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0.0,
+    "rotation": -179.999
+  },
+  "reversed": false,
+  "folder": "604 inspired paths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 106.541
+  },
+  "useDefaultConstraints": false
+}
