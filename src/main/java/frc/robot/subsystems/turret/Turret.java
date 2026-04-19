@@ -29,23 +29,24 @@ public class Turret extends SubsystemBase {
 
   @AutoLogOutput @Getter private boolean hasZeroed = false;
 
-  @AutoLogOutput private double turretRotationAdjust = 0;
+  @AutoLogOutput private double turretRotationAdjust = 0; // -0.13
 
   public void adjustRotationBy(double adj) {
     turretRotationAdjust -= adj;
   }
 
   private final LoggedTunableNumber kP =
-      new LoggedTunableNumber("Turret/kP", Constants.currentMode == Mode.SIM ? 3.0 : 6.7);
-  private final LoggedTunableNumber kI = new LoggedTunableNumber("Turret/kI", 0.0);
-  private final LoggedTunableNumber kD = new LoggedTunableNumber("Turret/kD", 0.0);
-  private final LoggedTunableNumber kS = new LoggedTunableNumber("Turret/kS", 0.0);
-  private final LoggedTunableNumber kV = new LoggedTunableNumber("Turret/kV", 0.0);
-  private final LoggedTunableNumber kA = new LoggedTunableNumber("Turret/kA", 0.0);
-  private final LoggedTunableNumber kOmega = new LoggedTunableNumber("Turret/kOmega", 0.0);
+      new LoggedTunableNumber("Turret/kP", Constants.currentMode == Mode.SIM ? 3.0 : 6.7, false);
+  private final LoggedTunableNumber kI = new LoggedTunableNumber("Turret/kI", 0.0, false);
+  private final LoggedTunableNumber kD = new LoggedTunableNumber("Turret/kD", 0.0, false);
+  private final LoggedTunableNumber kS = new LoggedTunableNumber("Turret/kS", 0.0, false);
+  private final LoggedTunableNumber kV = new LoggedTunableNumber("Turret/kV", 0.0, false);
+  private final LoggedTunableNumber kA = new LoggedTunableNumber("Turret/kA", 0.0, false);
+  private final LoggedTunableNumber kOmega = new LoggedTunableNumber("Turret/kOmega", 0.0, false);
   private final LoggedTunableNumber mmCruiseVel =
-      new LoggedTunableNumber("Turret/mmCruiseVel", 85); // 85
-  private final LoggedTunableNumber mmAcceleration = new LoggedTunableNumber("Turret/mmAcc", 450);
+      new LoggedTunableNumber("Turret/mmCruiseVel", 85, false); // 85
+  private final LoggedTunableNumber mmAcceleration =
+      new LoggedTunableNumber("Turret/mmAcc", 450, false);
   private final LoggedTunableNumber testSetpoint =
       new LoggedTunableNumber("Turret/test Setpoint", -90);
   private final LoggedTunableNumber fieldRelOffset =
@@ -138,7 +139,7 @@ public class Turret extends SubsystemBase {
   public void requestZero() {
     if (inputs.cancoderConnected) {
       io.setPosition(
-          (inputs.cancoderPosition * TurretConstants.TURRET_TO_CANCODER_RATIO)
+          (inputs.cancoderPosition * -TurretConstants.TURRET_TO_CANCODER_RATIO)
                   * TurretConstants.TURRET_GEAR_RATIO
               + TurretConstants.TURRET_STARTING_ANGLE / TurretConstants.TURRET_P_COEFFICIENT);
       hasZeroed = true;

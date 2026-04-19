@@ -7,29 +7,23 @@
         {
           "type": "path",
           "data": {
-            "pathName": "OTrench-NZone"
+            "pathName": "Center-Tower"
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "NZone-OTrench-AllianZone"
-          }
-        },
-        {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "Set Launching"
+                  "name": "Set Intaking"
                 }
               },
               {
-                "type": "named",
+                "type": "wait",
                 "data": {
-                  "name": "Jostle Intake"
+                  "waitTime": 1.0
                 }
               }
             ]
@@ -38,50 +32,32 @@
         {
           "type": "path",
           "data": {
-            "pathName": "OTrench-NZone2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "NZone-OTrench-AllianZone2"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Set Launching"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Jostle Intake"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "OTrench-NZone4-1"
+            "pathName": "Cross Depot"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Set Intaking"
+            "name": "Stop Intaking"
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "OTrench-NZone-4-2"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Set Launching"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Jostle Intake"
+                }
+              }
+            ]
           }
         }
       ]

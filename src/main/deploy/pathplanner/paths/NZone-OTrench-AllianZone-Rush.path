@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.257,
-        "y": 3.589
+        "x": 7.996807228915662,
+        "y": 3.5432530120481935
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.101797432239657,
-        "y": 1.6866333808844511
+        "x": 7.841604661155319,
+        "y": 1.6408863929326447
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "OTrench Short Sweep"
     },
     {
       "anchor": {
@@ -48,7 +48,7 @@
   "folder": "To Alliance Zone",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 106.54000000000002
+    "rotation": 106.541
   },
   "useDefaultConstraints": false
 }
