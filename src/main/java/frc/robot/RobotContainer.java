@@ -474,7 +474,7 @@ public class RobotContainer {
                 (bool) -> {
                   feeder.setStopped();
                   spindexer.setStopped();
-                  launcher.setOff();
+                  launcher.setIdle();
                 }));
 
     NamedCommands.registerCommand(

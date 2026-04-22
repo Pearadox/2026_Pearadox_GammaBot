@@ -3,32 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5574733096085422,
-        "y": 3.7713997627520763
+        "x": 6.368017118396344,
+        "y": 1.0914550641891332
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.5574733096085422,
-        "y": 3.5213997627520763
+        "x": 6.225691868758916,
+        "y": 0.2892582025677609
       },
       "isLocked": false,
-      "linkedName": "Center"
+      "linkedName": "Near Trench Circle"
     },
     {
       "anchor": {
-        "x": 3.602516853932584,
-        "y": 2.501768901569187
+        "x": 3.778710843373494,
+        "y": 0.5599879518072293
       },
       "prevControl": {
-        "x": 3.602516853932584,
-        "y": 2.751768901569187
+        "x": 2.778710843373494,
+        "y": 0.5599879518072293
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "start of 604v3"
+      "linkedName": "OTrench Shooting Spot"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.2814498933901922,
+      "rotationDegrees": 0.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,13 +47,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "604 inspired paths",
+  "folder": "To Neutral Zone",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }

@@ -48,7 +48,7 @@
   "folder": "To Alliance Zone",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 106.541
+    "rotation": 123.00000000000001
   },
   "useDefaultConstraints": false
 }
