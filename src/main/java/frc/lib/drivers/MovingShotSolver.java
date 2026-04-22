@@ -6,6 +6,7 @@ import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -19,7 +20,6 @@ import frc.robot.subsystems.launcher.LauncherConstants;
 import frc.robot.util.LoggedTunableNumber;
 import java.util.function.Supplier;
 import lombok.Getter;
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class MovingShotSolver {
@@ -37,21 +37,43 @@ public class MovingShotSolver {
   @Getter
   private static ShotSolution shotSolution = new ShotSolution(0.0, 0.0, Rotation2d.kZero, 0.0);
 
-  private enum HoodMode {
-    CLOSE(72),
-    MID_RANGE(63),
-    FAR(54);
-
-    private double radians;
-
-    private HoodMode(double degrees) {
-      radians = Units.degreesToRadians(degrees);
-    }
-
-    public double getDesiredHoodRadians() {
-      return radians;
-    }
+  private final InterpolatingDoubleTreeMap LAUNCH_ANGLE_MAP() {
+    // Mapping distance from hub (m) to desired hood angle (rads)
+    InterpolatingDoubleTreeMap map = new InterpolatingDoubleTreeMap();
+    map.put(0.8, Units.degreesToRadians(80.0)); // intake-side against the hub
+    map.put(4.5, Units.degreesToRadians(63.0)); // old midRange shot
+    map.put(8.0, Units.degreesToRadians(54.0)); // old farRange shot
+    map.put(10.0, Units.degreesToRadians(50.0)); // very far away, maxed out angle
+    return map;
   }
+
+  private final InterpolatingDoubleTreeMap LAUNCH_MULT_MAP() {
+    // Mapping distance from hub (m) to desired launcher speed (rps)
+    InterpolatingDoubleTreeMap map = new InterpolatingDoubleTreeMap();
+    map.put(0.8, 1.65); // intake-side against the hub
+    map.put(4.5, 1.75); // old midRange shot
+    map.put(8.0, 2.80); // old farRange shot
+    return map;
+  }
+
+  private final InterpolatingDoubleTreeMap launchAngleMap = LAUNCH_ANGLE_MAP();
+  private final InterpolatingDoubleTreeMap launchMultMap = LAUNCH_MULT_MAP();
+
+  // private enum HoodMode {
+  //   CLOSE(72),
+  //   MID_RANGE(63),
+  //   FAR(54);
+
+  //   private double radians;
+
+  //   private HoodMode(double degrees) {
+  //     radians = Units.degreesToRadians(degrees);
+  //   }
+
+  //   public double getDesiredHoodRadians() {
+  //     return radians;
+  //   }
+  // }
 
   private enum Goal {
     HUB(Hub.topCenterPointRed, Hub.topCenterPointBlue),
@@ -134,7 +156,7 @@ public class MovingShotSolver {
   private final LoggedTunableNumber farShotMinDistanceMeters =
       new LoggedTunableNumber("SOTM/farShotMinDistance", 8);
 
-  @AutoLogOutput private HoodMode hoodMode = HoodMode.CLOSE;
+  // @AutoLogOutput private HoodMode hoodMode = HoodMode.CLOSE;
 
   // may need to be tuned
   private final LoggedTunableNumber shotLatency = new LoggedTunableNumber("SOTM/shot latency", 0.1);
@@ -239,13 +261,15 @@ public class MovingShotSolver {
 
     double distanceToTarget = Math.hypot(Dx, Dy);
 
-    if (distanceToTarget > farShotMinDistanceMeters.get()) hoodMode = HoodMode.FAR;
-    else if (distanceToTarget > midRangeShotMinDistanceMeters.get()) hoodMode = HoodMode.MID_RANGE;
-    else hoodMode = HoodMode.CLOSE;
+    // if (distanceToTarget > farShotMinDistanceMeters.get()) hoodMode = HoodMode.FAR;
+    // else if (distanceToTarget > midRangeShotMinDistanceMeters.get()) hoodMode =
+    // HoodMode.MID_RANGE;
+    // else hoodMode = HoodMode.CLOSE;
 
     // boolean isFar = distanceToTarget > farShotMinDistanceMeters.get();
 
-    double hoodAngleRadians = hoodMode.getDesiredHoodRadians();
+    // double hoodAngleRadians = hoodMode.getDesiredHoodRadians();
+    double hoodAngleRadians = launchAngleMap.get(distanceToTarget);
 
     double ToF =
         1.0 + distanceToTarget / 15.0 * (3.0 - 1.0); // Initial guess of ToF for Newton's Method
@@ -297,20 +321,18 @@ public class MovingShotSolver {
 
     // Shooter wheel speed (m/s) magnitude:
 
-    double shooterSpeedMPS = Math.hypot(totalHorizontalSpeedMPS, vzLaunchMPS);
-
-    // Shooter wheel speed (rot / s) magnitude:
-
-    double shooterSpeedRPS = shooterSpeedMPS * MPSToRPSConversion;
+    double shooterSpeedRPS = Math.hypot(totalHorizontalSpeedMPS, vzLaunchMPS) * MPSToRPSConversion;
 
     double targetXOffsetMeters = goalXMeters - predictedRobotVx * ToF;
     double targetYOffsetMeters = goalYMeters - predictedRobotVy * ToF;
     Pose2d targetPose = new Pose2d(targetXOffsetMeters, targetYOffsetMeters, new Rotation2d());
 
-    double multiplier;
-    if (hoodMode == HoodMode.FAR) multiplier = farRpsMultiplier.get();
-    else if (hoodMode == HoodMode.MID_RANGE) multiplier = midRangeRPSMultiplier.get();
-    else multiplier = closeRPSMultiplier.get();
+    // double multiplier;
+    // if (hoodMode == HoodMode.FAR) multiplier = farRpsMultiplier.get();
+    // else if (hoodMode == HoodMode.MID_RANGE) multiplier = midRangeRPSMultiplier.get();
+    // else multiplier = closeRPSMultiplier.get();
+
+    double multiplier = launchMultMap.get(distanceToTarget);
 
     double outputtedShooterVelocity = MathUtil.clamp(multiplier * shooterSpeedRPS, 25, 118);
 
