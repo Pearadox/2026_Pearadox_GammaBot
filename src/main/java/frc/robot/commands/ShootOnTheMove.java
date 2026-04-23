@@ -50,10 +50,10 @@ public class ShootOnTheMove extends Command {
 
     double shooterVelocityError = launcher.getLauncherVelocity() - desiredVelocity;
 
-    double currentAngle = turretRotationSupplier.get().getDegrees();
+    double currentAngle = turretRotationSupplier.get().getRadians();
     double desiredAngle = desiredRotation.getDegrees();
 
-    // double turretRotationError = currentAngle - desiredAngle;
+    double turretRotationError = currentAngle - desiredAngle;
 
     atDesiredVelocity = debouncer.calculate(Math.abs(shooterVelocityError) < 7.0);
     // atDesiredRotation = turretRotationDebouncer.calculate(Math.abs(turretRotationError) < 8.0);
@@ -72,7 +72,7 @@ public class ShootOnTheMove extends Command {
     Logger.recordOutput("SOTM/atDesiredVelocity", atDesiredVelocity);
     Logger.recordOutput("SOTM/Velocity-Error_RPS", shooterVelocityError);
     Logger.recordOutput("SOTM/Desired-Velocity_RPS", desiredVelocity);
-    // Logger.recordOutput("SOTM/rotationError", turretRotationError);
+    Logger.recordOutput("SOTM/rotationError", turretRotationError);
     // Logger.recordOutput("SOTM/atDesiredRotation", atDesiredRotation);
     // Logger.recordOutput("SOTM/currentAngle", currentAngle);
     // Logger.recordOutput("SOTM/desiredAngle", desiredAngle);

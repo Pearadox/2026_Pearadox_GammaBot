@@ -65,7 +65,7 @@ public class LauncherConstants {
   public static final double HOOD_STATOR_CURRENT = 40.0;
   public static final double HOOD_SUPPLY_CURRENT = 30.0;
 
-  public static final double HOOD_GEARING = 261. / 18.; // 14.5
+  public static final double HOOD_GEARING = 29.0; // 14.5
 
   public static final double HOOD_MIN_ANGLE_RADS = Units.degreesToRadians(10);
   public static final double HOOD_MAX_ANGLE_RADS = Units.degreesToRadians(40);
