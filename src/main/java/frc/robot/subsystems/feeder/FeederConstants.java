@@ -25,7 +25,7 @@ public class FeederConstants {
     public static final Map<FeederState, StateConfig> FEEDER_STATE_MAP =
         Map.of(
             FeederState.STOPPED, new StateConfig(0),
-            FeederState.RUNNING, new StateConfig(-6));
+            FeederState.RUNNING, new StateConfig(-10));
   }
 
   // feeder constants
