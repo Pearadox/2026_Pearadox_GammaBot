@@ -123,6 +123,7 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
+                drive::getChassisSpeeds,
                 new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation),
                 new VisionIOLimelight(VisionConstants.camera1Name, drive::getRotation)
                 // new VisionIOPhotonVision(
@@ -151,7 +152,7 @@ public class RobotContainer {
                 drive::getChassisSpeeds,
                 drive::getRotation,
                 intake::turretHasClearance);
-        vision = new Vision(drive::addVisionMeasurement);
+        vision = new Vision(drive::addVisionMeasurement, drive::getChassisSpeeds);
 
         DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
 
@@ -177,7 +178,7 @@ public class RobotContainer {
                 drive::getChassisSpeeds,
                 drive::getRotation,
                 intake::turretHasClearance);
-        vision = new Vision(drive::addVisionMeasurement);
+        vision = new Vision(drive::addVisionMeasurement, drive::getChassisSpeeds);
 
         break;
     }

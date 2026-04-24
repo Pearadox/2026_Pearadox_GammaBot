@@ -14,6 +14,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Alert;
@@ -23,6 +24,7 @@ import frc.robot.subsystems.vision.VisionIO.PoseObservationType;
 import frc.robot.util.LoggedTunableNumber;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 public class Vision extends SubsystemBase {
@@ -31,11 +33,15 @@ public class Vision extends SubsystemBase {
   private final VisionIOInputsAutoLogged[] inputs;
   private final Alert[] disconnectedAlerts;
 
+  private final Supplier<ChassisSpeeds> robotRelativeSpeedSupplier;
+
   private final LoggedTunableNumber trenchTagStdDevFactor =
       new LoggedTunableNumber("Vision/Trench Std Dev Factor", 10.5414);
 
-  public Vision(VisionConsumer consumer, VisionIO... io) {
+  public Vision(
+      VisionConsumer consumer, Supplier<ChassisSpeeds> robotSpeedSupplier, VisionIO... io) {
     this.consumer = consumer;
+    this.robotRelativeSpeedSupplier = robotSpeedSupplier;
     this.io = io;
 
     // Initialize inputs
@@ -74,6 +80,7 @@ public class Vision extends SubsystemBase {
     List<Pose3d> allRobotPoses = new LinkedList<>();
     List<Pose3d> allRobotPosesAccepted = new LinkedList<>();
     List<Pose3d> allRobotPosesRejected = new LinkedList<>();
+    // TODO: recomment to save loop time
 
     // Loop over cameras
     for (int cameraIndex = 0; cameraIndex < io.length; cameraIndex++) {
@@ -85,6 +92,7 @@ public class Vision extends SubsystemBase {
       List<Pose3d> robotPoses = new LinkedList<>();
       List<Pose3d> robotPosesAccepted = new LinkedList<>();
       List<Pose3d> robotPosesRejected = new LinkedList<>();
+      // TODO: recomment to save loop time
 
       // Add tag poses
       boolean onlySeesTrenchTags = true;
@@ -107,6 +115,8 @@ public class Vision extends SubsystemBase {
         if (!isTrenchTag) onlySeesTrenchTags = false;
       }
 
+      ChassisSpeeds robotRelativeSpeeds = robotRelativeSpeedSupplier.get();
+
       // Loop over pose observations
       for (var observation : inputs[cameraIndex].poseObservations) {
         // Check whether to reject pose
@@ -121,15 +131,17 @@ public class Vision extends SubsystemBase {
                 || observation.pose().getX() < 0.0
                 || observation.pose().getX() > aprilTagLayout.getFieldLength()
                 || observation.pose().getY() < 0.0
-                || observation.pose().getY() > aprilTagLayout.getFieldWidth();
+                || observation.pose().getY() > aprilTagLayout.getFieldWidth()
+                || (robotRelativeSpeeds.omegaRadiansPerSecond >= maxRotsPerSecond);
 
-        // // Add pose to log
+        // Add pose to log
         robotPoses.add(observation.pose());
         if (rejectPose) {
           robotPosesRejected.add(observation.pose());
         } else {
           robotPosesAccepted.add(observation.pose());
         }
+        // TODO: recomment to save loop time
 
         // Skip if rejected
         if (rejectPose) {
@@ -180,6 +192,7 @@ public class Vision extends SubsystemBase {
       allRobotPoses.addAll(robotPoses);
       allRobotPosesAccepted.addAll(robotPosesAccepted);
       allRobotPosesRejected.addAll(robotPosesRejected);
+      // TODO: recomment to save loop time
     }
 
     // // Log summary data
@@ -189,6 +202,7 @@ public class Vision extends SubsystemBase {
         "Vision/Summary/RobotPosesAccepted", allRobotPosesAccepted.toArray(new Pose3d[0]));
     Logger.recordOutput(
         "Vision/Summary/RobotPosesRejected", allRobotPosesRejected.toArray(new Pose3d[0]));
+    // TODO: recomment to save loop time
   }
 
   @FunctionalInterface
