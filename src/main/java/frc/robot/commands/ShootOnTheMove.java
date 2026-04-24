@@ -74,9 +74,9 @@ public class ShootOnTheMove extends Command {
     Logger.recordOutput("SOTM/Desired-Velocity_RPS", desiredVelocity);
 
     Logger.recordOutput("SOTM/rotationError", turretRotationError);
-    // Logger.recordOutput("SOTM/atDesiredRotation", atDesiredRotation);
-    // Logger.recordOutput("SOTM/currentAngle", currentAngle);
-    // Logger.recordOutput("SOTM/desiredAngle", desiredAngle);
+    Logger.recordOutput("SOTM/atDesiredRotation", atDesiredRotation);
+    Logger.recordOutput("SOTM/currentAngle", currentAngle);
+    Logger.recordOutput("SOTM/desiredAngle", desiredAngle);
   }
 
   @Override
