@@ -110,7 +110,7 @@ public final class Constants {
               "Failed to load practice field layout: " + e.getMessage(), false);
         }
       }
-      return AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
+      return AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
     }
 
     public static final AprilTagFieldLayout aprilTagLayout = loadFieldLayout();

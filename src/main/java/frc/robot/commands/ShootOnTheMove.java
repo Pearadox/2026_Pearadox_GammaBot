@@ -21,11 +21,11 @@ public class ShootOnTheMove extends Command {
   private final Spindexer spindexer;
 
   private Debouncer debouncer = new Debouncer(0.25, DebounceType.kFalling);
-  // private Debouncer turretRotationDebouncer = new Debouncer(0.1, DebounceType.kBoth);
+  private Debouncer turretRotationDebouncer = new Debouncer(0.1, DebounceType.kBoth);
   private Supplier<Rotation2d> turretRotationSupplier;
 
   private boolean atDesiredVelocity = false;
-  // private boolean atDesiredRotation = false;
+  private boolean atDesiredRotation = false;
   private boolean readyToShoot = false;
 
   public ShootOnTheMove(
@@ -46,19 +46,20 @@ public class ShootOnTheMove extends Command {
   @Override
   public void execute() {
     double desiredVelocity = MovingShotSolver.getShotSolution().speed();
-    // Rotation2d desiredRotation = MovingShotSolver.getShotSolution().turretAngle();
+    Rotation2d desiredRotation = MovingShotSolver.getShotSolution().turretAngle();
 
     double shooterVelocityError = launcher.getLauncherVelocity() - desiredVelocity;
 
-    // double currentAngle = turretRotationSupplier.get().getDegrees();
-    // double desiredAngle = desiredRotation.getDegrees();
+    double currentAngle = turretRotationSupplier.get().getDegrees();
+    double desiredAngle = desiredRotation.getDegrees();
 
-    // double turretRotationError = currentAngle - desiredAngle;
+    double turretRotationError = currentAngle - desiredAngle;
 
     atDesiredVelocity = debouncer.calculate(Math.abs(shooterVelocityError) < 7.0);
-    // atDesiredRotation = turretRotationDebouncer.calculate(Math.abs(turretRotationError) < 8.0);
+    atDesiredRotation = turretRotationDebouncer.calculate(Math.abs(turretRotationError) < 8.0);
 
-    readyToShoot = true; // atDesiredRotation && atDesiredRotation;
+    // readyToShoot = atDesiredVelocity && atDesiredRotation;
+    readyToShoot = true;
 
     if (readyToShoot) {
       feeder.setRunning();
