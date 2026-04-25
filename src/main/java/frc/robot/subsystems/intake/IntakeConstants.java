@@ -30,7 +30,7 @@ public class IntakeConstants {
     public static final Map<IntakeState, StateConfig> INTAKE_STATE_MAP =
         Map.of(
             IntakeState.STOWED, new StateConfig(60, 0, 0), // 7 deg
-            IntakeState.DEPLOYED, new StateConfig(120, 0, 0),
+            IntakeState.DEPLOYED, new StateConfig(120, 0, 1),
             IntakeState.INTAKING, new StateConfig(120, 6.7, 1), // 4V
             IntakeState.INTAKING_FAST, new StateConfig(120, 12, 1), // for auto
             IntakeState.OUTTAKING, new StateConfig(120, -7.5, 1), // -4V
