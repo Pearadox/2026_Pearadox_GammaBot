@@ -48,6 +48,13 @@ public class Feeder extends SubsystemBase {
     Logger.recordOutput("Feeder/CanRange/Number of Fuel", getFuelCount());
     Logger.recordOutput("Feeder/CanRange/Signal", canRangeGetSignalStrength());
 
+    Logger.recordOutput("Hopper/isDetectedDebounced", isDetectedDebounced);
+    Logger.recordOutput("Hopper/hasSeenFuel", hasSeenFuel);
+    Logger.recordOutput("Hopper/timer", getTimestamp());
+    Logger.recordOutput(
+        "Hopper/passedBufferTime", getTimestamp() >= FeederConstants.IS_HOPPER_EMPTY_BUFFER_TIME);
+    Logger.recordOutput("Hopper/isEmpty", isHopperEmpty());
+
     if (feederState == FeederState.RUNNING) {
       io.runFeederVoltage(feederVolts.get());
     } else {
@@ -108,7 +115,7 @@ public class Feeder extends SubsystemBase {
   }
 
   public void startTimer() {
-    timer.start();
+    timer.restart();
   }
 
   // public void launch() {
@@ -118,4 +125,11 @@ public class Feeder extends SubsystemBase {
   // public void stopLaunch() {
   //   io.runFeederVoltage(0.0);
   // }
+
+  public void resetForAuto() {
+    isDetectedDebounced = false;
+    timer = new Timer();
+    timer.stop();
+    hasSeenFuel = false;
+  }
 }

@@ -3,38 +3,43 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.4,
-        "y": 4.8
+        "x": 6.368017118396344,
+        "y": 1.0914550641891332
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.39223378032782313,
-        "y": 5.2911154638365065
+        "x": 6.225691868758916,
+        "y": 0.2892582025677609
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Near Trench Circle"
     },
     {
       "anchor": {
-        "x": 0.4,
-        "y": 7.5
+        "x": 3.778710843373494,
+        "y": 0.5599879518072293
       },
       "prevControl": {
-        "x": 0.398262160396204,
-        "y": 5.291567945208301
+        "x": 2.778710843373494,
+        "y": 0.5599879518072293
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Depot"
+      "linkedName": "OTrench Shooting Spot"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.2814498933901922,
+      "rotationDegrees": 0.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.0,
-    "maxAcceleration": 1.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,13 +47,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "To Depot",
+  "folder": "To Neutral Zone",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -90.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

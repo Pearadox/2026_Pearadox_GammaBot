@@ -5,27 +5,21 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Set Intaking"
+            "pathName": "OTrench-NZone-Rush"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Center-Tower"
+            "pathName": "OTrench-Circle"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Cross Depot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop Intaking"
+            "pathName": "OTrench-BackUp"
           }
         },
         {
