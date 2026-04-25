@@ -20,7 +20,11 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Dimensionless;
 import edu.wpi.first.units.measure.Frequency;
 import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
+import java.io.IOException;
+import java.nio.file.Path;
 
 /**
  * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
@@ -93,8 +97,23 @@ public final class Constants {
 
   public static class FieldConstants {
     // AprilTag related constants
-    public static final AprilTagFieldLayout aprilTagLayout =
-        AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
+
+    public static final boolean PRACTICE_FIELD = false;
+
+    private static AprilTagFieldLayout loadFieldLayout() {
+      if (PRACTICE_FIELD) {
+        try {
+          return new AprilTagFieldLayout(
+              Path.of(Filesystem.getDeployDirectory().getAbsolutePath(), "practice_field.json"));
+        } catch (IOException e) {
+          DriverStation.reportError(
+              "Failed to load practice field layout: " + e.getMessage(), false);
+        }
+      }
+      return AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
+    }
+
+    public static final AprilTagFieldLayout aprilTagLayout = loadFieldLayout();
     public static final int aprilTagCount = aprilTagLayout.getTags().size();
     public static final double aprilTagWidth = Units.inchesToMeters(6.5);
 

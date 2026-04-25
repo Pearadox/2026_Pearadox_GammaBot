@@ -6,6 +6,7 @@ import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -15,11 +16,9 @@ import frc.robot.Constants.FieldConstants.Hub;
 import frc.robot.Constants.FieldConstants.LinesHorizontal;
 import frc.robot.Constants.FieldConstants.LinesVertical;
 import frc.robot.Robot;
-import frc.robot.subsystems.launcher.LauncherConstants;
 import frc.robot.util.LoggedTunableNumber;
 import java.util.function.Supplier;
 import lombok.Getter;
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class MovingShotSolver {
@@ -37,21 +36,30 @@ public class MovingShotSolver {
   @Getter
   private static ShotSolution shotSolution = new ShotSolution(0.0, 0.0, Rotation2d.kZero, 0.0);
 
-  private enum HoodMode {
-    CLOSE(72),
-    MID_RANGE(63),
-    FAR(54);
-
-    private double radians;
-
-    private HoodMode(double degrees) {
-      radians = Units.degreesToRadians(degrees);
-    }
-
-    public double getDesiredHoodRadians() {
-      return radians;
-    }
+  private final InterpolatingDoubleTreeMap LAUNCH_ANGLE_MAP() {
+    // Mapping distance from hub (m) to desired hood angle (rads)
+    InterpolatingDoubleTreeMap map = new InterpolatingDoubleTreeMap();
+    map.put(1.639, Units.degreesToRadians(90 - 11.0));
+    map.put(2.640, Units.degreesToRadians(90 - 17.0));
+    map.put(3.638, Units.degreesToRadians(90 - 23.0));
+    map.put(4.676, Units.degreesToRadians(90 - 27.0));
+    map.put(11.0, Units.degreesToRadians(90 - 35.0));
+    return map;
   }
+
+  private final InterpolatingDoubleTreeMap LAUNCH_RPS_MAP() {
+    // Mapping distance from hub (m) to desired launcher speed (rps)
+    InterpolatingDoubleTreeMap map = new InterpolatingDoubleTreeMap();
+    map.put(1.678, 34.906);
+    map.put(2.682, 38.719);
+    map.put(3.623, 41.622);
+    map.put(4.805, 45.0);
+    map.put(11.0, 75.0);
+    return map;
+  }
+
+  private final InterpolatingDoubleTreeMap launchAngleMap = LAUNCH_ANGLE_MAP();
+  private final InterpolatingDoubleTreeMap launchRPSMap = LAUNCH_RPS_MAP();
 
   private enum Goal {
     HUB(Hub.topCenterPointRed, Hub.topCenterPointBlue),
@@ -108,33 +116,10 @@ public class MovingShotSolver {
     }
   }
 
-  private final LoggedTunableNumber closeRPSMultiplier =
-      new LoggedTunableNumber(
-          "SOTM/close Rps Multiplier", 1.65); // 2.37 // 2.2 // 2.22 // 2.12 // 1.9 // 1.7 // 1.58
-  private final LoggedTunableNumber midRangeRPSMultiplier =
-      new LoggedTunableNumber(
-          "SOTM/mid-range Rps Multiplier", 1.75); // 2.4 // 2.28 // 2.278 // 1.5 // 1.7 // 1.7
-  private final LoggedTunableNumber farRpsMultiplier =
-      new LoggedTunableNumber("SOTM/far Rps Multiplier", 2.8);
-
   private final LoggedTunableNumber turretDx = new LoggedTunableNumber("SOTM/Turret dx", -0.146);
   private final LoggedTunableNumber turretDy = new LoggedTunableNumber("SOTM/Turret dy", -0.133);
   private final LoggedTunableNumber shooterHeightInches =
       new LoggedTunableNumber("SOTM/Launch Height inches", 16);
-
-  //   private final LoggedTunableNumber normalShotAngleDegrees =
-  //       new LoggedTunableNumber("SOTM/normalShotAngleDegrees", 72); // 67 // 68
-  //   private final LoggedTunableNumber midRangeShotAngleDegrees =
-  //       new LoggedTunableNumber("SOTM/midRangeShotAngleDegrees", 62); // 67 // 68
-  //   private final LoggedTunableNumber farShotAngleDegrees =
-  //       new LoggedTunableNumber("SOTM/farShotAngleDegrees", 55); // 57 // 60 // 61
-
-  private final LoggedTunableNumber midRangeShotMinDistanceMeters =
-      new LoggedTunableNumber("SOTM/midRangeShotMinDistance", 4.5);
-  private final LoggedTunableNumber farShotMinDistanceMeters =
-      new LoggedTunableNumber("SOTM/farShotMinDistance", 8);
-
-  @AutoLogOutput private HoodMode hoodMode = HoodMode.CLOSE;
 
   // may need to be tuned
   private final LoggedTunableNumber shotLatency = new LoggedTunableNumber("SOTM/shot latency", 0.1);
@@ -142,9 +127,6 @@ public class MovingShotSolver {
   private ChassisSpeeds prevFieldRelativeSpeeds = new ChassisSpeeds();
   private double prevAccelerationX = 0;
   private double prevAccelerationY = 0;
-
-  private static final double MPSToRPSConversion =
-      LauncherConstants.LAUNCHER_GEARING / LauncherConstants.ROLLER_CIRCUMFERENCE_METERS;
 
   public record ShotSolution(
       double time, double speed, Rotation2d turretAngle, double hoodAngleRadians) {}
@@ -210,8 +192,9 @@ public class MovingShotSolver {
 
     // Robot-relative turret offset (meters)
 
-    double dxTurretRobotRelative = turretDx.get(); // TODO: find real forward offset
-    double dyTurretRobotRelative = turretDy.get(); // TODO: find real sideways offset
+    double dxTurretRobotRelative = turretDx.get();
+    double dyTurretRobotRelative =
+        turretDy.get(); // TODO: make sure the LoggedTunableNumber values are correct
 
     // Rotate offset into field coordinates using matrix multiplication done below
 
@@ -239,13 +222,9 @@ public class MovingShotSolver {
 
     double distanceToTarget = Math.hypot(Dx, Dy);
 
-    if (distanceToTarget > farShotMinDistanceMeters.get()) hoodMode = HoodMode.FAR;
-    else if (distanceToTarget > midRangeShotMinDistanceMeters.get()) hoodMode = HoodMode.MID_RANGE;
-    else hoodMode = HoodMode.CLOSE;
+    double hoodAngleRadians = launchAngleMap.get(distanceToTarget);
 
-    // boolean isFar = distanceToTarget > farShotMinDistanceMeters.get();
-
-    double hoodAngleRadians = hoodMode.getDesiredHoodRadians();
+    double tanHoodAngle = Math.tan(hoodAngleRadians);
 
     double ToF =
         1.0 + distanceToTarget / 15.0 * (3.0 - 1.0); // Initial guess of ToF for Newton's Method
@@ -261,7 +240,7 @@ public class MovingShotSolver {
 
       double horizontalSpeed = Math.hypot(vxLaunch, vyLaunch);
 
-      double vzLaunch = horizontalSpeed * Math.tan(hoodAngleRadians);
+      double vzLaunch = horizontalSpeed * tanHoodAngle;
 
       double f = (vzLaunch * ToF - 0.5 * Constants.g * ToF * ToF) - Dz; // h = vt - 1/2at^2
 
@@ -273,7 +252,7 @@ public class MovingShotSolver {
       double vx2 = (Dx / t2) - predictedRobotVx;
       double vy2 = (Dy / t2) - predictedRobotVy;
       double h2 = Math.hypot(vx2, vy2);
-      double vz2 = h2 * Math.tan(hoodAngleRadians);
+      double vz2 = h2 * tanHoodAngle;
 
       double f2 = (vz2 * t2 - 0.5 * Constants.g * t2 * t2) - Dz;
 
@@ -287,52 +266,32 @@ public class MovingShotSolver {
       if (ToF < 0.1) ToF = 0.1;
     }
 
-    // Compute final launch velocity (m/s) components
-
-    double vxLaunchMPS = (Dx / ToF) - predictedRobotVx;
-    double vyLaunchMPS = (Dy / ToF) - predictedRobotVy;
-
-    double totalHorizontalSpeedMPS = Math.hypot(vxLaunchMPS, vyLaunchMPS);
-    double vzLaunchMPS = totalHorizontalSpeedMPS * Math.tan(hoodAngleRadians);
-
-    // Shooter wheel speed (m/s) magnitude:
-
-    double shooterSpeedMPS = Math.hypot(totalHorizontalSpeedMPS, vzLaunchMPS);
-
-    // Shooter wheel speed (rot / s) magnitude:
-
-    double shooterSpeedRPS = shooterSpeedMPS * MPSToRPSConversion;
-
     double targetXOffsetMeters = goalXMeters - predictedRobotVx * ToF;
     double targetYOffsetMeters = goalYMeters - predictedRobotVy * ToF;
     Pose2d targetPose = new Pose2d(targetXOffsetMeters, targetYOffsetMeters, new Rotation2d());
 
-    double multiplier;
-    if (hoodMode == HoodMode.FAR) multiplier = farRpsMultiplier.get();
-    else if (hoodMode == HoodMode.MID_RANGE) multiplier = midRangeRPSMultiplier.get();
-    else multiplier = closeRPSMultiplier.get();
+    double distanceX = targetXOffsetMeters - turretXMeters;
+    double distanceY = targetYOffsetMeters - turretYMeters;
+    double distanceToVirtualTarget = Math.hypot(distanceX, distanceY);
 
-    double outputtedShooterVelocity = MathUtil.clamp(multiplier * shooterSpeedRPS, 25, 118);
+    double shooterSpeedRPS = launchRPSMap.get(distanceToVirtualTarget);
 
     // Compute field-relative turret angle
 
-    Rotation2d fieldRelativeTurretAngleRot2d = new Rotation2d(Math.atan2(vyLaunchMPS, vxLaunchMPS));
+    Rotation2d fieldRelativeTurretAngleRot2d = new Rotation2d(Math.atan2(distanceY, distanceX));
 
     Logger.recordOutput(
         "SOTM/fieldRelativeTurretAngle", fieldRelativeTurretAngleRot2d.getDegrees());
     Logger.recordOutput("SOTM/timeOfFlight", ToF);
-    Logger.recordOutput("SOTM/desiredShooterSpeed_RPS", shooterSpeedRPS * multiplier);
-    Logger.recordOutput("SOTM/cappedShooterSpeed_RPS", outputtedShooterVelocity);
+    Logger.recordOutput("SOTM/desiredShooterSpeed_RPS", shooterSpeedRPS);
     Logger.recordOutput("SOTM/currentRotation", curPose.getRotation().getDegrees());
     Logger.recordOutput("SOTM/targetPose", targetPose);
+    Logger.recordOutput("SOTM/distancetoVirtualTarget", distanceToVirtualTarget);
     Logger.recordOutput("SOTM/Goal", goal.toString());
     Logger.recordOutput("SOTM/desiredHoodAngle", Units.radiansToDegrees(hoodAngleRadians));
 
     return shotSolution =
         new ShotSolution(
-            ToF,
-            outputtedShooterVelocity,
-            fieldRelativeTurretAngleRot2d,
-            Math.PI / 2 - hoodAngleRadians);
+            ToF, shooterSpeedRPS, fieldRelativeTurretAngleRot2d, Math.PI / 2 - hoodAngleRadians);
   }
 }
