@@ -56,22 +56,12 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput(
         "Intake/VoltageOut", StateConfig.INTAKE_STATE_MAP.get(intakeState).voltage() + voltAdjust);
 
-    // io.runRollersAmps(loggedIntakeStatorCurrent.get(), maxDuty.get());
-    // io.runRollersVolts(StateConfig.INTAKE_STATE_MAP.get(intakeState).voltage());
-
-    // if (intakeState == IntakeState.INTAKING) {
-    //   io.runRollersVelocityTorqueCurrentFOC(rps.get(), ffamps.get());
-
-    // } else {
     io.runRollersVolts(StateConfig.INTAKE_STATE_MAP.get(intakeState).voltage() + voltAdjust);
 
-    // }
+
     io.runPositionDegrees(
         StateConfig.INTAKE_STATE_MAP.get(intakeState).angleDeg() + pivotDegreesAdjust,
-        getFFVolts());
-
-    // MechVisualizer.getInstance()
-    //     .updatePositionDegrees(Units.rotationsToDegrees(inputs.pivot1MotorData.position()));
+        getFFVolts(), StateConfig.INTAKE_STATE_MAP.get(intakeState).slot());
 
     Logger.recordOutput(
         "Intake/Target Position Rots",
@@ -79,7 +69,6 @@ public class Intake extends SubsystemBase {
             * IntakeConstants.GEARING);
     Logger.recordOutput(
         "Intake/Target Position Degrees", StateConfig.INTAKE_STATE_MAP.get(intakeState).angleDeg());
-    // Logger.recordOutput("Intake/VoltageOut", inputs.roller1MotorData.appliedVolts());
     Logger.recordOutput(
         "Intake/Current Position Degrees",
         Units.rotationsToDegrees(inputs.pivot1MotorData.position()) / IntakeConstants.GEARING);
@@ -91,16 +80,6 @@ public class Intake extends SubsystemBase {
         || pivotkg.hasChanged(hashCode())) {
       io.setPIDFF(rollerkP.get(), rollerkV.get(), pivotkp.get(), pivotkd.get(), pivotkg.get());
     }
-
-    // UNCOMMENT WHEN TESTING INTAKE TO TUNE VOLTAGE!
-    // if(loggedIntakeRollerVoltage.hasChanged(hashCode())) { inputs.rollerVoltage =
-    // loggedIntakeRollerVoltage.get(); }
-
-    // if (intakeState == IntakeState.INTAKING) {
-    //     io.runRollersVolts(loggedIntakeRollerVoltage.getAsDouble());
-    // } else {
-    //     io.runRollersVolts(0);
-    // }
   }
 
   private double getFFVolts() {
@@ -129,6 +108,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void setIntaking() {
+    IntakeConstants.PIVOT_CONFIG.withSlot1(IntakeConstants.PIVOT_SLOT1_CONFIGS);
     intakeState = IntakeState.INTAKING;
   }
 

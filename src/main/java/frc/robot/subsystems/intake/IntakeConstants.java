@@ -1,6 +1,7 @@
 package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -25,27 +26,17 @@ public class IntakeConstants {
    * @param angleRad the angle in radians
    * @param voltage the voltage in volts
    */
-  public static record StateConfig(double angleDeg, double voltage) {
+  public static record StateConfig(double angleDeg, double voltage, int slot) {
     public static final Map<IntakeState, StateConfig> INTAKE_STATE_MAP =
         Map.of(
-            IntakeState.STOWED, new StateConfig(60, 0), // 7 deg
-            IntakeState.DEPLOYED, new StateConfig(120, 0),
-            IntakeState.INTAKING, new StateConfig(120, 6.7), // 4V
-            IntakeState.INTAKING_FAST, new StateConfig(120, 12), // for auto
-            IntakeState.OUTTAKING, new StateConfig(120, -7.5), // -4V
-            IntakeState.FLOW_STATE, new StateConfig(60, 4.0), // 7 deg
-            IntakeState.HOLD_STATE,
-                new StateConfig(Units.rotationsToDegrees(8) / IntakeConstants.GEARING, 7));
+            IntakeState.STOWED, new StateConfig(60, 0, 0), // 7 deg
+            IntakeState.DEPLOYED, new StateConfig(120, 0, 0),
+            IntakeState.INTAKING, new StateConfig(120, 6.7, 1), // 4V
+            IntakeState.INTAKING_FAST, new StateConfig(120, 12, 1), // for auto
+            IntakeState.OUTTAKING, new StateConfig(120, -7.5, 1), // -4V
+            IntakeState.FLOW_STATE, new StateConfig(60, 4.0, 0) // 7 deg
+           );
   }
-
-  // public static record StateConfig(double angleDeg, double amps, double maxDuty) {
-  //   public static final Map<IntakeState, StateConfig> INTAKE_STATE_MAP =
-  //       Map.of(
-  //           IntakeState.STOWED, new StateConfig(0, 0, 0),
-  //           IntakeState.DEPLOYED, new StateConfig(95, 0, 0),
-  //           IntakeState.INTAKING, new StateConfig(95, 45, 0.4),
-  //           IntakeState.OUTTAKING, new StateConfig(90, -40, 0.4));
-  // }
 
   // roller constants
   public static final int ROLLER_1_LEADER_ID = 33;
@@ -100,6 +91,7 @@ public class IntakeConstants {
   // talonFX config for pivot motor
   public static final TalonFXConfiguration PIVOT_CONFIG = new TalonFXConfiguration();
   public static final Slot0Configs PIVOT_SLOT0_CONFIGS = PIVOT_CONFIG.Slot0;
+  public static final Slot1Configs PIVOT_SLOT1_CONFIGS = PIVOT_CONFIG.Slot1;
 
   public static final TalonFXConfiguration getPivotConfigTalonFX() {
 
@@ -108,9 +100,13 @@ public class IntakeConstants {
     PIVOT_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
     PIVOT_CONFIG.CurrentLimits.StatorCurrentLimit = PIVOT_STATOR_CURRENT_LIMIT;
 
+    // Stow and deploy pivot config
     PIVOT_SLOT0_CONFIGS.kP = 1.0;
     PIVOT_SLOT0_CONFIGS.kI = 0.0;
     PIVOT_SLOT0_CONFIGS.kD = 0.03;
+
+    // Intaking pivot config
+    PIVOT_SLOT1_CONFIGS.kP = 1.5;
 
     PIVOT_CONFIG.MotionMagic.MotionMagicCruiseVelocity = 40.0;
     PIVOT_CONFIG.MotionMagic.MotionMagicAcceleration = 150;

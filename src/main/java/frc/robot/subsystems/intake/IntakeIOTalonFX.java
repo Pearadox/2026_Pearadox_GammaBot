@@ -11,6 +11,7 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import edu.wpi.first.math.util.Units;
 import frc.lib.drivers.PearadoxTalonFX;
 import frc.robot.util.EnergyTracker.Compeartment;
+import frc.robot.subsystems.intake.IntakeConstants.StateConfig;
 import frc.robot.util.PhoenixUtil;
 
 public abstract class IntakeIOTalonFX implements IntakeIO {
@@ -93,11 +94,11 @@ public abstract class IntakeIOTalonFX implements IntakeIO {
   }
 
   @Override
-  public void runPositionDegrees(double degrees, double ffvolts) {
+  public void runPositionDegrees(double degrees, double ffvolts, int slot) {
     pivot1Leader.setControl(
         pivotPositionVoltage
             .withPosition(Units.degreesToRotations(degrees) * IntakeConstants.GEARING)
-            .withFeedForward(ffvolts));
+            .withFeedForward(ffvolts).withSlot(slot));
     // pivotMotor.setControl(new PositionVoltage(Units.degreesToRotations(degrees)));
 
     pivot2Follower.setControl(pivotFollowerRequest);
