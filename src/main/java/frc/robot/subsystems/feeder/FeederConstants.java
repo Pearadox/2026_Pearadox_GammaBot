@@ -63,7 +63,7 @@ public class FeederConstants {
 
   // canRange constants
   public static final int CANRANGE_CAN_ID = 25;
-  public static final double IS_HOPPER_EMPTY_BUFFER_TIME = 2.0;
+  public static final double IS_HOPPER_EMPTY_BUFFER_TIME = 1.1; // 2 TODO: try to shorten
 
   public static CANrangeConfiguration createCANrangeConfig() {
     CANrangeConfiguration canRangeConfig = new CANrangeConfiguration();
@@ -71,8 +71,8 @@ public class FeederConstants {
     canRangeConfig.ProximityParams.ProximityThreshold = 0.09;
     canRangeConfig.ProximityParams.ProximityHysteresis = 0.01;
     canRangeConfig.ToFParams.UpdateMode = UpdateModeValue.ShortRange100Hz;
-    canRangeConfig.FovParams.FOVCenterX = 3;
-    canRangeConfig.FovParams.FOVCenterY = -6.5;
+    canRangeConfig.FovParams.FOVCenterX = 9; // 3
+    canRangeConfig.FovParams.FOVCenterY = 9; // -6.5
     canRangeConfig.FovParams.FOVRangeX = 10;
     canRangeConfig.FovParams.FOVRangeY = 10;
     return canRangeConfig;

@@ -224,6 +224,8 @@ public class MovingShotSolver {
 
     double hoodAngleRadians = launchAngleMap.get(distanceToTarget);
 
+    double tanHoodAngle = Math.tan(hoodAngleRadians);
+
     double ToF =
         1.0 + distanceToTarget / 15.0 * (3.0 - 1.0); // Initial guess of ToF for Newton's Method
     // (formula: ToF = t_min + dist/maxDist * (t_max - t_min))
@@ -238,7 +240,7 @@ public class MovingShotSolver {
 
       double horizontalSpeed = Math.hypot(vxLaunch, vyLaunch);
 
-      double vzLaunch = horizontalSpeed * Math.tan(hoodAngleRadians);
+      double vzLaunch = horizontalSpeed * tanHoodAngle;
 
       double f = (vzLaunch * ToF - 0.5 * Constants.g * ToF * ToF) - Dz; // h = vt - 1/2at^2
 
@@ -250,7 +252,7 @@ public class MovingShotSolver {
       double vx2 = (Dx / t2) - predictedRobotVx;
       double vy2 = (Dy / t2) - predictedRobotVy;
       double h2 = Math.hypot(vx2, vy2);
-      double vz2 = h2 * Math.tan(hoodAngleRadians);
+      double vz2 = h2 * tanHoodAngle;
 
       double f2 = (vz2 * t2 - 0.5 * Constants.g * t2 * t2) - Dz;
 

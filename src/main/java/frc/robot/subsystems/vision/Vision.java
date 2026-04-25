@@ -132,7 +132,7 @@ public class Vision extends SubsystemBase {
                 || observation.pose().getX() > aprilTagLayout.getFieldLength()
                 || observation.pose().getY() < 0.0
                 || observation.pose().getY() > aprilTagLayout.getFieldWidth()
-                || (robotRelativeSpeeds.omegaRadiansPerSecond >= maxRotsPerSecond);
+                || (Math.abs(robotRelativeSpeeds.omegaRadiansPerSecond) >= maxRotsPerSecond);
 
         // Add pose to log
         robotPoses.add(observation.pose());

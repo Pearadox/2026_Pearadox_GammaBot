@@ -464,6 +464,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Set Launching",
         new InstantCommand(() -> launcher.setScoring())
+            .andThen(new InstantCommand(() -> feeder.startTimer()))
             .andThen(new WaitCommand(0.2))
             .andThen(new InstantCommand(() -> feeder.setRunning()))
             .andThen(new WaitCommand(0.2))
