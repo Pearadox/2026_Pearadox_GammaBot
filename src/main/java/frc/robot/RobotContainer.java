@@ -90,7 +90,7 @@ public class RobotContainer {
   private final CommandXboxController opController = new CommandXboxController(1);
 
   // Dashboard inputs
-  private final SendableChooser<Command> autoChooser;
+  private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -184,32 +184,9 @@ public class RobotContainer {
     }
 
     registerNamedCommands();
+
     // Set up auto routines
-    autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Super auto chooser", autoChooser);
-
-    // Set up SysId routines
-    autoChooser.addOption(
-        "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-    autoChooser.addOption(
-        "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Forward)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Reverse)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
-    autoChooser.addOption(
-        "DTrench-NZone-2.5-Sweeps", new PathPlannerAuto("OTrench-NZone-2.5-Sweeps", true));
-
-    autoChooser.addOption(
-        "Adamant Trench (Depot, 3 Sweeps, Rush)",
-        new PathPlannerAuto("Adamant Trench (Outpost, 3 Sweeps, Rush)", true));
+   setUpAutonomousCommand();
 
     visualizer =
         new RobotVisualizer(
@@ -452,6 +429,23 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
+
+  public void setUpAutonomousCommand() {
+    autoChooser.addOption(
+        "DTrench-NZone-2.5-Sweeps", new PathPlannerAuto("OTrench-NZone-2.5-Sweeps", true));
+    autoChooser.addOption(
+        "DTrench-NZone-2.5-Sweeps", new PathPlannerAuto("DTrench-NZone-2.5-Sweeps", false));
+
+    autoChooser.addOption(
+        "Adamant Trench (Depot, 3 Sweeps, Rush)",
+        new PathPlannerAuto("Adamant Trench (Outpost, 3 Sweeps, Rush)", true));
+    autoChooser.addOption(
+        "Adamant Trench (Depot, 3 Sweeps, Rush)",
+        new PathPlannerAuto("Adamant Trench (Depot, 3 Sweeps, Rush)", false));
+    
+    SmartDashboard.putData("clean auto chooser", autoChooser);
+  }
+
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
   }
@@ -476,7 +470,7 @@ public class RobotContainer {
                 (bool) -> {
                   feeder.setStopped();
                   spindexer.setStopped();
-                  launcher.setOff();
+                  launcher.setIdle();
                 }));
 
     NamedCommands.registerCommand(

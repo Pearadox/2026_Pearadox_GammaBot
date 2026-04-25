@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.416048502139798,
-        "y": 3.45922967189729
+        "x": 6.368017118396344,
+        "y": 1.0914550641891332
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.959472182596286,
-        "y": 2.1394864479315263
+        "x": 6.225691868758916,
+        "y": 0.2892582025677609
       },
       "isLocked": false,
-      "linkedName": "Outpost NZone Center 2"
+      "linkedName": "Near Trench Circle"
     },
     {
       "anchor": {
@@ -20,15 +20,20 @@
         "y": 0.5599879518072293
       },
       "prevControl": {
-        "x": 7.336842084457661,
-        "y": 0.18476683911108216
+        "x": 2.778710843373494,
+        "y": 0.5599879518072293
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "OTrench Shooting Spot"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.2814498933901922,
+      "rotationDegrees": 0.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -45,10 +50,10 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "To Alliance Zone",
+  "folder": "To Neutral Zone",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 98.32565033042698
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }
