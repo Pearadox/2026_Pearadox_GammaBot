@@ -87,10 +87,6 @@ public class Robot extends LoggedRobot {
     // and put our autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
 
-    // Pathplanner warm-up command
-    CommandScheduler.getInstance().schedule(FollowPathCommand.warmupCommand());
-    CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand());
-
     RobotController.setBrownoutVoltage(Constants.BROWNOUT_VOLTAGE);
   }
 
@@ -144,6 +140,11 @@ public class Robot extends LoggedRobot {
     }
 
     robotContainer.vision.throttleLimelights();
+
+    // Pathplanner warm-up command
+    CommandScheduler.getInstance().schedule(FollowPathCommand.warmupCommand());
+    CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand());
+    Logger.recordOutput("Warming Up", true);
   }
 
   /** This function is called periodically when disabled. */
