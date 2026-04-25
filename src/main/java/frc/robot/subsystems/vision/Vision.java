@@ -82,6 +82,9 @@ public class Vision extends SubsystemBase {
     List<Pose3d> allRobotPosesRejected = new LinkedList<>();
     // TODO: recomment to save loop time
 
+    // TODO: Insert logic to pick a best camera instead of looping over cameras and processing all
+    // poses.
+
     // Loop over cameras
     for (int cameraIndex = 0; cameraIndex < io.length; cameraIndex++) {
       // Update disconnected alert
