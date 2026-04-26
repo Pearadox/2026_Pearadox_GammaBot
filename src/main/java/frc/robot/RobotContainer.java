@@ -7,7 +7,6 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.events.EventTrigger;
@@ -27,7 +26,6 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.drivers.MovingShotSolver;
 import frc.robot.Constants.VisualizerConstants;
 import frc.robot.commands.DriveCommands;
@@ -186,7 +184,7 @@ public class RobotContainer {
     registerNamedCommands();
 
     // Set up auto routines
-   setUpAutonomousCommand();
+    setUpAutonomousCommand();
 
     visualizer =
         new RobotVisualizer(
@@ -429,7 +427,6 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-
   public void setUpAutonomousCommand() {
     autoChooser.addOption(
         "DTrench-NZone-2.5-Sweeps", new PathPlannerAuto("OTrench-NZone-2.5-Sweeps", true));
@@ -442,7 +439,7 @@ public class RobotContainer {
     autoChooser.addOption(
         "Adamant Trench (Depot, 3 Sweeps, Rush)",
         new PathPlannerAuto("Adamant Trench (Depot, 3 Sweeps, Rush)", false));
-    
+
     SmartDashboard.putData("clean auto chooser", autoChooser);
   }
 

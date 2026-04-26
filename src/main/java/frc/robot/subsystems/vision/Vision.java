@@ -142,7 +142,7 @@ public class Vision extends SubsystemBase {
                 || (Math.abs(robotRelativeSpeeds.omegaRadiansPerSecond) >= maxRotsPerSecond);
 
         // adding pose to logs
-        
+
         // if the pose is rejected than don't consider it for best pose
         if (rejectPose) {
           posesRejected.add(observation.pose());
@@ -166,7 +166,7 @@ public class Vision extends SubsystemBase {
         }
       }
     }
-    
+
     Pose3d trustedPose = new Pose3d();
 
     // only update the pose if there is a valid pose to update it with
