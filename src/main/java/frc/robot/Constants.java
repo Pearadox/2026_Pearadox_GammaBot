@@ -133,6 +133,7 @@ public final class Constants {
           aprilTagLayout.getTagPose(4).get().getX() + Hub.width / 2.0;
       public static final double oppAllianceZone = aprilTagLayout.getTagPose(10).get().getX();
     }
+
     /**
      * Officially defined and relevant horizontal lines found on the field (defined by Y-axis
      * offset)

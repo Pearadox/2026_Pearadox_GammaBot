@@ -168,6 +168,7 @@ public class Launcher extends SubsystemBase {
     return Units.rotationsToRadians(inputs.hoodData.position() / LauncherConstants.HOOD_GEARING)
         + Units.degreesToRadians(kGOffset.get());
   }
+
   // this is the CORRECT method to turn launcher off
   private void turnLauncherOff() {
     io.stopLauncher();
