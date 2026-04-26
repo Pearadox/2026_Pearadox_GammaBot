@@ -58,7 +58,7 @@ public class VisionConstants {
       Double.POSITIVE_INFINITY; // No rotation data available
 
   public static final int MIN_REWIND_LENGTH_SECONDS = 10;
-  public static final int MAX_REWIND_LENGTH_SECONDS = 235;
+  public static final int MAX_REWIND_LENGTH_SECONDS = 240;
   // skip 120 frames per second while disabled
   public static final int DISABLED_THROTTLE = 120;
   // do not skip frames while robot enabled

@@ -20,7 +20,7 @@ public interface IntakeIO {
 
   public default void runRollersVolts(double volts) {}
 
-  public default void runPositionDegrees(double degrees, double ffvolts) {}
+  public default void runPositionDegrees(double degrees, double ffvolts, int slot) {}
 
   public default void runPositionDegreesWithoutFF(double degrees) {}
 
