@@ -58,10 +58,10 @@ public class Intake extends SubsystemBase {
 
     io.runRollersVolts(StateConfig.INTAKE_STATE_MAP.get(intakeState).voltage() + voltAdjust);
 
-
     io.runPositionDegrees(
         StateConfig.INTAKE_STATE_MAP.get(intakeState).angleDeg() + pivotDegreesAdjust,
-        getFFVolts(), StateConfig.INTAKE_STATE_MAP.get(intakeState).slot());
+        getFFVolts(),
+        StateConfig.INTAKE_STATE_MAP.get(intakeState).slot());
 
     Logger.recordOutput(
         "Intake/Target Position Rots",

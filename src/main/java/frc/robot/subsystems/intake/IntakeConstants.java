@@ -35,7 +35,7 @@ public class IntakeConstants {
             IntakeState.INTAKING_FAST, new StateConfig(120, 12, 1), // for auto
             IntakeState.OUTTAKING, new StateConfig(120, -7.5, 1), // -4V
             IntakeState.FLOW_STATE, new StateConfig(60, 4.0, 0) // 7 deg
-           );
+            );
   }
 
   // roller constants
