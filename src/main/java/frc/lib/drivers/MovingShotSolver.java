@@ -61,7 +61,7 @@ public class MovingShotSolver {
   private final InterpolatingDoubleTreeMap launchAngleMap = LAUNCH_ANGLE_MAP();
   private final InterpolatingDoubleTreeMap launchRPSMap = LAUNCH_RPS_MAP();
 
-  private enum Goal {
+  public enum Goal {
     HUB(Hub.topCenterPointRed, Hub.topCenterPointBlue),
     DEPOT_CORNER(
         new Translation3d(
@@ -128,6 +128,9 @@ public class MovingShotSolver {
   private double prevAccelerationX = 0;
   private double prevAccelerationY = 0;
 
+  @Getter
+  private Goal goal;
+
   public record ShotSolution(
       double time, double speed, Rotation2d turretAngle, double hoodAngleRadians) {}
 
@@ -181,7 +184,7 @@ public class MovingShotSolver {
     Pose2d predictedRobotPose = new Pose2d(predictedRobotX, predictedRobotY, curPose.getRotation());
     // not finding predictedRotation above yet
 
-    Goal goal = Goal.findTarget(predictedRobotPose, alliance);
+    goal = Goal.findTarget(predictedRobotPose, alliance);
 
     // end of acceleration handling
 
