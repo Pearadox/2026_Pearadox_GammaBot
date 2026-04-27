@@ -31,6 +31,8 @@ public class Launcher extends SubsystemBase {
     rpsAdjust += adj;
   }
 
+  private boolean isZeroing = false;
+
   private final LoggedTunableNumber tunableffAmps = new LoggedTunableNumber("Launcher/ffamps", 0);
   private final LoggedTunableNumber manualDefaultVelocity =
       new LoggedTunableNumber(
@@ -121,7 +123,11 @@ public class Launcher extends SubsystemBase {
     } else {
       desiredHoodAngleRads = Units.degreesToRadians(defaultHoodAngleDegs.get());
     }
-    io.setHoodAngleRads(desiredHoodAngleRads, getkG());
+
+    if (!isZeroing) {
+      io.setHoodAngleRads(desiredHoodAngleRads, getkG());
+    }
+
     // desiredHoodAngleRads = RobotContainer.hoodAngleTesting;
     // io.setHoodAngleRads(desiredHoodAngleRads);
 
@@ -148,7 +154,7 @@ public class Launcher extends SubsystemBase {
   }
 
   public Command zeroHoodCommand() {
-    return new RunCommand(() -> io.runHoodVolts(-0.5)).finallyDo((bool) -> zeroHood());
+    return new RunCommand(() -> {isZeroing = true; io.runHoodVolts(-0.5);}).finallyDo((bool) -> {isZeroing = false; zeroHood();});
   }
 
   /** velocity will be calculated from aim assist command factory */
