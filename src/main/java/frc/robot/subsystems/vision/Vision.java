@@ -90,7 +90,7 @@ public class Vision extends SubsystemBase {
             Double.POSITIVE_INFINITY, //  high value to guarantee this pose isn't accepted
             PoseObservationType.MEGATAG_1);
 
-    int trustedCameraIndex = -1;
+    int trustedCamera = -1;
     double trustedobservationDoubtIndex = Double.POSITIVE_INFINITY;
     boolean hasConsideredPoses = false;
 
@@ -162,12 +162,12 @@ public class Vision extends SubsystemBase {
         if (doubtIndex <= trustedobservationDoubtIndex) {
           trustedObservation = observation;
           trustedobservationDoubtIndex = doubtIndex;
-          trustedCameraIndex = cameraIndex;
+          trustedCamera = cameraIndex;
         }
       }
     }
 
-    Pose3d trustedPose = new Pose3d();
+    Pose3d trustedPose = Pose3d.kZero;
 
     // only update the pose if there is a valid pose to update it with
     if (hasConsideredPoses) {
@@ -194,128 +194,7 @@ public class Vision extends SubsystemBase {
     Logger.recordOutput(
         "Vision/Summary/ObservationsConsidered", posesConsidered.toArray(new Pose3d[0]));
     Logger.recordOutput("Vision/Summary/TrustedPose", trustedPose);
-    Logger.recordOutput("Vision/Summary/TrustedCameraIndex", trustedCameraIndex);
-
-    // // Initialize logging values
-    // List<Pose3d> allTagPoses = new LinkedList<>();
-    // List<Pose3d> allRobotPoses = new LinkedList<>();
-    // List<Pose3d> allRobotPosesAccepted = new LinkedList<>();
-    // List<Pose3d> allRobotPosesRejected = new LinkedList<>();
-
-    // for (int cameraIndex = 0; cameraIndex < io.length; cameraIndex++) {
-    //   // Update disconnected alert
-    //   disconnectedAlerts[cameraIndex].set(!inputs[cameraIndex].connected);
-
-    //   // Initialize logging values
-    //   List<Pose3d> tagPoses = new LinkedList<>();
-    //   List<Pose3d> robotPoses = new LinkedList<>();
-    //   List<Pose3d> robotPosesAccepted = new LinkedList<>();
-    //   List<Pose3d> robotPosesRejected = new LinkedList<>();
-
-    //   // Add tag poses
-    //   boolean onlySeesTrenchTags = true;
-    //   for (int tagId : inputs[cameraIndex].tagIds) {
-    //     var tagPose = aprilTagLayout.getTagPose(tagId);
-    //     if (tagPose.isPresent()) {
-    //       tagPoses.add(tagPose.get());
-    //     }
-
-    //     boolean isTrenchTag =
-    //         tagId == 6
-    //             || tagId == 7
-    //             || tagId == 12
-    //             || tagId == 1
-    //             || tagId == 17
-    //             || tagId == 28
-    //             || tagId == 22
-    //             || tagId == 23;
-
-    //     if (!isTrenchTag) onlySeesTrenchTags = false;
-    //   }
-
-    //   // Loop over pose observations
-    //   for (var observation : inputs[cameraIndex].poseObservations) {
-    //     // Check whether to reject pose
-    //     boolean rejectPose =
-    //         observation.tagCount() == 0 // Must have at least one tag
-    //             || (observation.tagCount() == 1
-    //                 && observation.ambiguity() > maxAmbiguity) // Cannot be high ambiguity
-    //             || Math.abs(observation.pose().getZ())
-    //                 > maxZError // Must have realistic Z coordinate
-
-    //             // Must be within the field boundaries
-    //             || observation.pose().getX() < 0.0
-    //             || observation.pose().getX() > aprilTagLayout.getFieldLength()
-    //             || observation.pose().getY() < 0.0
-    //             || observation.pose().getY() > aprilTagLayout.getFieldWidth()
-    //             || (Math.abs(robotRelativeSpeeds.omegaRadiansPerSecond) >= maxRotsPerSecond);
-
-    //     // Add pose to log
-    //     robotPoses.add(observation.pose());
-    //     if (rejectPose) {
-    //       robotPosesRejected.add(observation.pose());
-    //     } else {
-    //       robotPosesAccepted.add(observation.pose());
-    //     }
-
-    //     // Skip if rejected
-    //     if (rejectPose) {
-    //       continue;
-    //     }
-
-    //     // Calculate standard deviations
-    //     double stdDevFactor =
-    //         Math.pow(observation.averageTagDistance(), 2.0) / observation.tagCount();
-    //     double linearStdDev = linearStdDevBaseline * stdDevFactor;
-    //     double angularStdDev = angularStdDevBaseline * stdDevFactor;
-    //     if (observation.type() == PoseObservationType.MEGATAG_2) {
-    //       linearStdDev *= linearStdDevMegatag2Factor;
-    //       angularStdDev *= angularStdDevMegatag2Factor;
-    //     }
-    //     if (cameraIndex < cameraStdDevFactors.length) {
-    //       linearStdDev *= cameraStdDevFactors[cameraIndex];
-    //       angularStdDev *= cameraStdDevFactors[cameraIndex];
-    //     }
-    //     if (onlySeesTrenchTags) {
-    //       linearStdDev *= trenchTagStdDevFactor.get();
-    //     }
-
-    //     // Send vision observation
-    //     consumer.accept(
-    //         observation.pose().toPose2d(),
-    //         observation.timestamp(),
-    //         VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
-    //   }
-
-    // Log camera metadata
-    // Logger.recordOutput(
-    //     "Vision/Camera" + Integer.toString(cameraIndex) + "/TagPoses",
-    //     tagPoses.toArray(new Pose3d[0]));
-    // Logger.recordOutput(
-    //     "Vision/Camera" + Integer.toString(cameraIndex) + "/RobotPoses",
-    //     robotPoses.toArray(new Pose3d[0]));
-    // Logger.recordOutput(
-    //     "Vision/Camera" + Integer.toString(cameraIndex) + "/RobotPosesAccepted",
-    //     robotPosesAccepted.toArray(new Pose3d[0]));
-    // Logger.recordOutput(
-    //     "Vision/Camera" + Integer.toString(cameraIndex) + "/RobotPosesRejected",
-    //     robotPosesRejected.toArray(new Pose3d[0]));
-    // Logger.recordOutput(
-    //     "Vision/Camera" + Integer.toString(cameraIndex) + "/onlySeesTrenchTags",
-    //     onlySeesTrenchTags);
-    //   allTagPoses.addAll(tagPoses);
-    //   allRobotPoses.addAll(robotPoses);
-    //   allRobotPosesAccepted.addAll(robotPosesAccepted);
-    //   allRobotPosesRejected.addAll(robotPosesRejected);
-    // }
-
-    // // Log summary data
-    // Logger.recordOutput("Vision/Summary/TagPoses", allTagPoses.toArray(new Pose3d[0]));
-    // Logger.recordOutput("Vision/Summary/RobotPoses", allRobotPoses.toArray(new Pose3d[0]));
-    // Logger.recordOutput(
-    //     "Vision/Summary/RobotPosesAccepted", allRobotPosesAccepted.toArray(new Pose3d[0]));
-    // Logger.recordOutput(
-    //     "Vision/Summary/RobotPosesRejected", allRobotPosesRejected.toArray(new Pose3d[0]));
+    Logger.recordOutput("Vision/Summary/trustedCamera", trustedCamera);
   }
 
   @FunctionalInterface
