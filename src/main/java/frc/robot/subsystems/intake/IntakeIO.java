@@ -24,6 +24,8 @@ public interface IntakeIO {
 
   public default void runPositionDegreesWithoutFF(double degrees) {}
 
+  public default void runPivotVolts(double volts) {}
+
   public default void setPIDFF(
       double rollerkp, double kv, double pivotkp, double pivotkd, double pivotkg) {}
 }

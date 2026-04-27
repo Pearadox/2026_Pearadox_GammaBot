@@ -52,7 +52,7 @@ public final class TurretConstants {
 
   public static final int TURRET_CANCODER_ID = 26;
   // a wild robonauts appeared!
-  public static final double TURRET_CANCODER_OFFSET_ROTS = -0.1184;
+  public static final double TURRET_CANCODER_OFFSET_ROTS = -0.400390625; // -0.1184
 
   // now geared 1:1 with turret, (90/10)(15/45)(15/45)
   public static final double TURRET_TO_CANCODER_RATIO = 1.0;

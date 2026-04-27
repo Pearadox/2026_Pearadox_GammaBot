@@ -24,6 +24,7 @@ public abstract class IntakeIOTalonFX implements IntakeIO {
   protected final Follower pivotFollowerRequest;
   protected final TorqueCurrentFOC torqueCurrentFOC;
   protected final VelocityTorqueCurrentFOC velocityTorqueCurrentFOC;
+  protected final VoltageOut pivotVoltageRequest;
 
   protected final MotionMagicDutyCycle motionMagicDutyCycle;
 
@@ -52,6 +53,7 @@ public abstract class IntakeIOTalonFX implements IntakeIO {
     torqueCurrentFOC = new TorqueCurrentFOC(0);
     velocityTorqueCurrentFOC = new VelocityTorqueCurrentFOC(0);
     motionMagicDutyCycle = new MotionMagicDutyCycle(0);
+    pivotVoltageRequest = new VoltageOut(0);
 
     pivotFollowerRequest =
         new Follower(IntakeConstants.PIVOT_1_LEADER_ID, MotorAlignmentValue.Opposed);
@@ -115,6 +117,12 @@ public abstract class IntakeIOTalonFX implements IntakeIO {
     // pivotMotor.setControl(new PositionVoltage(Units.degreesToRotations(degrees)));
 
     pivot2Follower.setControl(pivotFollowerRequest);
+  }
+
+  @Override
+  public void runPivotVolts(double volts) {
+      pivot1Leader.setControl(pivotVoltageRequest.withOutput(volts));
+      pivot2Follower.setControl(pivotFollowerRequest);
   }
 
   @Override
