@@ -40,7 +40,7 @@ public interface LauncherIO {
    */
   public default void setHoodAngleRads(double angleRads, double feedforward) {}
 
-  public default void setLauncherPIDFF(double kP, double kD, double kS, double kV) {}
+  public default void setLauncherPIDFF(double kP, double kI, double kD, double kS, double kV) {}
 
   public default void setCurrentLimits(double stator, double supply) {}
 

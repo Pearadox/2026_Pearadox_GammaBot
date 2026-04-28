@@ -313,7 +313,8 @@ public class RobotContainer {
                 () -> launcher.getLauncherState() == LauncherState.MANUAL));
 
     drivercontroller
-        .rightBumper().and(() -> MovingShotSolver.getInstance().getGoal() == Goal.HUB)
+        .rightBumper()
+        .and(() -> MovingShotSolver.getInstance().getGoal() == Goal.HUB)
         .whileTrue(
             Commands.startEnd(
                 () -> {

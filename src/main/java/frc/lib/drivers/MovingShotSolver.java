@@ -128,8 +128,7 @@ public class MovingShotSolver {
   private double prevAccelerationX = 0;
   private double prevAccelerationY = 0;
 
-  @Getter
-  private Goal goal;
+  @Getter private Goal goal;
 
   public record ShotSolution(
       double time, double speed, Rotation2d turretAngle, double hoodAngleRadians) {}

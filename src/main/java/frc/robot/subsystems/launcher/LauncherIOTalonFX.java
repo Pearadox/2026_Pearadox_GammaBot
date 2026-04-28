@@ -119,8 +119,9 @@ public abstract class LauncherIOTalonFX implements LauncherIO {
   }
 
   @Override
-  public void setLauncherPIDFF(double kP, double kD, double kS, double kV) {
+  public void setLauncherPIDFF(double kP, double kI, double kD, double kS, double kV) {
     launcherConfigs.Slot0.kP = kP;
+    launcherConfigs.Slot0.kI = kI;
     launcherConfigs.Slot0.kD = kD;
     launcherConfigs.Slot0.kS = kS;
     launcherConfigs.Slot0.kV = kV;

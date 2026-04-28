@@ -121,8 +121,8 @@ public abstract class IntakeIOTalonFX implements IntakeIO {
 
   @Override
   public void runPivotVolts(double volts) {
-      pivot1Leader.setControl(pivotVoltageRequest.withOutput(volts));
-      pivot2Follower.setControl(pivotFollowerRequest);
+    pivot1Leader.setControl(pivotVoltageRequest.withOutput(volts));
+    pivot2Follower.setControl(pivotFollowerRequest);
   }
 
   @Override

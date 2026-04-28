@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 // import frc.robot.subsystems.intake.MechVisualizer;
 import frc.robot.subsystems.launcher.LauncherVisualizer;
 import frc.robot.subsystems.vision.VisionConstants;
@@ -142,9 +143,11 @@ public class Robot extends LoggedRobot {
     robotContainer.vision.throttleLimelights();
 
     // Pathplanner warm-up command
-    CommandScheduler.getInstance().schedule(FollowPathCommand.warmupCommand());
-    CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand());
-    Logger.recordOutput("Warming Up", true);
+    CommandScheduler.getInstance()
+        .schedule(
+            FollowPathCommand.warmupCommand()
+                .andThen(PathfindingCommand.warmupCommand())
+                .andThen(new InstantCommand(() -> System.out.println("Done warming up!"))));
   }
 
   /** This function is called periodically when disabled. */
