@@ -467,6 +467,10 @@ public class RobotContainer {
 
     autoChooser.addOption("Center Depot", new PathPlannerAuto("Center (Depot Intaking)", false));
 
+    autoChooser.addOption(
+        "Center and Sweep-DBump", new PathPlannerAuto("Center and Sweep-DBump", false));
+    autoChooser.addOption(
+        "Center and Sweep-OBump", new PathPlannerAuto("Center and Sweep-OBump", false));
     SmartDashboard.putData("clean auto chooser", autoChooser);
   }
 
