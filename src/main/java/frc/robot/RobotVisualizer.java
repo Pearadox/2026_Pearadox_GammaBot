@@ -13,6 +13,7 @@ public class RobotVisualizer {
   private final DoubleSupplier hoodAngleSupplier;
   private final DoubleSupplier intakeAngleSupplier;
 
+  @Getter private Transform3d turretTransform = Transform3d.kZero;
   @Getter private Transform3d hoodTransform = Transform3d.kZero;
   @Getter private Transform3d llTransform = Transform3d.kZero;
 
@@ -31,13 +32,13 @@ public class RobotVisualizer {
     double intakeAngle = intakeAngleSupplier.getAsDouble();
     double hopperExtensionMeters = getHopperExtension(intakeAngle);
 
-    Transform3d turret =
+    turretTransform =
         new Transform3d(
             VisualizerConstants.MODEL0_ZERO,
             new Rotation3d(0, 0, -turretYaw + VisualizerConstants.TURRET_STARTING_ANGLE));
 
     hoodTransform =
-        turret.plus(
+        turretTransform.plus(
             new Transform3d(
                 VisualizerConstants.MODEL1_OFFSET,
                 new Rotation3d(-hoodAngle + VisualizerConstants.HOOD_STARTING_ANGLE, 0, 0)));
@@ -51,7 +52,7 @@ public class RobotVisualizer {
         new Transform3d(new Translation3d(hopperExtensionMeters, 0, 0), Rotation3d.kZero);
 
     Logger.recordOutput(
-        "RobotVisualizer/Components", new Transform3d[] {turret, hoodTransform, intake, hopper});
+        "RobotVisualizer/Components", new Transform3d[] {turretTransform, hoodTransform, intake, hopper});
 
     // llTransform =
     //     turret.plus(
@@ -70,5 +71,16 @@ public class RobotVisualizer {
     return VisualizerConstants.MAX_HOPPER_EXTENSION
             * Math.cos((Math.PI / 2.0 * intakeAngle) / VisualizerConstants.INTAKE_STARTING_ANGLE)
         - VisualizerConstants.MAX_HOPPER_EXTENSION;
+  }
+
+  // wip
+  public boolean turretUnderOppTrench() {
+    // Translation3d tt = turretTransform.getTranslation();
+    // double x = Robot.getAlliance() == Alliance.Blue ? FieldConstants.LinesVertical.redHubCenterX : FieldConstants.LinesVertical.blueHubCenterX;
+    // if (MathUtil.isNear(x, tt.getX(), VisualizerConstants.IS_UNDER_TRENCH_X_TOLERANCE)
+    //   && (MathUtil.(x, x, x))) {
+      
+    // }
+    return false;
   }
 }
