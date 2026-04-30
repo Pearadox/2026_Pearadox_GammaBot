@@ -93,6 +93,8 @@ public final class Constants {
     public static final double LIMELIGHT_HEIGHT = 0.476693; // m
 
     public static final double MAX_HOPPER_EXTENSION = 0.3019; // m from starting position (<12 in)
+
+    public static final double IS_UNDER_TRENCH_X_TOLERANCE = Units.inchesToMeters(20); 
   }
 
   public static class FieldConstants {
@@ -110,7 +112,7 @@ public final class Constants {
               "Failed to load practice field layout: " + e.getMessage(), false);
         }
       }
-      return AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
+      return AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
     }
 
     public static final AprilTagFieldLayout aprilTagLayout = loadFieldLayout();

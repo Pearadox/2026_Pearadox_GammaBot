@@ -43,7 +43,7 @@ public class MovingShotSolver {
     map.put(2.640, Units.degreesToRadians(90 - 17.0));
     map.put(3.638, Units.degreesToRadians(90 - 23.0));
     map.put(4.676, Units.degreesToRadians(90 - 27.0));
-    map.put(11.0, Units.degreesToRadians(90 - 35.0));
+    map.put(11.0, Units.degreesToRadians(90 - 40.0));
     return map;
   }
 
@@ -55,6 +55,7 @@ public class MovingShotSolver {
     map.put(3.623, 41.622);
     map.put(4.805, 45.0 + 4);
     map.put(11.0, 75.0);
+    map.put(20.0, 90.0);
     return map;
   }
 
