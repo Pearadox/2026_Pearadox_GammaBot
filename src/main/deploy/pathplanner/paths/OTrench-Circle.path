@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.996807228915662,
-        "y": 3.5432530120481935
+        "x": 7.610128388017117,
+        "y": 3.4851069900142657
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.584211111111111,
-        "y": 3.9570444444444446
+        "x": 6.197532270212566,
+        "y": 3.8988984224105168
       },
       "isLocked": false,
-      "linkedName": "OTrench Short Sweep"
+      "linkedName": "OTrench Rush 2 End"
     },
     {
       "anchor": {

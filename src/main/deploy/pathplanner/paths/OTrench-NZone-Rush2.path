@@ -1,0 +1,84 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.778710843373494,
+        "y": 0.5599879518072293
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.789695151504733,
+        "y": 0.28827611157898475
+      },
+      "isLocked": false,
+      "linkedName": "OTrench Shooting Spot"
+    },
+    {
+      "anchor": {
+        "x": 7.610128388017117,
+        "y": 3.4851069900142657
+      },
+      "prevControl": {
+        "x": 8.231184022824538,
+        "y": 2.0489158345221115
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "OTrench Rush 2 End"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.13006396588486469,
+      "rotationDegrees": 0.5375928714750497
+    },
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 106.541
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.5968939905469276,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Set Intaking",
+      "waypointRelativePos": 0.06752194463200575,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.5,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 1.0,
+    "rotation": 123.00000000000001
+  },
+  "reversed": false,
+  "folder": "To Neutral Zone",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": false
+}
