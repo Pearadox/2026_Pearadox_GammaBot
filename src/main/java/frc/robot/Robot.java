@@ -160,6 +160,7 @@ public class Robot extends LoggedRobot {
     robotContainer.vision.unthrottleLimelights();
     robotContainer.launcher.zeroHood();
     robotContainer.feeder.resetForAuto();
+    robotContainer.intake.setOuttaking();
     enabledTimestamp = RobotController.getFPGATime();
 
     autonomousCommand = robotContainer.getAutonomousCommand();

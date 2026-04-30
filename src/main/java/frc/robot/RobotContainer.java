@@ -74,7 +74,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   public final Feeder feeder;
-  private final Intake intake;
+  public final Intake intake;
   public final Launcher launcher;
   public final Spindexer spindexer;
   private final Turret turret;

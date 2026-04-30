@@ -58,7 +58,11 @@ public class ShootOnTheMove extends Command {
     atDesiredVelocity = debouncer.calculate(Math.abs(shooterVelocityError) < 7.0);
     atDesiredRotation = turretRotationDebouncer.calculate(Math.abs(turretRotationError) < 0.5);
 
-    readyToShoot = true; // DO NOT UNCOMMENT PLS ok thx atDesiredVelocity && atDesiredRotation;
+    if (MovingShotSolver.getInstance().getGoal() == MovingShotSolver.Goal.HUB) {
+      readyToShoot = atDesiredVelocity;// && atDesiredRotation;
+    } else {
+      readyToShoot = true;
+    }
 
     if (readyToShoot) {
       feeder.setRunning();
