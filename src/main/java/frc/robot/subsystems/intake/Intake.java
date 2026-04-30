@@ -10,7 +10,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
   private IntakeIO io;
-  @AutoLogOutput public IntakeState intakeState = IntakeState.STOWED;
+  @AutoLogOutput public IntakeState intakeState = IntakeState.OUTTAKING;
   @AutoLogOutput public static double pivotDegreesAdjust = 0.0;
   @AutoLogOutput public static double dutyAdjust = 0.0;
   @AutoLogOutput public static double voltAdjust = 0.0;

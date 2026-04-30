@@ -521,6 +521,7 @@ public class RobotContainer {
 
     // Intake Commands
     NamedCommands.registerCommand("Set Intaking", new InstantCommand(() -> intake.setIntaking()));
+    NamedCommands.registerCommand("Deploy Intake", new InstantCommand(() -> intake.setOuttaking()));
     NamedCommands.registerCommand(
         "Set Intaking Fast", new InstantCommand(() -> intake.setIntakingFast()));
     NamedCommands.registerCommand("Stop Intaking", new InstantCommand(() -> intake.setDeployed()));
@@ -540,5 +541,6 @@ public class RobotContainer {
             .finallyDo((bool) -> intake.setIntaking()));
 
     new EventTrigger("Set Intaking").onTrue(new InstantCommand(() -> intake.setIntaking()));
+    new EventTrigger("Deploy Intake").onTrue(new InstantCommand(() -> intake.setOuttaking()));
   }
 }
