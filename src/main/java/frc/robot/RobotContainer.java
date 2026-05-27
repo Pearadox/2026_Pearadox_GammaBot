@@ -67,6 +67,7 @@ import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.DriveHelpers;
 import frc.robot.util.LoggedTracer;
+import java.util.function.DoubleSupplier;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -88,6 +89,7 @@ public class RobotContainer {
   // Controller
   private final CommandXboxController drivercontroller = new CommandXboxController(0);
   private final CommandXboxController opController = new CommandXboxController(1);
+  private final CommandXboxController blakeController = new CommandXboxController(3);
 
   // Dashboard inputs
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -221,21 +223,55 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    // Define preferred controller active checking logic:
+    // If the drivercontroller is trying to drive (sticks pushed beyond standard 0.1 deadband),
+    // we use drivercontroller joysticks and ignore blakeController completely.
+    DoubleSupplier activeY =
+        () -> {
+          boolean driverActive =
+              Math.abs(drivercontroller.getLeftY()) > 0.1
+                  || Math.abs(drivercontroller.getLeftX()) > 0.1
+                  || Math.abs(drivercontroller.getRightX()) > 0.1;
+          return driverActive ? drivercontroller.getLeftY() : blakeController.getLeftY();
+        };
+
+    DoubleSupplier activeX =
+        () -> {
+          boolean driverActive =
+              Math.abs(drivercontroller.getLeftY()) > 0.1
+                  || Math.abs(drivercontroller.getLeftX()) > 0.1
+                  || Math.abs(drivercontroller.getRightX()) > 0.1;
+          return driverActive ? drivercontroller.getLeftX() : blakeController.getLeftX();
+        };
+
+    DoubleSupplier activeOmega =
+        () -> {
+          boolean driverActive =
+              Math.abs(drivercontroller.getLeftY()) > 0.1
+                  || Math.abs(drivercontroller.getLeftX()) > 0.1
+                  || Math.abs(drivercontroller.getRightX()) > 0.1;
+          return driverActive ? drivercontroller.getRightX() : blakeController.getRightX();
+        };
+
     // Driver Bindings
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -drivercontroller.getLeftY() * getRobotSpeedMultiplier(),
-            () -> -drivercontroller.getLeftX() * getRobotSpeedMultiplier(),
-            () -> -drivercontroller.getRightX()));
+            () -> -activeY.getAsDouble() * getRobotSpeedMultiplier(),
+            () -> -activeX.getAsDouble() * getRobotSpeedMultiplier(),
+            () -> -activeOmega.getAsDouble()));
 
-    // Switch to X pattern when X button is pressed
-    drivercontroller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    // Switch to X pattern when X button is pressed on either controller
+    drivercontroller
+        .x()
+        .or(blakeController.x())
+        .onTrue(Commands.runOnce(drive::stopWithX, drive));
 
-    // Reset gyro to 0° when start button is pressed
+    // Reset gyro to 0° when start button is pressed on either controller
     drivercontroller
         .start()
+        .or(blakeController.start())
         .onTrue(
             Commands.runOnce(
                     () ->
@@ -244,51 +280,28 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // Drive at a 45° for going over the bump
+    // Drive at a 45° for going over the bump on either controller
     drivercontroller
         .a()
+        .or(blakeController.a())
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> -drivercontroller.getLeftY(),
-                () -> -drivercontroller.getLeftX(),
+                () -> -activeY.getAsDouble(),
+                () -> -activeX.getAsDouble(),
                 () -> DriveHelpers.findClosestCorner(drive::getPose)));
 
+    // SNAKE Mode on either controller
     drivercontroller
         .y()
+        .or(blakeController.y())
         .toggleOnTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> -drivercontroller.getLeftY(),
-                () -> -drivercontroller.getLeftX(),
+                () -> -activeY.getAsDouble(),
+                () -> -activeX.getAsDouble(),
                 () ->
                     DriveHelpers.getCourseRotation2d(drive::getChassisSpeeds, drive::getRotation)));
-
-    // drivercontroller
-    //     .rightBumper()
-    //     .and(() -> launcher.getLauncherState() != LauncherState.MANUAL)
-    //     .whileTrue(
-    //         new ShootOnTheMove(
-    //                 launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d)
-    //             .alongWith(launcher.score()))
-    //     .onFalse(
-    //         new InstantCommand(() -> spindexer.setStopped())
-    //             .andThen(new WaitCommand(0.2))
-    //             .andThen(new InstantCommand(() -> feeder.setStopped())));
-
-    // drivercontroller
-    //     .rightBumper()
-    //     .and(() -> launcher.getLauncherState() == LauncherState.MANUAL)
-    //     .whileTrue(
-    //         new InstantCommand(
-    //             () -> {
-    //               feeder.setRunning();
-    //               spindexer.setRunning();
-    //             }))
-    //     .onFalse(
-    //         new InstantCommand(() -> spindexer.setStopped())
-    //             .andThen(new WaitCommand(0.2))
-    //             .andThen(new InstantCommand(() -> feeder.setStopped())));
 
     drivercontroller
         .rightBumper()
@@ -325,19 +338,32 @@ public class RobotContainer {
                   setRobotSpeedMultiplier(1.0);
                 }));
 
+    // Intake trigger on either controller (Left Bumper on Driver, Left Trigger on Blake)
     drivercontroller
         .leftBumper()
+        .or(blakeController.leftTrigger())
         .whileTrue(new InstantCommand(() -> intake.setIntaking()))
         .onFalse(new InstantCommand(() -> intake.setDeployed()));
-    drivercontroller.povUp().onTrue(new InstantCommand(() -> intake.setFlow()));
-    drivercontroller.povDown().onTrue(new InstantCommand(() -> intake.setDeployed()));
+
+    drivercontroller.povUp().onTrue(new InstantCommand(() -> intake.setFlow()));  // TODO!!!
+
+    // Deploy Intake on either controller
+    drivercontroller
+        .povDown()
+        .or(blakeController.povDown())
+        .onTrue(new InstantCommand(() -> intake.setDeployed()));
+
+    // Out-take Intake on either controller
     drivercontroller
         .povLeft()
+        .or(blakeController.povLeft())
         .onTrue(new InstantCommand(() -> intake.setOuttaking()))
         .onFalse(new InstantCommand(() -> intake.setDeployed()));
 
+    // Reverse Spindexer on either controller
     drivercontroller
         .b()
+        .or(blakeController.b())
         .whileTrue(new RunCommand(() -> spindexer.setReverse(), spindexer))
         .onFalse(new InstantCommand(() -> spindexer.setStopped(), spindexer));
 
@@ -392,8 +418,10 @@ public class RobotContainer {
                     () -> MovingShotSolver.getShotSolution().turretAngle()),
             turret));
 
+    // Turret Follow Hub on either opController or blakeController back button
     opController
         .back()
+        .or(blakeController.back())
         .onTrue(
             new RunCommand( // same as default cmd btw
                 () ->
@@ -437,6 +465,59 @@ public class RobotContainer {
     // runs the hood down, then when released, zeroes the hood
     // if disabled, the hood won't run down
     opController.x().whileTrue(launcher.zeroHoodCommand().ignoringDisable(true));
+
+    // ==========================================
+    // Blake Controller (Port 3) Bindings
+    // ==========================================
+
+    // Speed Up (boost speed multiplier to 1.5 when held)
+    blakeController
+        .leftStick()
+        .whileTrue(
+            Commands.startEnd(
+                () -> setRobotSpeedMultiplier(1.5),
+                () -> setRobotSpeedMultiplier(1.0)));
+
+    // STOW Intake when HELD (Left Bumper)
+    blakeController
+        .leftBumper()
+        .whileTrue(new InstantCommand(() -> intake.setStowed()))
+        .onFalse(new InstantCommand(() -> intake.setDeployed()));
+
+    // STOW Intake (Dpad Up)
+    blakeController.povUp().onTrue(new InstantCommand(() -> intake.setStowed()));
+
+    // IN-Take Intake (Dpad Right)
+    blakeController
+        .povRight()
+        .onTrue(new InstantCommand(() -> intake.setIntaking()))
+        .onFalse(new InstantCommand(() -> intake.setDeployed()));
+
+    // Toggle AUTO Shoot (Right Bumper)
+    blakeController
+        .rightBumper()
+        .toggleOnTrue(
+            new ShootOnTheMove(
+                    launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d)
+                .alongWith(launcher.score())
+                .finallyDo(
+                    (b) -> {
+                      spindexer.setStopped();
+                      feeder.setStopped();
+                    }));
+
+    // Shoot OTM (Right Trigger)
+    blakeController
+        .rightTrigger()
+        .whileTrue(
+            new ShootOnTheMove(
+                    launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d)
+                .alongWith(launcher.score())
+                .finallyDo(
+                    (b) -> {
+                      spindexer.setStopped();
+                      feeder.setStopped();
+                    }));
   }
 
   /**
@@ -446,27 +527,31 @@ public class RobotContainer {
    */
   public void setUpAutonomousCommand() {
     autoChooser.addOption(
-        "OTrench-NZone-2.5-Sweeps", new PathPlannerAuto("OTrench-NZone-2.5-Sweeps", true));
+        "OTrench-NZone-2.5-Sweeps", new PathPlannerAuto("OTrench-NZone-2.5-Sweeps"));
     autoChooser.addOption(
-        "DTrench-NZone-2.5-Sweeps", new PathPlannerAuto("OTrench-NZone-2.5-Sweeps", false));
+        "DTrench-NZone-2.5-Sweeps", new PathPlannerAuto("OTrench-NZone-2.5-Sweeps", true));
 
     autoChooser.addOption(
         "Adamant Trench (Outpost, 3 Sweeps, Rush)",
-        new PathPlannerAuto("Adamant Trench (Outpost, 3 Sweeps, Rush)", true));
+        new PathPlannerAuto("Adamant Trench (Outpost, 3 Sweeps, Rush)"));
     autoChooser.addOption(
         "Adamant Trench (Depot, 3 Sweeps, Rush)",
-        new PathPlannerAuto("Adamant Trench (Outpost, 3 Sweeps, Rush)", false));
+        new PathPlannerAuto("Adamant Trench (Outpost, 3 Sweeps, Rush)", true));
 
     autoChooser.addOption(
         "CircleBack Outpost",
-        new PathPlannerAuto("CircleBack Adamant Trench (Outpost, 3 Sweeps, Rush)", false));
+        new PathPlannerAuto("CircleBack Adamant Trench (Outpost, 3 Sweeps, Rush)"));
 
     autoChooser.addOption(
         "CircleBack Depot",
         new PathPlannerAuto("CircleBack Adamant Trench (Outpost, 3 Sweeps, Rush)", true));
 
-    autoChooser.addOption("Center Depot", new PathPlannerAuto("Center (Depot Intaking)", false));
+    autoChooser.addOption("Center Depot", new PathPlannerAuto("Center (Depot Intaking)"));
 
+    autoChooser.addOption(
+        "Center and Sweep-DBump", new PathPlannerAuto("Center and Sweep-DBump"));
+    autoChooser.addOption(
+        "Center and Sweep-OBump", new PathPlannerAuto("Center and Sweep-OBump"));
     SmartDashboard.putData("clean auto chooser", autoChooser);
   }
 
@@ -517,6 +602,7 @@ public class RobotContainer {
 
     // Intake Commands
     NamedCommands.registerCommand("Set Intaking", new InstantCommand(() -> intake.setIntaking()));
+    NamedCommands.registerCommand("Deploy Intake", new InstantCommand(() -> intake.setOuttaking()));
     NamedCommands.registerCommand(
         "Set Intaking Fast", new InstantCommand(() -> intake.setIntakingFast()));
     NamedCommands.registerCommand("Stop Intaking", new InstantCommand(() -> intake.setDeployed()));
@@ -536,5 +622,6 @@ public class RobotContainer {
             .finallyDo((bool) -> intake.setIntaking()));
 
     new EventTrigger("Set Intaking").onTrue(new InstantCommand(() -> intake.setIntaking()));
+    new EventTrigger("Deploy Intake").onTrue(new InstantCommand(() -> intake.setOuttaking()));
   }
 }
