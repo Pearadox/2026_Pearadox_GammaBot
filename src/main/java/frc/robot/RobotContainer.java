@@ -263,10 +263,7 @@ public class RobotContainer {
             () -> -activeOmega.getAsDouble()));
 
     // Switch to X pattern when X button is pressed on either controller
-    drivercontroller
-        .x()
-        .or(blakeController.x())
-        .onTrue(Commands.runOnce(drive::stopWithX, drive));
+    drivercontroller.x().or(blakeController.x()).onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Reset gyro to 0° when start button is pressed on either controller
     drivercontroller
@@ -345,7 +342,7 @@ public class RobotContainer {
         .whileTrue(new InstantCommand(() -> intake.setIntaking()))
         .onFalse(new InstantCommand(() -> intake.setDeployed()));
 
-    drivercontroller.povUp().onTrue(new InstantCommand(() -> intake.setFlow()));  // TODO!!!
+    drivercontroller.povUp().onTrue(new InstantCommand(() -> intake.setFlow())); // TODO!!!
 
     // Deploy Intake on either controller
     drivercontroller
@@ -475,8 +472,7 @@ public class RobotContainer {
         .leftStick()
         .whileTrue(
             Commands.startEnd(
-                () -> setRobotSpeedMultiplier(1.5),
-                () -> setRobotSpeedMultiplier(1.0)));
+                () -> setRobotSpeedMultiplier(1.5), () -> setRobotSpeedMultiplier(1.0)));
 
     // STOW Intake when HELD (Left Bumper)
     blakeController
@@ -548,10 +544,8 @@ public class RobotContainer {
 
     autoChooser.addOption("Center Depot", new PathPlannerAuto("Center (Depot Intaking)"));
 
-    autoChooser.addOption(
-        "Center and Sweep-DBump", new PathPlannerAuto("Center and Sweep-DBump"));
-    autoChooser.addOption(
-        "Center and Sweep-OBump", new PathPlannerAuto("Center and Sweep-OBump"));
+    autoChooser.addOption("Center and Sweep-DBump", new PathPlannerAuto("Center and Sweep-DBump"));
+    autoChooser.addOption("Center and Sweep-OBump", new PathPlannerAuto("Center and Sweep-OBump"));
     SmartDashboard.putData("clean auto chooser", autoChooser);
   }
 
