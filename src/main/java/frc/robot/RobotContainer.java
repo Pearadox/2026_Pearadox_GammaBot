@@ -472,7 +472,7 @@ public class RobotContainer {
         .leftStick()
         .whileTrue(
             Commands.startEnd(
-                () -> setRobotSpeedMultiplier(1.5), () -> setRobotSpeedMultiplier(1.0)));
+                () -> setRobotSpeedMultiplier(1), () -> setRobotSpeedMultiplier(0.8)));
 
     // STOW Intake when HELD (Left Bumper)
     blakeController
@@ -523,29 +523,27 @@ public class RobotContainer {
    */
   public void setUpAutonomousCommand() {
     autoChooser.addOption(
-        "OTrench-NZone-2.5-Sweeps", new PathPlannerAuto("OTrench-NZone-2.5-Sweeps"));
+        "OTrench-NZone-2.5-Sweeps", new PathPlannerAuto("OTrench-NZone-2.5-Sweeps", true));
     autoChooser.addOption(
-        "DTrench-NZone-2.5-Sweeps", new PathPlannerAuto("OTrench-NZone-2.5-Sweeps", true));
+        "DTrench-NZone-2.5-Sweeps", new PathPlannerAuto("OTrench-NZone-2.5-Sweeps", false));
 
     autoChooser.addOption(
         "Adamant Trench (Outpost, 3 Sweeps, Rush)",
-        new PathPlannerAuto("Adamant Trench (Outpost, 3 Sweeps, Rush)"));
+        new PathPlannerAuto("Adamant Trench (Outpost, 3 Sweeps, Rush)", true));
     autoChooser.addOption(
         "Adamant Trench (Depot, 3 Sweeps, Rush)",
-        new PathPlannerAuto("Adamant Trench (Outpost, 3 Sweeps, Rush)", true));
+        new PathPlannerAuto("Adamant Trench (Outpost, 3 Sweeps, Rush)", false));
 
     autoChooser.addOption(
         "CircleBack Outpost",
-        new PathPlannerAuto("CircleBack Adamant Trench (Outpost, 3 Sweeps, Rush)"));
+        new PathPlannerAuto("CircleBack Adamant Trench (Outpost, 3 Sweeps, Rush)", false));
 
     autoChooser.addOption(
         "CircleBack Depot",
         new PathPlannerAuto("CircleBack Adamant Trench (Outpost, 3 Sweeps, Rush)", true));
 
-    autoChooser.addOption("Center Depot", new PathPlannerAuto("Center (Depot Intaking)"));
+    autoChooser.addOption("Center Depot", new PathPlannerAuto("Center (Depot Intaking)", false));
 
-    autoChooser.addOption("Center and Sweep-DBump", new PathPlannerAuto("Center and Sweep-DBump"));
-    autoChooser.addOption("Center and Sweep-OBump", new PathPlannerAuto("Center and Sweep-OBump"));
     SmartDashboard.putData("clean auto chooser", autoChooser);
   }
 
