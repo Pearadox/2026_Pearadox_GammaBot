@@ -84,7 +84,7 @@ public class RobotContainer {
 
   // Visualizer
   public final RobotVisualizer visualizer;
-  @Getter @Setter private double robotSpeedMultiplier = 1.0;
+  @Getter @Setter private double robotSpeedMultiplier = 0.5;
 
   // Controller
   private final CommandXboxController drivercontroller = new CommandXboxController(0);
@@ -329,10 +329,10 @@ public class RobotContainer {
         .whileTrue(
             Commands.startEnd(
                 () -> {
-                  setRobotSpeedMultiplier(Math.sqrt(0.4));
+                  setRobotSpeedMultiplier(Math.sqrt(0.3));
                 },
                 () -> {
-                  setRobotSpeedMultiplier(1.0);
+                  setRobotSpeedMultiplier(Math.sqrt(0.5));
                 }));
 
     // Intake trigger on either controller (Left Bumper on Driver, Left Trigger on Blake)
@@ -472,7 +472,7 @@ public class RobotContainer {
         .leftStick()
         .whileTrue(
             Commands.startEnd(
-                () -> setRobotSpeedMultiplier(1), () -> setRobotSpeedMultiplier(0.8)));
+                () -> setRobotSpeedMultiplier(Math.sqrt(0.8)), () -> setRobotSpeedMultiplier(Math.sqrt(0.5))));
 
     // STOW Intake when HELD (Left Bumper)
     blakeController
