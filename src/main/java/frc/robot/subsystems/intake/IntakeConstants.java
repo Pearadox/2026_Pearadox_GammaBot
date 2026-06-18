@@ -96,15 +96,7 @@ public class IntakeConstants {
 
   public static final TalonFXConfiguration getPivotConfigTalonFX() {
 
-    PIVOT_CONFIG.CurrentLimits.SupplyCurrentLimitEnable = true;
-    PIVOT_CONFIG.CurrentLimits.SupplyCurrentLimit = PIVOT_SUPPLY_CURRENT_LIMIT;
-    PIVOT_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
-    PIVOT_CONFIG.CurrentLimits.StatorCurrentLimit = PIVOT_STATOR_CURRENT_LIMIT;
-
-    // Stow and deploy pivot config
-    PIVOT_SLOT0_CONFIGS.kP = 1.0;
-    PIVOT_SLOT0_CONFIGS.kI = 0.0;
-    PIVOT_SLOT0_CONFIGS.kD = 0.03;
+     
 
     // Intaking pivot config
     // TODO: TUNE THIS.
