@@ -15,7 +15,8 @@ public class SpindexerIOSim extends SpindexerIOTalonFX {
   private SingleJointedArmSim spindexerPhysicsSim =
       new SingleJointedArmSim(
           DCMotor.getKrakenX60(1),
-          SpindexerConstants.SPINDEXER_GEARING,
+          // SpindexerConstants.SPINDEXER_GEARING,
+          22.5,
           SpindexerConstants.SPINDEXER_MOI,
           SpindexerConstants.SPINDEXER_RADIUS_METERS,
           Double.NEGATIVE_INFINITY,
@@ -36,15 +37,15 @@ public class SpindexerIOSim extends SpindexerIOTalonFX {
   }
 
   public void updateSim() {
-    spindexerSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
+    spindexerSimState.setSupplyVoltage(12);
     spindexerPhysicsSim.setInputVoltage(spindexerSimState.getMotorVoltage());
 
     spindexerPhysicsSim.update(0.02);
 
     spindexerSimState.setRotorVelocity(
         Units.radiansPerSecondToRotationsPerMinute(spindexerPhysicsSim.getVelocityRadPerSec())
-            / 60);
+            / 60 * 22.5);
     spindexerSimState.setRawRotorPosition(
-        Units.radiansToRotations(spindexerPhysicsSim.getAngleRads()));
+        Units.radiansToRotations(spindexerPhysicsSim.getAngleRads()) * 22.5);
   }
 }

@@ -132,4 +132,8 @@ public class Intake extends SubsystemBase {
   public boolean turretHasClearance() {
     return getAngleDegs() > IntakeConstants.MIN_ANGLE_FOR_TURRET_CLEARANCE_DEGS;
   }
+
+  public double getRollerVelocity() {
+    return inputs.roller1MotorData.velocity();
+  }
 }

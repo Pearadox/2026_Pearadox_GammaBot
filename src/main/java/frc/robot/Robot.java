@@ -220,6 +220,8 @@ public class Robot extends LoggedRobot {
   public void simulationPeriodic() {
     // MechVisualizer.getInstance().periodic();
     LauncherVisualizer.getInstance().periodic();
+    RobotContainer.fuelSim.updateSim();
+    robotContainer.fuelManager.periodic();
   }
 
   public boolean isHubActive() {

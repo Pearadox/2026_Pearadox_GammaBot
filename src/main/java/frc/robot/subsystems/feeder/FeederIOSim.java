@@ -20,7 +20,7 @@ public class FeederIOSim implements FeederIO {
   private DCMotorSim physicsSim =
       new DCMotorSim(
           LinearSystemId.createDCMotorSystem(
-              FeederConstants.FEEDER_MOTOR, 0.001, FeederConstants.FEEDER_GEARING),
+              FeederConstants.FEEDER_MOTOR, 0.00001, FeederConstants.FEEDER_GEARING),
           FeederConstants.FEEDER_MOTOR);
 
   private VoltageOut feederControl;
@@ -48,9 +48,10 @@ public class FeederIOSim implements FeederIO {
   public void updateSim() {
     feederSim.setSupplyVoltage(12);
     physicsSim.setInputVoltage(feederSim.getMotorVoltage());
+    physicsSim.update(0.02);
 
     feederSim.setRawRotorPosition(
         physicsSim.getAngularPositionRotations() * FeederConstants.FEEDER_GEARING);
-    feederSim.setRotorVelocity(physicsSim.getAngularVelocityRPM() * FeederConstants.FEEDER_GEARING);
+    feederSim.setRotorVelocity(physicsSim.getAngularVelocityRPM() * FeederConstants.FEEDER_GEARING / 60.0);
   }
 }

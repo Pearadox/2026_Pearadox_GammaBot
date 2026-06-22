@@ -13,7 +13,9 @@ import com.pathplanner.lib.events.EventTrigger;
 import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
@@ -29,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.drivers.MovingShotSolver;
 import frc.lib.drivers.MovingShotSolver.Goal;
+import frc.robot.Constants.Mode;
 import frc.robot.Constants.VisualizerConstants;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ShootOnTheMove;
@@ -45,6 +48,7 @@ import frc.robot.subsystems.feeder.FeederIOReal;
 import frc.robot.subsystems.feeder.FeederIOSim;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeConstants;
+import frc.robot.subsystems.intake.IntakeConstants.IntakeState;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.intake.IntakeIOSim;
@@ -66,7 +70,10 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.DriveHelpers;
+import frc.robot.util.FuelSim;
+import frc.robot.util.HeldFuelManager;
 import frc.robot.util.LoggedTracer;
+import java.util.function.BooleanSupplier;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -92,9 +99,11 @@ public class RobotContainer {
   // Dashboard inputs
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
+  public static FuelSim fuelSim;
+  public HeldFuelManager fuelManager;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-
     // Register named commands for PathPlanner
 
     switch (Constants.currentMode) {
@@ -153,9 +162,6 @@ public class RobotContainer {
                 drive::getRotation,
                 intake::turretHasClearance);
         vision = new Vision(drive::addVisionMeasurement, drive::getChassisSpeeds);
-
-        DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
-
         break;
 
       default:
@@ -212,6 +218,30 @@ public class RobotContainer {
             },
             vision));
     ledStrip.setDefaultCommand(new RunCommand(() -> ledStrip.isHubActive(), ledStrip));
+
+    if (Constants.currentMode == Mode.SIM) {
+      DriverStation.silenceJoystickConnectionWarning(true);
+      DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
+
+      fuelManager =
+          new HeldFuelManager(
+              intake::getRollerVelocity,
+              spindexer::getPosition,
+              feeder::getFeederVelocity,
+              launcher::getLauncherVelocity,
+              launcher::getHoodAngleRads,
+              turret::getTurretAngleRads,
+              visualizer::getHoodTransform,
+              drive::getPose,
+              () ->
+                  ChassisSpeeds.fromRobotRelativeSpeeds(
+                      drive.getChassisSpeeds(), drive.getRotation()));
+
+      configureFuelSim();
+      configureFuelSimRobot(
+          () -> true,
+          () -> fuelManager.addFuelToIntake());
+    }
   }
 
   /**
@@ -536,5 +566,38 @@ public class RobotContainer {
             .finallyDo((bool) -> intake.setIntaking()));
 
     new EventTrigger("Set Intaking").onTrue(new InstantCommand(() -> intake.setIntaking()));
+  }
+
+  private void configureFuelSim() {
+    fuelSim = new FuelSim();
+    fuelSim.spawnStartingFuel();
+
+    fuelSim.start();
+    SmartDashboard.putData(
+        Commands.runOnce(
+                () -> {
+                  fuelSim.clearFuel();
+                  fuelSim.spawnStartingFuel();
+                })
+            .withName("Reset Fuel")
+            .ignoringDisable(true));
+  }
+
+  private void configureFuelSimRobot(BooleanSupplier ableToIntake, Runnable intakeCallback) {
+    fuelSim.registerRobot(
+        Units.inchesToMeters(33.75),
+        Units.inchesToMeters(33.75),
+        Units.inchesToMeters(6), // ?
+        drive::getPose,
+        () -> ChassisSpeeds.fromRobotRelativeSpeeds(drive.getChassisSpeeds(), drive.getRotation()));
+    fuelSim.registerIntake(
+        Units.inchesToMeters(27 / 2.0),
+        Units.inchesToMeters(27 / 2.0 + 12),
+        -Units.inchesToMeters(27 / 2.0),
+        Units.inchesToMeters(27 / 2.0),
+        () ->
+            intake.getIntakeState() == IntakeState.INTAKING
+                || intake.getIntakeState() == IntakeState.INTAKING_FAST,
+        intakeCallback);
   }
 }

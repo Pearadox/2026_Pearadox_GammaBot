@@ -132,4 +132,8 @@ public class Feeder extends SubsystemBase {
     timer.stop();
     hasSeenFuel = false;
   }
+
+  public double getFeederVelocity() {
+    return -inputs.feederData.velocity();
+  }
 }

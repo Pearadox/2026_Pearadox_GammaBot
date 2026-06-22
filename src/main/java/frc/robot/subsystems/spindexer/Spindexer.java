@@ -67,4 +67,8 @@ public class Spindexer extends SubsystemBase {
   public void resetAdjust() {
     adjust = 0;
   }
+
+  public double getPosition() {
+    return inputs.spindexerMotorData.position() / -22.5;
+  }
 }
