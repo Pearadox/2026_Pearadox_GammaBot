@@ -472,7 +472,8 @@ public class RobotContainer {
         .leftStick()
         .whileTrue(
             Commands.startEnd(
-                () -> setRobotSpeedMultiplier(Math.sqrt(0.8)), () -> setRobotSpeedMultiplier(Math.sqrt(0.5))));
+                () -> setRobotSpeedMultiplier(Math.sqrt(0.8)),
+                () -> setRobotSpeedMultiplier(Math.sqrt(0.5))));
 
     // STOW Intake when HELD (Left Bumper)
     blakeController

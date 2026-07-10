@@ -19,8 +19,7 @@ public class Feeder extends SubsystemBase {
   private FeederState feederState = FeederState.STOPPED;
 
   // TODO: try lowering later
-  private static LoggedTunableNumber feederVolts =
-      new LoggedTunableNumber("Feeder/On Voltage", -9);
+  private static LoggedTunableNumber feederVolts = new LoggedTunableNumber("Feeder/On Voltage", -9);
 
   private Debouncer canRangeDebouncer = new Debouncer(0.1, DebounceType.kFalling);
   private boolean isDetectedDebounced = false;
