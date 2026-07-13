@@ -13,7 +13,7 @@ public class IntakeIOSim extends IntakeIOTalonFX {
 
   private SingleJointedArmSim pivotSim =
       new SingleJointedArmSim(
-          DCMotor.getKrakenX44(1),
+          DCMotor.getKrakenX44(2),
           IntakeConstants.GEARING,
           SingleJointedArmSim.estimateMOI(IntakeConstants.LENGTH_METERS, IntakeConstants.MASS_KG),
           IntakeConstants.LENGTH_METERS,
@@ -22,7 +22,7 @@ public class IntakeIOSim extends IntakeIOTalonFX {
           false,
           IntakeConstants.SIM_STARTING_ANGLE_RADS);
 
-    private DCMotorSim rollerPhysicsSim =
+  private DCMotorSim rollerPhysicsSim =
       new DCMotorSim(
           LinearSystemId.createDCMotorSystem(
               FeederConstants.FEEDER_MOTOR, 0.00001, FeederConstants.FEEDER_GEARING),
@@ -45,7 +45,7 @@ public class IntakeIOSim extends IntakeIOTalonFX {
     pivotSim.update(Constants.UPDATE_FREQ_SEC);
 
     pivotSimState.setRawRotorPosition(
-        Units.radiansToRotations(pivotSim.getAngleRads()) * IntakeConstants.GEARING);
+        (Units.radiansToRotations(pivotSim.getAngleRads()) * IntakeConstants.GEARING));
     pivotSimState.setRotorVelocity(
         Units.radiansToRotations(pivotSim.getVelocityRadPerSec()) * IntakeConstants.GEARING);
 
@@ -55,6 +55,7 @@ public class IntakeIOSim extends IntakeIOTalonFX {
 
     rollerSimState.setRawRotorPosition(
         rollerPhysicsSim.getAngularPositionRotations() * FeederConstants.FEEDER_GEARING);
-    rollerSimState.setRotorVelocity(rollerPhysicsSim.getAngularVelocityRPM() * FeederConstants.FEEDER_GEARING / 60.0);
+    rollerSimState.setRotorVelocity(
+        rollerPhysicsSim.getAngularVelocityRPM() * FeederConstants.FEEDER_GEARING / 60.0);
   }
 }

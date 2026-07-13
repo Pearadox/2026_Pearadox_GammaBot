@@ -80,7 +80,8 @@ public final class Constants {
         new Translation3d(0.279344, 0, 0.213924); // intake
     public static final Translation3d MODEL1_OFFSET = MODEL1_ZERO.minus(MODEL0_ZERO);
 
-    public static final double TURRET_STARTING_ANGLE = 0; // this is only used in sim
+    public static final double TURRET_STARTING_ANGLE =
+        Units.degreesToRadians(180); // this is only used in sim
 
     public static final double HOOD_STARTING_ANGLE =
         Units.degreesToRadians(61.549451); // TODO: update

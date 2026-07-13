@@ -52,6 +52,7 @@ public class FeederIOSim implements FeederIO {
 
     feederSim.setRawRotorPosition(
         physicsSim.getAngularPositionRotations() * FeederConstants.FEEDER_GEARING);
-    feederSim.setRotorVelocity(physicsSim.getAngularVelocityRPM() * FeederConstants.FEEDER_GEARING / 60.0);
+    feederSim.setRotorVelocity(
+        physicsSim.getAngularVelocityRPM() * FeederConstants.FEEDER_GEARING / 60.0);
   }
 }

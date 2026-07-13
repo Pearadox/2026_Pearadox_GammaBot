@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 // import frc.robot.subsystems.intake.MechVisualizer;
-import frc.robot.subsystems.launcher.LauncherVisualizer;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.util.EnergyTracker;
 import frc.robot.util.LoggedTracer;
@@ -219,8 +218,9 @@ public class Robot extends LoggedRobot {
   @Override
   public void simulationPeriodic() {
     // MechVisualizer.getInstance().periodic();
-    LauncherVisualizer.getInstance().periodic();
+    // LauncherVisualizer.getInstance().periodic();
     RobotContainer.fuelSim.updateSim();
+    robotContainer.visualizer.periodic();
     robotContainer.fuelManager.periodic();
   }
 

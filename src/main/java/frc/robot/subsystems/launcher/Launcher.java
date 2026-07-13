@@ -32,6 +32,7 @@ public class Launcher extends SubsystemBase {
   }
 
   private boolean isZeroing = false;
+  private double desiredHoodAngleRads;
 
   private final LoggedTunableNumber tunableffAmps = new LoggedTunableNumber("Launcher/ffamps", 0);
   private final LoggedTunableNumber manualDefaultVelocity =
@@ -117,7 +118,6 @@ public class Launcher extends SubsystemBase {
     Logger.recordOutput("Launcher/launcherVelocity", getLauncherVelocity());
     Logger.recordOutput("Hood/kG-Value", getkG());
 
-    double desiredHoodAngleRads;
     if (launcherState == LauncherState.SELF_DIRECTING) {
       desiredHoodAngleRads = MovingShotSolver.getShotSolution().hoodAngleRadians();
       // desiredHoodAngleRads = Units.degreesToRadians(overrideHoodAngle.get());
@@ -180,7 +180,9 @@ public class Launcher extends SubsystemBase {
     return hoodkG.get() * Math.cos(getHoodAngleRads());
   }
 
+  @AutoLogOutput
   public double getHoodAngleRads() {
+    if (Constants.currentMode == Mode.SIM) return desiredHoodAngleRads;
     return Units.rotationsToRadians(inputs.hoodData.position() / LauncherConstants.HOOD_GEARING)
         + Units.degreesToRadians(kGOffset.get());
   }

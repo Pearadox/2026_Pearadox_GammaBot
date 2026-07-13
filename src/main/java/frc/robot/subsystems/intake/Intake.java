@@ -2,6 +2,7 @@ package frc.robot.subsystems.intake;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.subsystems.intake.IntakeConstants.IntakeState;
 import frc.robot.subsystems.intake.IntakeConstants.StateConfig;
 import frc.robot.util.LoggedTunableNumber;
@@ -130,7 +131,8 @@ public class Intake extends SubsystemBase {
 
   @AutoLogOutput
   public boolean turretHasClearance() {
-    return getAngleDegs() > IntakeConstants.MIN_ANGLE_FOR_TURRET_CLEARANCE_DEGS;
+    return getAngleDegs() > IntakeConstants.MIN_ANGLE_FOR_TURRET_CLEARANCE_DEGS
+        || Robot.isSimulation();
   }
 
   public double getRollerVelocity() {

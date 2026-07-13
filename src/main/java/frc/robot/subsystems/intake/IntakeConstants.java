@@ -62,8 +62,8 @@ public class IntakeConstants {
 
   // intake sim constants
   public static final double SIM_STARTING_ANGLE_RADS = Units.degreesToRadians(0);
-  public static final double SIM_MIN_ANGLE_RADS = Double.NEGATIVE_INFINITY;
-  public static final double SIM_MAX_ANGLE_RADS = Double.POSITIVE_INFINITY;
+  public static final double SIM_MIN_ANGLE_RADS = Units.degreesToRadians(0);
+  public static final double SIM_MAX_ANGLE_RADS = Units.degreesToRadians(125);
 
   public static final double MIN_ANGLE_FOR_TURRET_CLEARANCE_DEGS = 5;
 

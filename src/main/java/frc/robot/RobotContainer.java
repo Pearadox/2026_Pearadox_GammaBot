@@ -32,7 +32,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.drivers.MovingShotSolver;
 import frc.lib.drivers.MovingShotSolver.Goal;
 import frc.robot.Constants.Mode;
-import frc.robot.Constants.VisualizerConstants;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ShootOnTheMove;
 import frc.robot.generated.TunerConstants;
@@ -198,9 +197,11 @@ public class RobotContainer {
         new RobotVisualizer(
             turret::getTurretAngleRads,
             launcher::getHoodAngleRads,
-            () ->
-                VisualizerConstants.INTAKE_STARTING_ANGLE
-                    - Units.degreesToRadians(intake.getAngleDegs()));
+            () -> Units.degreesToRadians(intake.getAngleDegs())
+            // () ->
+            //     VisualizerConstants.INTAKE_STARTING_ANGLE
+            //         - Units.degreesToRadians(intake.getAngleDegs())
+            );
 
     // Configure the button bindings
     configureButtonBindings();
@@ -238,9 +239,7 @@ public class RobotContainer {
                       drive.getChassisSpeeds(), drive.getRotation()));
 
       configureFuelSim();
-      configureFuelSimRobot(
-          () -> true,
-          () -> fuelManager.addFuelToIntake());
+      configureFuelSimRobot(() -> true, () -> fuelManager.addFuelToIntake());
     }
   }
 

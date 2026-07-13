@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
+import frc.robot.Constants.VisualizerConstants;
 import frc.robot.RobotContainer;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,8 @@ public class HeldFuelManager {
 
   private final Supplier<Pose2d> poseSupplier;
   private final Supplier<ChassisSpeeds> chassisSpeedsSupplier;
+
+  private final LoggedTunableNumber extraDegs = new LoggedTunableNumber("Held/Angle+", 0);
 
   public HeldFuelManager(
       DoubleSupplier intakeVelocitySupplier,
@@ -120,9 +123,11 @@ public class HeldFuelManager {
 
     RobotContainer.fuelSim.launchFuel(
         MetersPerSecond.of(shooterVel),
-        Radians.of(hoodAngleSupplier.getAsDouble()),
+        Radians.of(hoodAngleSupplier.getAsDouble()).plus(Degrees.of(extraDegs.get())),
         turretRotation.getMeasure(),
-        shooterTransform.getMeasureZ());
+        shooterTransform.getMeasureZ().plus(VisualizerConstants.MODEL1_OFFSET.getMeasureZ()));
+
+    System.out.println(shooterTransform.getMeasureZ());
   }
 
   private int getOpenSpindexerSlot() {

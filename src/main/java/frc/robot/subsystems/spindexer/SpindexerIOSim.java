@@ -7,7 +7,6 @@ package frc.robot.subsystems.spindexer;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
 /** Launcher IO's real implementation */
@@ -44,7 +43,8 @@ public class SpindexerIOSim extends SpindexerIOTalonFX {
 
     spindexerSimState.setRotorVelocity(
         Units.radiansPerSecondToRotationsPerMinute(spindexerPhysicsSim.getVelocityRadPerSec())
-            / 60 * 22.5);
+            / 60
+            * 22.5);
     spindexerSimState.setRawRotorPosition(
         Units.radiansToRotations(spindexerPhysicsSim.getAngleRads()) * 22.5);
   }

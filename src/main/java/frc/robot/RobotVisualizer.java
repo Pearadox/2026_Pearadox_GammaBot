@@ -45,7 +45,7 @@ public class RobotVisualizer {
     Transform3d intake =
         new Transform3d(
             VisualizerConstants.MODEL2_ZERO,
-            new Rotation3d(0, -intakeAngle + VisualizerConstants.INTAKE_STARTING_ANGLE, 0));
+            new Rotation3d(0, intakeAngle + VisualizerConstants.INTAKE_STARTING_ANGLE, 0));
 
     Transform3d hopper =
         new Transform3d(new Translation3d(hopperExtensionMeters, 0, 0), Rotation3d.kZero);
