@@ -36,6 +36,8 @@ public class Vision extends SubsystemBase {
 
   private final Supplier<ChassisSpeeds> robotRelativeSpeedSupplier;
 
+  private Pose2d lastTrustedPose = new Pose2d();
+
   // private final LoggedTunableNumber trenchTagStdDevFactor =
   //     new LoggedTunableNumber("Vision/Trench Std Dev Factor", 10.5414);
 
@@ -72,6 +74,10 @@ public class Vision extends SubsystemBase {
     return inputs[cameraIndex].latestTargetObservation.tx();
   }
 
+  public Pose2d getLastTrustedPose() {
+    return lastTrustedPose;
+  }
+
   @Override
   public void periodic() {
     for (int i = 0; i < io.length; i++) {
@@ -98,13 +104,12 @@ public class Vision extends SubsystemBase {
     List<Pose3d> posesRejected = new LinkedList<>();
     List<Pose3d> posesConsidered = new LinkedList<>();
 
-    // TODO: Insert logic to pick a best camera instead of looping over cameras and processing all
-    // poses.
 
     // Loop over cameras
     for (int cameraIndex = 0; cameraIndex < io.length; cameraIndex++) {
       disconnectedAlerts[cameraIndex].set(!inputs[cameraIndex].connected);
 
+      // TODO: change it to two april tags
       boolean onlySeesTrenchTags = true;
       for (int tagId : inputs[cameraIndex].tagIds) {
         boolean isTrenchTag =
@@ -151,6 +156,10 @@ public class Vision extends SubsystemBase {
 
         hasConsideredPoses = true;
         posesConsidered.add(observation.pose());
+
+        if (hasConsideredPoses) {
+          lastTrustedPose = trustedObservation.pose().toPose2d();
+        }
 
         // minimize doubt index (lowest cumulative distance (and ambiguity if MT1) )
         double doubtIndex = observation.averageTagDistance() * observation.tagCount();
