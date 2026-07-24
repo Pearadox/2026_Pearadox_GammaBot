@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -30,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.drivers.MovingShotSolver;
 import frc.lib.drivers.MovingShotSolver.Goal;
 import frc.robot.Constants.VisualizerConstants;
+import frc.robot.commands.DemoAimAtTrashCan;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ShootOnTheMove;
 import frc.robot.generated.TunerConstants;
@@ -280,15 +282,15 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     // Drive at a 45° for going over the bump
-    drivercontroller
-        .a()
-        .or(blakeController.a())
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -activeY.getAsDouble(),
-                () -> -activeX.getAsDouble(),
-                () -> DriveHelpers.findClosestCorner(drive::getPose)));
+    // drivercontroller
+    //     .a()
+    //     .or(blakeController.a())
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive,
+    //             () -> -activeY.getAsDouble(),
+    //             () -> -activeX.getAsDouble(),
+    //             () -> DriveHelpers.findClosestCorner(drive::getPose)));
 
     drivercontroller
         .y()
@@ -326,6 +328,28 @@ public class RobotContainer {
     //         new InstantCommand(() -> spindexer.setStopped())
     //             .andThen(new WaitCommand(0.2))
     //             .andThen(new InstantCommand(() -> feeder.setStopped())));
+
+    drivercontroller
+        .x()
+        .whileTrue(
+            new ParallelCommandGroup(
+                new DemoAimAtTrashCan(drive, vision, turret)
+                .alongWith(launcher.score()),
+                Commands.startEnd(
+                    () -> {
+                        feeder.setRunning();
+                        spindexer.setRunning();
+                    },
+                    () -> {
+                        spindexer.setStopped();
+                        feeder.setStopped();
+                    },
+                    feeder,
+                    spindexer
+                )
+            )
+    
+        );
 
     drivercontroller
         .rightBumper()

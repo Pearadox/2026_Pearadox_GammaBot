@@ -2,6 +2,7 @@ package frc.robot.util;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import java.util.function.Supplier;
@@ -45,5 +46,16 @@ public class DriveHelpers {
     }
 
     return lastCourse;
+  }
+
+  public static Pose2d calculateOffsetInFrontOfTag(Pose2d tagPose) {
+    Rotation2d tagHeading = tagPose.getRotation();
+    double offsetMeters = Units.feetToMeters(1);
+    Translation2d goalTranslation = new Translation2d(-offsetMeters, 0.0).rotateBy(tagHeading);
+    return new Pose2d(
+      tagPose.getX() + goalTranslation.getX(),
+      tagPose.getY() + goalTranslation.getY(),
+      tagHeading
+    );
   }
 }
