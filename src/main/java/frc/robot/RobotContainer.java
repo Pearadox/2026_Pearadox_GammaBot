@@ -13,6 +13,7 @@ import com.pathplanner.lib.events.EventTrigger;
 import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -30,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.drivers.MovingShotSolver;
 import frc.lib.drivers.MovingShotSolver.Goal;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.VisualizerConstants;
 import frc.robot.commands.DemoAimAtTrashCan;
 import frc.robot.commands.DriveCommands;
@@ -333,23 +335,18 @@ public class RobotContainer {
         .x()
         .whileTrue(
             new ParallelCommandGroup(
-                new DemoAimAtTrashCan(drive, vision, turret)
-                .alongWith(launcher.score()),
+                new DemoAimAtTrashCan(drive, vision, turret).alongWith(launcher.score()),
                 Commands.startEnd(
                     () -> {
-                        feeder.setRunning();
-                        spindexer.setRunning();
+                      feeder.setRunning();
+                      spindexer.setRunning();
                     },
                     () -> {
-                        spindexer.setStopped();
-                        feeder.setStopped();
+                      spindexer.setStopped();
+                      feeder.setStopped();
                     },
                     feeder,
-                    spindexer
-                )
-            )
-    
-        );
+                    spindexer)));
 
     drivercontroller
         .rightBumper()
@@ -459,7 +456,16 @@ public class RobotContainer {
         new RunCommand(
             () ->
                 turret.followFieldCentricTarget(
-                    () -> MovingShotSolver.getShotSolution().turretAngle()),
+                    () ->
+                        drive
+                            .getPose()
+                            .getTranslation()
+                            .minus(
+                                new Translation2d(
+                                    FieldConstants.fieldLength / 2.0,
+                                    FieldConstants.fieldWidth / 2.0))
+                            .getAngle()
+                            .rotateBy(Rotation2d.k180deg)),
             turret));
 
     opController

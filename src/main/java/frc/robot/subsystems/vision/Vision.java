@@ -40,7 +40,6 @@ public class Vision extends SubsystemBase {
 
   // private final LoggedTunableNumber trenchTagStdDevFactor =
   //     new LoggedTunableNumber("Vision/Trench Std Dev Factor", 10.5414);
-
   private final LoggedTunableNumber trenchTrustFactor =
       new LoggedTunableNumber("Vision/Trench Trust Deviation", 1.1);
 
@@ -104,7 +103,6 @@ public class Vision extends SubsystemBase {
     List<Pose3d> posesRejected = new LinkedList<>();
     List<Pose3d> posesConsidered = new LinkedList<>();
 
-
     // Loop over cameras
     for (int cameraIndex = 0; cameraIndex < io.length; cameraIndex++) {
       disconnectedAlerts[cameraIndex].set(!inputs[cameraIndex].connected);
@@ -122,10 +120,10 @@ public class Vision extends SubsystemBase {
                 || tagId == 22
                 || tagId == 23;
 
-        if (!isTrenchTag) {
-          onlySeesTrenchTags = false;
-          break;
-        }
+        // if (!isTrenchTag) {
+        //   onlySeesTrenchTags = false;
+        //   break;
+        // }
       }
 
       for (var observation : inputs[cameraIndex].poseObservations) {
@@ -138,10 +136,10 @@ public class Vision extends SubsystemBase {
                     > maxZError // Must have realistic Z coordinate
 
                 // Must be within the field boundaries
-                || observation.pose().getX() < 0.0
-                || observation.pose().getX() > aprilTagLayout.getFieldLength()
-                || observation.pose().getY() < 0.0
-                || observation.pose().getY() > aprilTagLayout.getFieldWidth()
+                // || observation.pose().getX() < 0.0
+                // || observation.pose().getX() > aprilTagLayout.getFieldLength()
+                // || observation.pose().getY() < 0.0
+                // || observation.pose().getY() > aprilTagLayout.getFieldWidth()
 
                 // Must be rotating slower than than maxRotsPerSecond
                 || (Math.abs(robotRelativeSpeeds.omegaRadiansPerSecond) >= maxRotsPerSecond);

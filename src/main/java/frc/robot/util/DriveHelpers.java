@@ -50,12 +50,11 @@ public class DriveHelpers {
 
   public static Pose2d calculateOffsetInFrontOfTag(Pose2d tagPose) {
     Rotation2d tagHeading = tagPose.getRotation();
-    double offsetMeters = Units.feetToMeters(1);
+    double offsetMeters = Units.feetToMeters(4);
     Translation2d goalTranslation = new Translation2d(-offsetMeters, 0.0).rotateBy(tagHeading);
     return new Pose2d(
-      tagPose.getX() + goalTranslation.getX(),
-      tagPose.getY() + goalTranslation.getY(),
-      tagHeading
-    );
+        tagPose.getX() + goalTranslation.getX(),
+        tagPose.getY() + goalTranslation.getY(),
+        tagHeading);
   }
 }
