@@ -47,6 +47,18 @@ public class MovingShotSolver {
     return map;
   }
 
+  // private final InterpolatingDoubleTreeMap LAUNCH_ANGLE_MAP() {
+  //   InterpolatingDoubleTreeMap map = new InterpolatingDoubleTreeMap();
+
+  //   map.put(1.639, Units.degreesToRadians(90 - 8.0));
+  //   map.put(2.640, Units.degreesToRadians(90 - 12.0));
+  //   map.put(3.638, Units.degreesToRadians(90 - 16.0));
+  //   map.put(4.676, Units.degreesToRadians(90 - 20.0));
+  //   map.put(11.000, Units.degreesToRadians(90 - 26.0));
+
+  //   return map;
+// }
+
   private final InterpolatingDoubleTreeMap LAUNCH_RPS_MAP() {
     // Mapping distance from hub (m) to desired launcher speed (rps)
     InterpolatingDoubleTreeMap map = new InterpolatingDoubleTreeMap();
