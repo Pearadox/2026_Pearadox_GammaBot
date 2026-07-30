@@ -25,12 +25,6 @@ public class Launcher extends SubsystemBase {
 
   @AutoLogOutput @Getter @Setter private LauncherState launcherState = LauncherState.OFF;
 
-  private double rpsAdjust = 0.0;
-
-  public void adjustRPSBy(double adj) {
-    rpsAdjust += adj;
-  }
-
   private boolean isZeroing = false;
 
   private final LoggedTunableNumber tunableffAmps = new LoggedTunableNumber("Launcher/ffamps", 0);
@@ -39,10 +33,13 @@ public class Launcher extends SubsystemBase {
           "Launcher/Manual Mode Default Velocity", LauncherConstants.DEFAULT_VELOCITY_SETPOINT_RPS);
   private final LoggedTunableNumber idleDefaultVelocity =
       new LoggedTunableNumber("Launcher/Idle Mode Default Velocity", 40);
+  private final LoggedTunableNumber RPSAdjust = 
+      new LoggedTunableNumber("Launcher/RPS Adjust", 0);
 
   private final LoggedTunableNumber defaultHoodAngleDegs =
       new LoggedTunableNumber("Launcher/Default Hood Angle Degrees", 11);
-
+  private final LoggedTunableNumber hoodAngleAdjustDegs =
+      new LoggedTunableNumber("Launcher/Hood Angle Adjust Degrees", 0);
   // private final LoggedTunableNumber overrideHoodAngle =
   //     new LoggedTunableNumber("Launcher/Tuning for Hood Angle Degrees", 12);
 
@@ -95,7 +92,7 @@ public class Launcher extends SubsystemBase {
       desiredVelocity = 0;
     }
 
-    desiredVelocity = Math.abs(desiredVelocity + rpsAdjust);
+    desiredVelocity = Math.abs(desiredVelocity + RPSAdjust.get());
     // desiredVelocity = 0; FOR TESTING ONLY
 
     if (desiredVelocity < LauncherConstants.SHOOTER_VELOCITY_DEADBAND) {
@@ -113,13 +110,12 @@ public class Launcher extends SubsystemBase {
               Units.radiansToDegrees(getHoodAngleRads() - LauncherConstants.HOOD_MIN_ANGLE_RADS));
     }
 
-    Logger.recordOutput("Launcher/adjust", rpsAdjust);
     Logger.recordOutput("Launcher/launcherVelocity", getLauncherVelocity());
     Logger.recordOutput("Hood/kG-Value", getkG());
 
     double desiredHoodAngleRads;
     if (launcherState == LauncherState.SELF_DIRECTING) {
-      desiredHoodAngleRads = MovingShotSolver.getShotSolution().hoodAngleRadians();
+      desiredHoodAngleRads = MovingShotSolver.getShotSolution().hoodAngleRadians() + Units.degreesToRadians(hoodAngleAdjustDegs.get());
       // desiredHoodAngleRads = Units.degreesToRadians(overrideHoodAngle.get());
     } else {
       desiredHoodAngleRads = Units.degreesToRadians(defaultHoodAngleDegs.get());

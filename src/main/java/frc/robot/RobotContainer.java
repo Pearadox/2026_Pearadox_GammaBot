@@ -331,22 +331,22 @@ public class RobotContainer {
     //             .andThen(new WaitCommand(0.2))
     //             .andThen(new InstantCommand(() -> feeder.setStopped())));
 
-    drivercontroller
-        .x()
-        .whileTrue(
-            new ParallelCommandGroup(
-                new DemoAimAtTrashCan(drive, vision, turret).alongWith(launcher.score()),
-                Commands.startEnd(
-                    () -> {
-                      feeder.setRunning();
-                      spindexer.setRunning();
-                    },
-                    () -> {
-                      spindexer.setStopped();
-                      feeder.setStopped();
-                    },
-                    feeder,
-                    spindexer)));
+    // drivercontroller
+    //     .x()
+    //     .whileTrue(
+    //         new ParallelCommandGroup(
+    //             new DemoAimAtTrashCan(drive, vision, turret).alongWith(launcher.score()),
+    //             Commands.startEnd(
+    //                 () -> {
+    //                   feeder.setRunning();
+    //                   spindexer.setRunning();
+    //                 },
+    //                 () -> {
+    //                   spindexer.setStopped();
+    //                   feeder.setStopped();
+    //                 },
+    //                 feeder,
+    //                 spindexer)));
 
     drivercontroller
         .rightBumper()
@@ -444,13 +444,13 @@ public class RobotContainer {
                     Math.signum(-opController.getLeftY())
                         * IntakeConstants.OP_ADJUST_INCREMENT_DEGREES)));
 
-    Trigger launcherAdjust = new Trigger(() -> Math.abs(opController.getRightY()) > 0.9);
-    launcherAdjust.whileTrue(
-        new RunCommand(
-            () ->
-                launcher.adjustRPSBy(
-                    Math.signum(opController.getRightY())
-                        * IntakeConstants.OP_ADJUST_INCREMENT_DEGREES)));
+    // Trigger launcherAdjust = new Trigger(() -> Math.abs(opController.getRightY()) > 0.9);
+    // launcherAdjust.whileTrue(
+    //     new RunCommand(
+    //         () ->
+    //             launcher.adjustRPSBy(
+    //                 Math.signum(opController.getRightY())
+    //                     * IntakeConstants.OP_ADJUST_INCREMENT_DEGREES)));
 
     turret.setDefaultCommand(
         new RunCommand(
