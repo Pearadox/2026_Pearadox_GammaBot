@@ -33,8 +33,7 @@ public class Launcher extends SubsystemBase {
           "Launcher/Manual Mode Default Velocity", LauncherConstants.DEFAULT_VELOCITY_SETPOINT_RPS);
   private final LoggedTunableNumber idleDefaultVelocity =
       new LoggedTunableNumber("Launcher/Idle Mode Default Velocity", 40);
-  private final LoggedTunableNumber RPSAdjust = 
-      new LoggedTunableNumber("Launcher/RPS Adjust", 0);
+  private final LoggedTunableNumber RPSAdjust = new LoggedTunableNumber("Launcher/RPS Adjust", 0);
 
   private final LoggedTunableNumber defaultHoodAngleDegs =
       new LoggedTunableNumber("Launcher/Default Hood Angle Degrees", 11);
@@ -115,7 +114,9 @@ public class Launcher extends SubsystemBase {
 
     double desiredHoodAngleRads;
     if (launcherState == LauncherState.SELF_DIRECTING) {
-      desiredHoodAngleRads = MovingShotSolver.getShotSolution().hoodAngleRadians() + Units.degreesToRadians(hoodAngleAdjustDegs.get());
+      desiredHoodAngleRads =
+          MovingShotSolver.getShotSolution().hoodAngleRadians()
+              + Units.degreesToRadians(hoodAngleAdjustDegs.get());
       // desiredHoodAngleRads = Units.degreesToRadians(overrideHoodAngle.get());
     } else {
       desiredHoodAngleRads = Units.degreesToRadians(defaultHoodAngleDegs.get());

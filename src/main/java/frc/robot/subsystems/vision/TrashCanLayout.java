@@ -12,7 +12,7 @@ public class TrashCanLayout {
   public static AprilTagFieldLayout createLayout() {
     // 1. Define physical target measurements (meters)
     double radius = 0.37465; // Distance from center axis out to a tag face
-    double height = 0.27305; // Vertical distance from floor to tag center
+    double height = 0.19685; //0.27305 // Vertical distance from floor to tag center
 
     // 2. Build the AprilTag object list matching your CCW layout configuration
     List<AprilTag> tags =

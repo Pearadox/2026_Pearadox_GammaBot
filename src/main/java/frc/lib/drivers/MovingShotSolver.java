@@ -62,7 +62,7 @@ public class MovingShotSolver {
   private final InterpolatingDoubleTreeMap launchRPSMap = LAUNCH_RPS_MAP();
 
   private static LoggedTunableNumber woahMultiplierAgain =
-      new LoggedTunableNumber("SOTM/everywhere multiplier", 1.0);
+      new LoggedTunableNumber("SOTM/everywhere multiplier", 0.8);
 
   public enum Goal {
     HUB(Hub.topCenterPointRed, Hub.topCenterPointBlue),
