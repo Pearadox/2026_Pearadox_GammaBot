@@ -22,7 +22,7 @@ public class Spindexer extends SubsystemBase {
           "Spindexer/Current-Amps",
           SpindexerConstants.SPINDEXER_STATOR_CURRENT_LIMIT); // try lowering back to 50
   private final LoggedTunableNumber spindexerMaxDutyCycle =
-      new LoggedTunableNumber("Spindexer/Max-Duty-Cycle", 0.90);
+      new LoggedTunableNumber("Spindexer/Max-Duty-Cycle", 0.6);
 
   @Override
   public void periodic() {
@@ -43,7 +43,6 @@ public class Spindexer extends SubsystemBase {
       io.runSpindexerTorqueCurrent(0, spindexerMaxDutyCycle.get());
     }
   }
-
   public void setStopped() {
     spindexerState = SpindexerState.STOPPED;
   }

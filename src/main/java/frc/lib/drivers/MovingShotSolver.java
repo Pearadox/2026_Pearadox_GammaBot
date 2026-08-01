@@ -57,7 +57,7 @@ public class MovingShotSolver {
   //   map.put(11.000, Units.degreesToRadians(90 - 26.0));
 
   //   return map;
-// }
+  // }
 
   private final InterpolatingDoubleTreeMap LAUNCH_RPS_MAP() {
     // Mapping distance from hub (m) to desired launcher speed (rps)
@@ -74,7 +74,7 @@ public class MovingShotSolver {
   private final InterpolatingDoubleTreeMap launchRPSMap = LAUNCH_RPS_MAP();
 
   private static LoggedTunableNumber woahMultiplierAgain =
-      new LoggedTunableNumber("SOTM/everywhere multiplier", 0.8);
+      new LoggedTunableNumber("SOTM/everywhere multiplier", 0.6);
 
   public enum Goal {
     HUB(Hub.topCenterPointRed, Hub.topCenterPointBlue),
