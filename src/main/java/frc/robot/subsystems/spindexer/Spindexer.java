@@ -43,6 +43,7 @@ public class Spindexer extends SubsystemBase {
       io.runSpindexerTorqueCurrent(0, spindexerMaxDutyCycle.get());
     }
   }
+
   public void setStopped() {
     spindexerState = SpindexerState.STOPPED;
   }
