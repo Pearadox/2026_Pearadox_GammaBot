@@ -17,7 +17,7 @@ public class VisionConstants {
 
   // Camera names, must match names configured on coprocessor
   public static String camera0Name = "limelight-pearl";
-  public static String camera1Name = "limelight-pearr";
+  public static String camera1Name = "limelight-lime";
 
   // Robot to camera transforms
   // (Not used by Limelight, configure in web UI instead)
