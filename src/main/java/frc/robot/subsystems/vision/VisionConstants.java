@@ -37,7 +37,9 @@ public class VisionConstants {
   // Basic filtering thresholds
   public static double maxAmbiguity = 0.3;
   public static double maxZError = 0.1; // 0.75;
-  public static double maxRotsPerSecond = 2.0;
+  // Vision updates are ignored while the robot yaw rate is at or above this
+  // (radians per second, compared against ChassisSpeeds.omegaRadiansPerSecond)
+  public static double maxYawRateRadPerSec = 2.0;
 
   // Standard deviation baselines, for 1 meter distance and 1 tag
   // (Adjusted automatically based on distance and # of tags)

@@ -20,7 +20,6 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.vision.VisionIO.PoseObservation;
 import frc.robot.subsystems.vision.VisionIO.PoseObservationType;
 import frc.robot.util.LoggedTunableNumber;
 import java.util.LinkedList;
@@ -36,9 +35,8 @@ public class Vision extends SubsystemBase {
 
   private final Supplier<ChassisSpeeds> robotRelativeSpeedSupplier;
 
-  // private final LoggedTunableNumber trenchTagStdDevFactor =
-  //     new LoggedTunableNumber("Vision/Trench Std Dev Factor", 10.5414);
-
+  // Std dev multiplier applied when a camera only sees trench tags
+  // (values above 1.0 trust those observations less)
   private final LoggedTunableNumber trenchTrustFactor =
       new LoggedTunableNumber("Vision/Trench Trust Deviation", 1.1);
 
@@ -81,25 +79,9 @@ public class Vision extends SubsystemBase {
 
     ChassisSpeeds robotRelativeSpeeds = robotRelativeSpeedSupplier.get();
 
-    PoseObservation trustedObservation =
-        new PoseObservation(
-            0,
-            new Pose3d(),
-            1.0,
-            1,
-            Double.POSITIVE_INFINITY, //  high value to guarantee this pose isn't accepted
-            PoseObservationType.MEGATAG_1);
-
-    int trustedCamera = -1;
-    double trustedobservationDoubtIndex = Double.POSITIVE_INFINITY;
-    boolean hasConsideredPoses = false;
-
     // Initialize logging values
     List<Pose3d> posesRejected = new LinkedList<>();
-    List<Pose3d> posesConsidered = new LinkedList<>();
-
-    // TODO: Insert logic to pick a best camera instead of looping over cameras and processing all
-    // poses.
+    List<Pose3d> posesAccepted = new LinkedList<>();
 
     // Loop over cameras
     for (int cameraIndex = 0; cameraIndex < io.length; cameraIndex++) {
@@ -138,63 +120,48 @@ public class Vision extends SubsystemBase {
                 || observation.pose().getY() < 0.0
                 || observation.pose().getY() > aprilTagLayout.getFieldWidth()
 
-                // Must be rotating slower than than maxRotsPerSecond
-                || (Math.abs(robotRelativeSpeeds.omegaRadiansPerSecond) >= maxRotsPerSecond);
+                // Must be rotating slower than maxYawRateRadPerSec
+                || (Math.abs(robotRelativeSpeeds.omegaRadiansPerSecond) >= maxYawRateRadPerSec);
 
-        // adding pose to logs
-
-        // if the pose is rejected than don't consider it for best pose
         if (rejectPose) {
           posesRejected.add(observation.pose());
           continue;
         }
+        posesAccepted.add(observation.pose());
 
-        hasConsideredPoses = true;
-        posesConsidered.add(observation.pose());
-
-        // minimize doubt index (lowest cumulative distance (and ambiguity if MT1) )
-        double doubtIndex = observation.averageTagDistance() * observation.tagCount();
-        if (observation.type() == PoseObservationType.MEGATAG_1)
-          doubtIndex *= (1 + observation.ambiguity());
-        if (onlySeesTrenchTags) doubtIndex *= trenchTrustFactor.get();
-
-        // compare to trustedIndex to see if it's lower
-        if (doubtIndex <= trustedobservationDoubtIndex) {
-          trustedObservation = observation;
-          trustedobservationDoubtIndex = doubtIndex;
-          trustedCamera = cameraIndex;
+        // Every accepted observation is sent to the pose estimator, weighted by
+        // standard deviations that scale with distance and tag count. The Kalman
+        // filter blends all cameras and both MegaTag pipelines instead of the
+        // pose snapping to a single winner each loop.
+        double stdDevFactor =
+            Math.pow(observation.averageTagDistance(), 2.0) / observation.tagCount();
+        double linearStdDev = linearStdDevBaseline * stdDevFactor;
+        double angularStdDev = angularStdDevBaseline * stdDevFactor;
+        if (observation.type() == PoseObservationType.MEGATAG_2) {
+          linearStdDev *= linearStdDevMegatag2Factor;
+          angularStdDev *= angularStdDevMegatag2Factor;
         }
+        if (cameraIndex < cameraStdDevFactors.length) {
+          linearStdDev *= cameraStdDevFactors[cameraIndex];
+          angularStdDev *= cameraStdDevFactors[cameraIndex];
+        }
+        if (onlySeesTrenchTags) {
+          linearStdDev *= trenchTrustFactor.get();
+          angularStdDev *= trenchTrustFactor.get();
+        }
+
+        consumer.accept(
+            observation.pose().toPose2d(),
+            observation.timestamp(),
+            VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
       }
-    }
-
-    Pose3d trustedPose = Pose3d.kZero;
-
-    // only update the pose if there is a valid pose to update it with
-    if (hasConsideredPoses) {
-      trustedPose = trustedObservation.pose();
-
-      double stdDevFactor =
-          Math.pow(trustedObservation.averageTagDistance(), 2.0) / trustedObservation.tagCount();
-      double linearStdDev = linearStdDevBaseline * stdDevFactor;
-      double angularStdDev = angularStdDevBaseline * stdDevFactor;
-
-      if (trustedObservation.type() == PoseObservationType.MEGATAG_2) {
-        linearStdDev *= linearStdDevMegatag2Factor;
-        angularStdDev *= angularStdDevMegatag2Factor;
-      }
-      consumer.accept(
-          trustedPose.toPose2d(),
-          trustedObservation.timestamp(),
-          VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
     }
 
     // Log summary data
     Logger.recordOutput(
         "Vision/Summary/ObservationsRejected", posesRejected.toArray(new Pose3d[0]));
     Logger.recordOutput(
-        "Vision/Summary/ObservationsConsidered", posesConsidered.toArray(new Pose3d[0]));
-    Logger.recordOutput("Vision/Summary/TrustedPose", trustedPose);
-    Logger.recordOutput("Vision/Summary/trustedCamera", trustedCamera);
+        "Vision/Summary/ObservationsAccepted", posesAccepted.toArray(new Pose3d[0]));
   }
 
   @FunctionalInterface
