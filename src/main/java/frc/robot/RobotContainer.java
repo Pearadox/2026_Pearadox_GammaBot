@@ -68,6 +68,7 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.DriveHelpers;
+import frc.robot.util.FeedChain;
 import frc.robot.util.LoggedTracer;
 import java.util.function.DoubleSupplier;
 import lombok.Getter;
@@ -83,6 +84,9 @@ public class RobotContainer {
   private final Turret turret;
   public final Vision vision;
   public static final LEDStrip ledStrip = LEDStrip.getInstance();
+
+  // Feed chain monitor (hopper -> feeder -> launcher speed ordering)
+  public final FeedChain feedChain;
 
   // Visualizer
   public final RobotVisualizer visualizer;
@@ -187,6 +191,13 @@ public class RobotContainer {
 
         break;
     }
+
+    feedChain =
+        new FeedChain(
+            spindexer::getRotorVelocityRPS,
+            feeder::getRotorVelocityRPS,
+            launcher::getLauncherVelocity,
+            feeder::isRunning);
 
     registerNamedCommands();
 

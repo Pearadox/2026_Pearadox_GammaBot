@@ -129,6 +129,8 @@ public class Robot extends LoggedRobot {
     EnergyTracker.periodic();
     LoggedTracer.record("EnergyTracker");
 
+    robotContainer.feedChain.update();
+
     Optional<Alliance> allianceOptional = DriverStation.getAlliance();
     alliance = allianceOptional.orElse(Alliance.Blue);
 

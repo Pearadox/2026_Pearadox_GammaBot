@@ -2,6 +2,7 @@ package frc.robot.subsystems.spindexer;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.spindexer.SpindexerConstants.*;
+import frc.robot.util.FeedChain;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -34,14 +35,21 @@ public class Spindexer extends SubsystemBase {
     Logger.recordOutput("Spindexer/StatorCurrent", inputs.spindexerMotorData.statorCurrent());
     Logger.recordOutput("Spindexer/SupplyCurrent", inputs.spindexerMotorData.supplyCurrent());
 
+    double amps = spindexerCurrentAmps.get() * FeedChain.getMasterThroughput();
+
     if (spindexerState.equals(SpindexerState.RUNNING)) {
-      io.runSpindexerTorqueCurrent(spindexerCurrentAmps.get(), spindexerMaxDutyCycle.get());
+      io.runSpindexerTorqueCurrent(amps, spindexerMaxDutyCycle.get());
 
     } else if (spindexerState.equals(SpindexerState.REVERSE)) {
-      io.runSpindexerTorqueCurrent(-spindexerCurrentAmps.get(), spindexerMaxDutyCycle.get());
+      io.runSpindexerTorqueCurrent(-amps, spindexerMaxDutyCycle.get());
     } else {
       io.runSpindexerTorqueCurrent(0, spindexerMaxDutyCycle.get());
     }
+  }
+
+  /** Raw rotor velocity in rotations per second, for the feed chain monitor. */
+  public double getRotorVelocityRPS() {
+    return inputs.spindexerMotorData.velocity();
   }
 
   public void setStopped() {

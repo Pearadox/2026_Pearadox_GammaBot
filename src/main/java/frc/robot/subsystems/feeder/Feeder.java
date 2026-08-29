@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.feeder.FeederConstants.FeederState;
 import frc.robot.subsystems.feeder.FeederConstants.StateConfig;
+import frc.robot.util.FeedChain;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
@@ -56,7 +57,7 @@ public class Feeder extends SubsystemBase {
     Logger.recordOutput("Hopper/isEmpty", isHopperEmpty());
 
     if (feederState == FeederState.RUNNING) {
-      io.runFeederVoltage(feederVolts.get());
+      io.runFeederVoltage(feederVolts.get() * FeedChain.getMasterThroughput());
     } else {
       io.runFeederVoltage(StateConfig.FEEDER_STATE_MAP.get(feederState).voltage());
     }
@@ -69,6 +70,15 @@ public class Feeder extends SubsystemBase {
 
   public void setRunning() {
     feederState = FeederState.RUNNING;
+  }
+
+  public boolean isRunning() {
+    return feederState == FeederState.RUNNING;
+  }
+
+  /** Raw rotor velocity in rotations per second, for the feed chain monitor. */
+  public double getRotorVelocityRPS() {
+    return inputs.feederData.velocity();
   }
 
   // CANRange methods
