@@ -714,8 +714,11 @@ public class RobotContainer {
             .andThen(new WaitCommand(0.2))
             .andThen(
                 (new RunCommand(() -> spindexer.setRunning(), spindexer))
-                    .until(() -> feeder.isHopperEmpty()))
-            // .withTimeout(FeederConstants.IS_HOPPER_EMPTY_BUFFER_TIME))
+                    .until(() -> feeder.isHopperEmpty())
+                    // isHopperEmpty() needs the CANrange to have seen fuel since resetForAuto().
+                    // A dirty lens, weak signal, or an empty pickup means it never goes true and
+                    // the auto stops here forever. Autos may waste seconds, never stall.
+                    .withTimeout(4.0))
             .finallyDo(
                 (bool) -> {
                   feeder.setStopped();
