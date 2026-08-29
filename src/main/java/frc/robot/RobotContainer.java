@@ -748,70 +748,96 @@ public class RobotContainer {
     return autoChooser.getSelected();
   }
 
+  /**
+   * Command factories for the PathPlanner markers. They are factories, not shared instances,
+   * because the same behavior is reachable two ways (a named command in an auto file, and an event
+   * marker on a path) and one Command instance cannot be scheduled by both at once.
+   */
+  private Command setLaunchingCommand() {
+    return new InstantCommand(() -> launcher.setScoring())
+        .andThen(new InstantCommand(() -> feeder.startTimer()))
+        .andThen(new WaitCommand(0.4))
+        .andThen(new InstantCommand(() -> feeder.setRunning()))
+        .andThen(new WaitCommand(0.2))
+        .andThen(
+            (new RunCommand(() -> spindexer.setRunning(), spindexer))
+                .until(() -> feeder.isHopperEmpty())
+                // isHopperEmpty() needs the CANrange to have seen fuel since resetForAuto().
+                // A dirty lens, weak signal, or an empty pickup means it never goes true and
+                // the auto stops here forever. Autos may waste seconds, never stall.
+                .withTimeout(4.0))
+        .finallyDo(
+            (bool) -> {
+              feeder.setStopped();
+              spindexer.setStopped();
+              launcher.setIdle();
+            });
+  }
+
+  private Command setLaunchingNoWaitCommand() {
+    return new InstantCommand(() -> launcher.setScoring())
+        .andThen(new WaitCommand(0.2))
+        .andThen(new InstantCommand(() -> feeder.setRunning()))
+        .andThen(new WaitCommand(0.2))
+        .andThen(new InstantCommand(() -> spindexer.setRunning()));
+  }
+
+  private Command stopLaunchingCommand() {
+    return new InstantCommand(() -> feeder.setStopped())
+        .andThen(
+            new InstantCommand(
+                () -> {
+                  spindexer.setStopped();
+                  launcher.setOff();
+                }));
+  }
+
+  private Command setIntakingCommand() {
+    return new InstantCommand(() -> intake.setIntaking());
+  }
+
+  private Command stopIntakingCommand() {
+    return new InstantCommand(() -> intake.setDeployed());
+  }
+
+  private Command jostleIntakeCommand() {
+    return new RunCommand(() -> intake.setIntaking(), intake)
+        .withTimeout(1) // purposefully left a little longer so no jamming
+        .andThen(
+            new SequentialCommandGroup(
+                    new InstantCommand(() -> intake.setFlow()),
+                    new WaitCommand(IntakeConstants.INTAKE_JOSTLE_TIME_SEC),
+                    new InstantCommand(() -> intake.setDeployed()),
+                    new WaitCommand(IntakeConstants.INTAKE_JOSTLE_TIME_SEC))
+                .repeatedly())
+        .finallyDo((bool) -> intake.setIntaking());
+  }
+
   public void registerNamedCommands() {
     // Timer Commands
     NamedCommands.registerCommand("Start Timer", new InstantCommand(() -> feeder.startTimer()));
 
     // Launching Sequence Commands
-    NamedCommands.registerCommand(
-        "Set Launching",
-        new InstantCommand(() -> launcher.setScoring())
-            .andThen(new InstantCommand(() -> feeder.startTimer()))
-            .andThen(new WaitCommand(0.4))
-            .andThen(new InstantCommand(() -> feeder.setRunning()))
-            .andThen(new WaitCommand(0.2))
-            .andThen(
-                (new RunCommand(() -> spindexer.setRunning(), spindexer))
-                    .until(() -> feeder.isHopperEmpty())
-                    // isHopperEmpty() needs the CANrange to have seen fuel since resetForAuto().
-                    // A dirty lens, weak signal, or an empty pickup means it never goes true and
-                    // the auto stops here forever. Autos may waste seconds, never stall.
-                    .withTimeout(4.0))
-            .finallyDo(
-                (bool) -> {
-                  feeder.setStopped();
-                  spindexer.setStopped();
-                  launcher.setIdle();
-                }));
-
-    NamedCommands.registerCommand(
-        "Set Launching (No Wait)",
-        new InstantCommand(() -> launcher.setScoring())
-            .andThen(new WaitCommand(0.2))
-            .andThen(new InstantCommand(() -> feeder.setRunning()))
-            .andThen(new WaitCommand(0.2))
-            .andThen(new InstantCommand(() -> spindexer.setRunning())));
-
-    NamedCommands.registerCommand(
-        "Stop Launching",
-        new InstantCommand(() -> feeder.setStopped())
-            .andThen(
-                (new InstantCommand(
-                    () -> {
-                      spindexer.setStopped();
-                      launcher.setOff();
-                    }))));
+    NamedCommands.registerCommand("Set Launching", setLaunchingCommand());
+    NamedCommands.registerCommand("Set Launching (No Wait)", setLaunchingNoWaitCommand());
+    NamedCommands.registerCommand("Stop Launching", stopLaunchingCommand());
 
     // Intake Commands
-    NamedCommands.registerCommand("Set Intaking", new InstantCommand(() -> intake.setIntaking()));
+    NamedCommands.registerCommand("Set Intaking", setIntakingCommand());
     NamedCommands.registerCommand(
         "Set Intaking Fast", new InstantCommand(() -> intake.setIntakingFast()));
-    NamedCommands.registerCommand("Stop Intaking", new InstantCommand(() -> intake.setDeployed()));
+    NamedCommands.registerCommand("Stop Intaking", stopIntakingCommand());
     NamedCommands.registerCommand("Stow Intake", new InstantCommand(() -> intake.setStowed()));
     NamedCommands.registerCommand("Flow Intake", new InstantCommand(() -> intake.setFlow()));
-    NamedCommands.registerCommand(
-        "Jostle Intake",
-        new RunCommand(() -> intake.setIntaking(), intake)
-            .withTimeout(1) // purposefully left a little longer so no jamming
-            .andThen(
-                new SequentialCommandGroup(
-                        new InstantCommand(() -> intake.setFlow()),
-                        new WaitCommand(IntakeConstants.INTAKE_JOSTLE_TIME_SEC),
-                        new InstantCommand(() -> intake.setDeployed()),
-                        new WaitCommand(IntakeConstants.INTAKE_JOSTLE_TIME_SEC))
-                    .repeatedly())
-            .finallyDo((bool) -> intake.setIntaking()));
+    NamedCommands.registerCommand("Jostle Intake", jostleIntakeCommand());
 
-    new EventTrigger("Set Intaking").onTrue(new InstantCommand(() -> intake.setIntaking()));
+    // Event markers on the paths carry no command of their own: they do nothing unless a trigger
+    // is registered for the name. Only "Set Intaking" had one, so every "Set Launching",
+    // "Stop Launching", and "Stop Intaking" marker on a path was silently dead. Register all four
+    // names that actually appear in the path files.
+    new EventTrigger("Set Intaking").onTrue(setIntakingCommand());
+    new EventTrigger("Stop Intaking").onTrue(stopIntakingCommand());
+    new EventTrigger("Set Launching").onTrue(setLaunchingCommand());
+    new EventTrigger("Stop Launching").onTrue(stopLaunchingCommand());
   }
 }
