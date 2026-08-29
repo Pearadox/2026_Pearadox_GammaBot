@@ -12,7 +12,8 @@ import frc.lib.drivers.MovingShotSolver;
 import frc.robot.subsystems.feeder.Feeder;
 import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.spindexer.Spindexer;
-import java.util.function.Supplier;
+import frc.robot.subsystems.turret.Turret;
+import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 public class ShootOnTheMove extends Command {
@@ -20,20 +21,29 @@ public class ShootOnTheMove extends Command {
   private final Feeder feeder;
   private final Spindexer spindexer;
 
+  // Read-only: the turret keeps running its own aiming command, so it is deliberately not a
+  // requirement of this command.
+  private final Turret turret;
+
   private Debouncer debouncer = new Debouncer(0.2, DebounceType.kFalling);
   private Debouncer turretRotationDebouncer = new Debouncer(0.2, DebounceType.kBoth);
-  private Supplier<Rotation2d> turretRotationSupplier;
+
+  private static final LoggedTunableNumber rotationToleranceDeg =
+      new LoggedTunableNumber("SOTM/Rotation Tolerance Deg", 4.0);
+  private static final LoggedTunableNumber velocityToleranceRPS =
+      new LoggedTunableNumber("SOTM/Velocity Tolerance RPS", 7.0);
+
+  // Set to 1 to feed regardless of readiness. This exists so a field emergency never needs a code
+  // edit; it replaces the hardcoded "readyToShoot = true" that used to live here.
+  private static final LoggedTunableNumber bypassReadinessGate =
+      new LoggedTunableNumber("SOTM/Bypass Readiness Gate", 0);
 
   private boolean atDesiredVelocity = false;
   private boolean atDesiredRotation = false;
   private boolean readyToShoot = false;
 
-  public ShootOnTheMove(
-      Launcher launcher,
-      Feeder feeder,
-      Spindexer spindexer,
-      Supplier<Rotation2d> turretRotationSupplier) {
-    this.turretRotationSupplier = turretRotationSupplier;
+  public ShootOnTheMove(Launcher launcher, Feeder feeder, Spindexer spindexer, Turret turret) {
+    this.turret = turret;
     this.launcher = launcher;
     this.feeder = feeder;
     this.spindexer = spindexer;
@@ -50,15 +60,13 @@ public class ShootOnTheMove extends Command {
 
     double shooterVelocityError = launcher.getLauncherVelocity() - desiredVelocity;
 
-    double currentAngle = turretRotationSupplier.get().getRotations();
-    double desiredAngle = desiredRotation.getRotations();
+    atDesiredVelocity =
+        debouncer.calculate(Math.abs(shooterVelocityError) < velocityToleranceRPS.get());
+    atDesiredRotation =
+        turretRotationDebouncer.calculate(
+            turret.isAtFieldAngle(desiredRotation, rotationToleranceDeg.get()));
 
-    double turretRotationError = currentAngle - desiredAngle;
-
-    atDesiredVelocity = debouncer.calculate(Math.abs(shooterVelocityError) < 7.0);
-    atDesiredRotation = turretRotationDebouncer.calculate(Math.abs(turretRotationError) < 0.5);
-
-    readyToShoot = true; // DO NOT UNCOMMENT PLS ok thx atDesiredVelocity && atDesiredRotation;
+    readyToShoot = bypassReadinessGate.get() > 0.5 || (atDesiredVelocity && atDesiredRotation);
 
     if (readyToShoot) {
       feeder.setRunning();
@@ -73,10 +81,10 @@ public class ShootOnTheMove extends Command {
     Logger.recordOutput("SOTM/Velocity-Error_RPS", shooterVelocityError);
     Logger.recordOutput("SOTM/Desired-Velocity_RPS", desiredVelocity);
 
-    Logger.recordOutput("SOTM/rotationError", turretRotationError);
     Logger.recordOutput("SOTM/atDesiredRotation", atDesiredRotation);
-    Logger.recordOutput("SOTM/currentAngle", currentAngle);
-    Logger.recordOutput("SOTM/desiredAngle", desiredAngle);
+    Logger.recordOutput("SOTM/desiredAngle", desiredRotation.getDegrees());
+    Logger.recordOutput(
+        "SOTM/currentAngle", turret.getFieldRelativeTurretAngleRotation2d().getDegrees());
   }
 
   @Override
@@ -84,7 +92,7 @@ public class ShootOnTheMove extends Command {
     feeder.setStopped();
     spindexer.setStopped();
     atDesiredVelocity = false;
-    // atDesiredRotation = false;
+    atDesiredRotation = false;
     readyToShoot = false;
   }
 

@@ -306,7 +306,7 @@ public class RobotContainer {
     //     .and(() -> launcher.getLauncherState() != LauncherState.MANUAL)
     //     .whileTrue(
     //         new ShootOnTheMove(
-    //                 launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d)
+    //                 launcher, feeder, spindexer, turret)
     //             .alongWith(launcher.score()))
     //     .onFalse(
     //         new InstantCommand(() -> spindexer.setStopped())
@@ -340,8 +340,7 @@ public class RobotContainer {
                       spindexer.setStopped();
                       feeder.setStopped();
                     }),
-                new ShootOnTheMove(
-                        launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d)
+                new ShootOnTheMove(launcher, feeder, spindexer, turret)
                     .alongWith(launcher.score())
                     .finallyDo(
                         (b) -> {
@@ -508,8 +507,7 @@ public class RobotContainer {
     blakeController
         .rightBumper()
         .toggleOnTrue(
-            new ShootOnTheMove(
-                    launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d)
+            new ShootOnTheMove(launcher, feeder, spindexer, turret)
                 .alongWith(launcher.score())
                 .alongWith(
                     new SequentialCommandGroup(
@@ -568,8 +566,7 @@ public class RobotContainer {
     blakeController
         .rightTrigger()
         .whileTrue(
-            new ShootOnTheMove(
-                    launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d)
+            new ShootOnTheMove(launcher, feeder, spindexer, turret)
                 .alongWith(launcher.score())
                 .alongWith(
                     Commands.startEnd(
