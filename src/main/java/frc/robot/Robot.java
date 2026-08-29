@@ -89,6 +89,14 @@ public class Robot extends LoggedRobot {
     robotContainer = new RobotContainer();
 
     RobotController.setBrownoutVoltage(Constants.BROWNOUT_VOLTAGE);
+
+    // Pathplanner warm-up, once at startup. It used to run in disabledInit(), which re-ran it on
+    // every disable, including the one between auto and teleop at a real match.
+    CommandScheduler.getInstance()
+        .schedule(
+            FollowPathCommand.warmupCommand()
+                .andThen(PathfindingCommand.warmupCommand())
+                .andThen(new InstantCommand(() -> System.out.println("Done warming up!"))));
   }
 
   /** This function is called periodically during all modes. */
@@ -141,13 +149,6 @@ public class Robot extends LoggedRobot {
     }
 
     robotContainer.vision.throttleLimelights();
-
-    // Pathplanner warm-up command
-    CommandScheduler.getInstance()
-        .schedule(
-            FollowPathCommand.warmupCommand()
-                .andThen(PathfindingCommand.warmupCommand())
-                .andThen(new InstantCommand(() -> System.out.println("Done warming up!"))));
   }
 
   /** This function is called periodically when disabled. */
