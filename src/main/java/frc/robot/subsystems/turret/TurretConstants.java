@@ -7,6 +7,14 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 
 public final class TurretConstants {
+  // ANGLE CONVENTION (the aiming math is the source of truth; verified on field)
+  // Turret angles are robot-relative radians, counterclockwise-positive, and zero points 90
+  // degrees clockwise from the intake side (see TURRET_STARTING_ANGLE and the "fieldreloffset"
+  // tunable, which carries that -90 as a dashboard-adjustable value).
+  // Field to turret:  setpoint = robotRotation - fieldAngle + offset
+  // Turret to field:  fieldAngle = robotRotation - turretAngle + offset
+  // where offset = fieldRelOffset + turretRotationAdjust. Both directions live in Turret.java
+  // (fieldToTurretSetpoint and getFieldRelativeTurretAngleRotation2d); keep them inverses.
   public static final int TURRET_ID = 20;
   public static final double TURRET_GEAR_RATIO = 45.0; // (90/10)(40/16)(32/16)
   public static final double TURRET_P_COEFFICIENT = 2 * Math.PI / TURRET_GEAR_RATIO;
@@ -52,10 +60,15 @@ public final class TurretConstants {
 
   public static final int TURRET_CANCODER_ID = 26;
   // a wild robonauts appeared!
-  public static final double TURRET_CANCODER_OFFSET_ROTS = 0.139; // 0.124633375; // -0.400390625; // -0.1184
+  public static final double TURRET_CANCODER_OFFSET_ROTS =
+      0.139; // 0.124633375; // -0.400390625; // -0.1184
 
   // now geared 1:1 with turret, (90/10)(15/45)(15/45)
   public static final double TURRET_TO_CANCODER_RATIO = 1.0;
+
+  // The cancoder reads opposite the motor on the real robot. Zeroing and the sim cancoder model
+  // both use this so the two cannot drift apart.
+  public static final double CANCODER_SIGN = -1.0;
 
   public static final TalonFXConfiguration getTurretConfig() {
     TalonFXConfiguration config = new TalonFXConfiguration();

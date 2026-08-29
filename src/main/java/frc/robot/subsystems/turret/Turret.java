@@ -114,13 +114,42 @@ public class Turret extends SubsystemBase {
     Logger.recordOutput("Turret/FF Volts", ffVolts);
   }
 
-  public void followFieldCentricTarget(Supplier<Rotation2d> fieldCentricAngleSupplier) {
-    if (!hasZeroed || !turretHasClearanceSupplier.getAsBoolean()) return;
+  /** The operator-adjustable offset between the field frame and the turret's zero. */
+  private Rotation2d getFieldRelativeOffset() {
+    return Rotation2d.fromDegrees(
+        fieldRelOffset.get() + Units.radiansToDegrees(turretRotationAdjust));
+  }
 
-    Rotation2d offset =
-        Rotation2d.fromDegrees(fieldRelOffset.get() + Units.radiansToDegrees(turretRotationAdjust));
-    followRobotCentricTarget(
-        () -> robotRotationSupplier.get().minus(fieldCentricAngleSupplier.get()).plus(offset));
+  /**
+   * Converts a field-relative target angle into the robot-relative turret setpoint. See the angle
+   * convention comment in {@link TurretConstants}; {@link #getFieldRelativeTurretAngleRotation2d()}
+   * is the inverse of this.
+   */
+  private Rotation2d fieldToTurretSetpoint(Rotation2d fieldAngle) {
+    return robotRotationSupplier.get().minus(fieldAngle).plus(getFieldRelativeOffset());
+  }
+
+  public void followFieldCentricTarget(Supplier<Rotation2d> fieldCentricAngleSupplier) {
+    followRobotCentricTarget(() -> fieldToTurretSetpoint(fieldCentricAngleSupplier.get()));
+  }
+
+  /**
+   * Returns whether the turret is pointed at a field-relative angle, within a tolerance in degrees.
+   *
+   * <p>The comparison happens in robot-relative space, where Rotation2d.minus wraps to +/-180. That
+   * makes it immune to which full-turn candidate {@link #wrap} picked for the commanded setpoint.
+   */
+  public boolean isAtFieldAngle(Rotation2d fieldAngle, double toleranceDegrees) {
+    if (!hasZeroed) return false;
+
+    double errorDegrees =
+        getRobotRelativeTurretAngleRotation2d()
+            .minus(fieldToTurretSetpoint(fieldAngle))
+            .getDegrees();
+
+    Logger.recordOutput("Turret/Field Angle Error Degrees", errorDegrees);
+
+    return Math.abs(errorDegrees) < toleranceDegrees;
   }
 
   public void goToZero() {
@@ -139,7 +168,9 @@ public class Turret extends SubsystemBase {
   public void requestZero() {
     if (inputs.cancoderConnected) {
       io.setPosition(
-          (inputs.cancoderPosition * -TurretConstants.TURRET_TO_CANCODER_RATIO)
+          (inputs.cancoderPosition
+                      * TurretConstants.CANCODER_SIGN
+                      * TurretConstants.TURRET_TO_CANCODER_RATIO)
                   * TurretConstants.TURRET_GEAR_RATIO
               + TurretConstants.TURRET_STARTING_ANGLE / TurretConstants.TURRET_P_COEFFICIENT);
       hasZeroed = true;
@@ -186,9 +217,13 @@ public class Turret extends SubsystemBase {
     return new Rotation2d(getTurretAngleRads());
   }
 
+  /** Inverse of {@link #fieldToTurretSetpoint}: where the turret actually points on the field. */
   @AutoLogOutput
   public Rotation2d getFieldRelativeTurretAngleRotation2d() {
-    return getRobotRelativeTurretAngleRotation2d().plus(robotRotationSupplier.get());
+    return robotRotationSupplier
+        .get()
+        .minus(getRobotRelativeTurretAngleRotation2d())
+        .plus(getFieldRelativeOffset());
   }
 
   private double wrap(double target) {
