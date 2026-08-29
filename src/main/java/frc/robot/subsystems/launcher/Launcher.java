@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.launcher;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -29,6 +30,11 @@ public class Launcher extends SubsystemBase {
 
   public void adjustRPSBy(double adj) {
     rpsAdjust += adj;
+  }
+
+  /** Drops accumulated operator trim so it cannot carry into a new enable. */
+  public void resetRPSAdjust() {
+    rpsAdjust = 0.0;
   }
 
   private boolean isZeroing = false;
@@ -95,7 +101,11 @@ public class Launcher extends SubsystemBase {
       desiredVelocity = 0;
     }
 
-    desiredVelocity = Math.abs(desiredVelocity + rpsAdjust);
+    // Clamp, do not take the magnitude: with Math.abs, trim that pushed the setpoint negative
+    // spun the flywheel back up at that magnitude instead of stopping it.
+    desiredVelocity =
+        MathUtil.clamp(
+            desiredVelocity + rpsAdjust, 0.0, LauncherConstants.SHOOTER_MAX_VELOCITY);
     // desiredVelocity = 0; FOR TESTING ONLY
 
     if (desiredVelocity < LauncherConstants.SHOOTER_VELOCITY_DEADBAND) {

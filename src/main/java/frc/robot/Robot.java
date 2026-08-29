@@ -191,6 +191,7 @@ public class Robot extends LoggedRobot {
     robotContainer.spindexer.setStopped();
     robotContainer.feeder.setStopped();
     robotContainer.launcher.setIdle();
+    robotContainer.launcher.resetRPSAdjust();
 
     Optional<Alliance> allianceOptional = DriverStation.getAlliance();
     alliance = allianceOptional.orElse(Alliance.Blue);
