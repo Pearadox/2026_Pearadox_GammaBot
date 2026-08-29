@@ -193,7 +193,11 @@ public class ModuleIOTalonFX implements ModuleIO {
     // Refresh all signals
     var driveStatus =
         BaseStatusSignal.refreshAll(
-            drivePosition, driveVelocity, driveAppliedVolts, driveSupplyCurrent, driveStatorCurrent);
+            drivePosition,
+            driveVelocity,
+            driveAppliedVolts,
+            driveSupplyCurrent,
+            driveStatorCurrent);
     var turnStatus =
         BaseStatusSignal.refreshAll(
             turnPosition, turnVelocity, turnAppliedVolts, driveStatorCurrent, turnStatorCurrent);
