@@ -68,6 +68,7 @@ import frc.robot.subsystems.turret.TurretIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
+import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.DriveHelpers;
 import frc.robot.util.FeedChain;
 import frc.robot.util.LoggedTracer;
@@ -162,7 +163,17 @@ public class RobotContainer {
                 drive::getChassisSpeeds,
                 drive::getRotation,
                 intake::turretHasClearance);
-        vision = new Vision(drive::addVisionMeasurement, drive::getChassisSpeeds);
+        // Sim pose used to come from wheel odometry alone, so no vision change could be exercised
+        // in sim at all, including the dual-camera arbitration that was yanking the pose estimator
+        // around on the real robot.
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                drive::getChassisSpeeds,
+                new VisionIOPhotonVisionSim(
+                    VisionConstants.camera0Name, VisionConstants.robotToCamera0, drive::getPose),
+                new VisionIOPhotonVisionSim(
+                    VisionConstants.camera1Name, VisionConstants.robotToCamera1, drive::getPose));
 
         DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
 
