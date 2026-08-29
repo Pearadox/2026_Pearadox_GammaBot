@@ -227,7 +227,12 @@ public class MovingShotSolver {
 
     double distanceToTarget = Math.hypot(Dx, Dy);
 
-    double hoodAngleRadians = launchAngleMap.get(distanceToTarget);
+    // The angle map and the RPS map were tuned together as (angle, speed) pairs per distance, so
+    // both must be keyed off the SAME distance or the pairs come apart whenever the robot moves.
+    // The virtual (motion-compensated) target is the physically meaningful one, but it depends on
+    // the time of flight, so seed it with the real distance and refine it inside the loop below.
+    double distanceToVirtualTarget = distanceToTarget;
+    double hoodAngleRadians = launchAngleMap.get(distanceToVirtualTarget);
 
     double tanHoodAngle = Math.tan(hoodAngleRadians);
 
@@ -239,6 +244,15 @@ public class MovingShotSolver {
 
     for (int i = 0; i < Constants.NEWTONS_METHOD_NUM_STEPS; i++) {
       // recalculating closer approximate value of ToF after each "step"
+
+      // Re-key the hood angle off the virtual target for the current ToF estimate, so the angle
+      // the ToF solve uses is the same angle the shot will actually be taken at.
+      distanceToVirtualTarget =
+          Math.hypot(
+              (goalXMeters - predictedRobotVx * ToF) - turretXMeters,
+              (goalYMeters - predictedRobotVy * ToF) - turretYMeters);
+      hoodAngleRadians = launchAngleMap.get(distanceToVirtualTarget);
+      tanHoodAngle = Math.tan(hoodAngleRadians);
 
       double vxLaunch = (Dx / ToF) - predictedRobotVx;
       double vyLaunch = (Dy / ToF) - predictedRobotVy;
@@ -277,7 +291,11 @@ public class MovingShotSolver {
 
     double distanceX = targetXOffsetMeters - turretXMeters;
     double distanceY = targetYOffsetMeters - turretYMeters;
-    double distanceToVirtualTarget = Math.hypot(distanceX, distanceY);
+    distanceToVirtualTarget = Math.hypot(distanceX, distanceY);
+
+    // Final ToF moved the virtual target one last time, so re-look-up the angle here. Both maps
+    // are now read at exactly the same key.
+    hoodAngleRadians = launchAngleMap.get(distanceToVirtualTarget);
 
     double shooterSpeedRPS = launchRPSMap.get(distanceToVirtualTarget) * woahMultiplierAgain.get();
 
