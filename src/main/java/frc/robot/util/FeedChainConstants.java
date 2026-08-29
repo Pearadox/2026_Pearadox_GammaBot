@@ -37,8 +37,8 @@ public class FeedChainConstants {
   public static final double HOPPER_FLOOR_EXIT_RADIUS_METERS = Units.inchesToMeters(4.0);
 
   /**
-   * PLACEHOLDER. The source disagrees with itself: SPINDEXER_GEARING is 1/3, its own comment says
-   * "technically 1/18 (according to Hitesh)", and an earlier value was 1/15. Count floor
+   * PLACEHOLDER. The source disagrees with itself: SPINDEXER_GEARING is 1/3, while the commented
+   * out values directly above it in SpindexerConstants say 1/15 and "technically 1/18". Count floor
    * revolutions against motor rotations on video before trusting the derived speeds.
    */
   public static final double HOPPER_GEARING = SpindexerConstants.SPINDEXER_GEARING;
