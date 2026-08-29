@@ -37,8 +37,13 @@ public class TurretIOSim extends TurretIOTalonFX {
     turretSimState.setRotorVelocity(
         physicsSim.getVelocityRadPerSec() / TurretConstants.TURRET_P_COEFFICIENT);
 
+    // The real cancoder reads opposite the motor, which is why requestZero negates it. Writing the
+    // sim cancoder with the same sign as the simulated motor meant zeroing in sim set the motor
+    // position to the negative of the truth, so the sim turret aimed mirrored afterwards and
+    // nothing validated in sim transferred to the robot. Use the same constant both sides.
     inputs.cancoderPosition =
-        Units.radiansToRotations(physicsSim.getAngleRads())
+        TurretConstants.CANCODER_SIGN
+            * Units.radiansToRotations(physicsSim.getAngleRads())
             / TurretConstants.TURRET_TO_CANCODER_RATIO;
     inputs.cancoderConnected = true;
   }
