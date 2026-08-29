@@ -31,8 +31,9 @@ public class Turret extends SubsystemBase {
 
   @AutoLogOutput private double turretRotationAdjust = 0; // -0.13
 
+  /** Trims the field-relative aim. Positive adds to the offset; the bindings pick the direction. */
   public void adjustRotationBy(double adj) {
-    turretRotationAdjust -= adj;
+    turretRotationAdjust += adj;
   }
 
   private final LoggedTunableNumber kP =

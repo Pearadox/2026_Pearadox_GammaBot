@@ -60,6 +60,7 @@ import frc.robot.subsystems.spindexer.SpindexerIO;
 import frc.robot.subsystems.spindexer.SpindexerIOReal;
 import frc.robot.subsystems.spindexer.SpindexerIOSim;
 import frc.robot.subsystems.turret.Turret;
+import frc.robot.subsystems.turret.TurretConstants;
 import frc.robot.subsystems.turret.TurretIO;
 import frc.robot.subsystems.turret.TurretIOReal;
 import frc.robot.subsystems.turret.TurretIOSim;
@@ -409,8 +410,14 @@ public class RobotContainer {
                   } else launcher.setIdle();
                 }));
 
-    opController.povLeft().whileTrue(new RunCommand(() -> turret.adjustRotationBy(+0.01)));
-    opController.povRight().whileTrue(new RunCommand(() -> turret.adjustRotationBy(-0.01)));
+    opController
+        .povLeft()
+        .whileTrue(
+            new RunCommand(() -> turret.adjustRotationBy(-TurretConstants.OP_TRIM_INCREMENT_RADS)));
+    opController
+        .povRight()
+        .whileTrue(
+            new RunCommand(() -> turret.adjustRotationBy(+TurretConstants.OP_TRIM_INCREMENT_RADS)));
 
     opController.povUp().whileTrue(new RunCommand(() -> intake.adjustVoltsBy(+0.1)));
     opController.povDown().whileTrue(new RunCommand(() -> intake.adjustVoltsBy(-0.1)));

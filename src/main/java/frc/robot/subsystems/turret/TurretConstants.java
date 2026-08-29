@@ -70,6 +70,10 @@ public final class TurretConstants {
   // both use this so the two cannot drift apart.
   public static final double CANCODER_SIGN = -1.0;
 
+  // Operator aim trim, in radians per 20 ms tick while the pov is held (about 29 deg/s). Ask the
+  // operator whether that rate is too coarse before the next event.
+  public static final double OP_TRIM_INCREMENT_RADS = 0.01;
+
   public static final TalonFXConfiguration getTurretConfig() {
     TalonFXConfiguration config = new TalonFXConfiguration();
 
