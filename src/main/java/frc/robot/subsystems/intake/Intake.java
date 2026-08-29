@@ -117,7 +117,8 @@ public class Intake extends SubsystemBase {
   }
 
   public void setIntakingFast() {
-    intakeState = IntakeState.INTAKING;
+    IntakeConstants.PIVOT_CONFIG.withSlot1(IntakeConstants.PIVOT_SLOT1_CONFIGS);
+    intakeState = IntakeState.INTAKING_FAST;
   }
 
   public void setOuttaking() {
