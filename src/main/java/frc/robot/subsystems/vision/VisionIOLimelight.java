@@ -35,6 +35,8 @@ public class VisionIOLimelight implements VisionIO {
   private final DoubleSubscriber tySubscriber;
   private final DoubleArraySubscriber megatag1Subscriber;
   private final DoubleArraySubscriber megatag2Subscriber;
+  private final DoubleArraySubscriber cameraPoseSubscriber;
+  private final DoubleArrayPublisher cameraPosePublisher;
 
   private int numRewinds = 0;
 
@@ -59,6 +61,22 @@ public class VisionIOLimelight implements VisionIO {
 
     rewindPublisher = table.getDoubleArrayTopic("capture_rewind").publish();
     throttlePublisher = table.getIntegerTopic("throttle_set").publish();
+
+    cameraPoseSubscriber =
+        table.getDoubleArrayTopic("camerapose_robotspace").subscribe(new double[] {});
+    cameraPosePublisher = table.getDoubleArrayTopic("camerapose_robotspace_set").publish();
+  }
+
+  @Override
+  public double[] getCameraPoseRobotSpace() {
+    return cameraPoseSubscriber.get();
+  }
+
+  @Override
+  public void setCameraPoseRobotSpace(double[] cameraPose) {
+    if (cameraPose != null && cameraPose.length == 6) {
+      cameraPosePublisher.set(cameraPose);
+    }
   }
 
   @Override

@@ -178,6 +178,31 @@ public class Vision extends SubsystemBase {
     }
   }
 
+  public int getCameraCount() {
+    return io.length;
+  }
+
+  public boolean isCameraConnected(int cameraIndex) {
+    return inputs[cameraIndex].connected;
+  }
+
+  /** This loop's raw pose observations for one camera, for calibration work. */
+  public VisionIO.PoseObservation[] getPoseObservations(int cameraIndex) {
+    return inputs[cameraIndex].poseObservations;
+  }
+
+  public int[] getTagIds(int cameraIndex) {
+    return inputs[cameraIndex].tagIds;
+  }
+
+  public double[] getCameraPoseRobotSpace(int cameraIndex) {
+    return io[cameraIndex].getCameraPoseRobotSpace();
+  }
+
+  public void setCameraPoseRobotSpace(int cameraIndex, double[] cameraPose) {
+    io[cameraIndex].setCameraPoseRobotSpace(cameraPose);
+  }
+
   public void throttleLimelights() {
     for (VisionIO camera : io) {
       camera.setThrottle(VisionConstants.DISABLED_THROTTLE);

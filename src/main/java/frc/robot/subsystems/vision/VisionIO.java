@@ -44,4 +44,19 @@ public interface VisionIO {
   public default void captureRewind(int time) {}
 
   public default void setThrottle(int throttle) {}
+
+  /**
+   * The camera's configured mount pose in robot space, as [x, y, z, roll, pitch, yaw] with meters
+   * and degrees. Empty if this IO has no such concept.
+   */
+  public default double[] getCameraPoseRobotSpace() {
+    return new double[0];
+  }
+
+  /**
+   * Overrides the camera's configured mount pose. On a Limelight this lasts until the camera
+   * reboots, which makes it safe for trying a calibration result out before committing it in the
+   * web UI.
+   */
+  public default void setCameraPoseRobotSpace(double[] cameraPose) {}
 }

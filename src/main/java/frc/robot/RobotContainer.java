@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.drivers.MovingShotSolver;
 import frc.lib.drivers.MovingShotSolver.Goal;
 import frc.robot.Constants.VisualizerConstants;
+import frc.robot.commands.CalibrateCameraMounts;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ShootOnTheMove;
 import frc.robot.generated.TunerConstants;
@@ -203,6 +204,8 @@ public class RobotContainer {
 
     // Set up auto routines
     setUpAutonomousCommand();
+
+    setUpCalibrationButtons();
 
     visualizer =
         new RobotVisualizer(
@@ -716,6 +719,18 @@ public class RobotContainer {
     autoChooser.addOption("Center Depot", new PathPlannerAuto("Center (Depot Intaking)"));
 
     SmartDashboard.putData("clean auto chooser", autoChooser);
+  }
+
+  /**
+   * Camera mount calibration, driven from the dashboard while disabled. Park the robot where both
+   * Limelights see tags, press Calibrate, then read the suggested mounts under CamCal/ and type
+   * them into each Limelight's web UI. Apply is a try-it-now shortcut that reverts on reboot.
+   */
+  private void setUpCalibrationButtons() {
+    SmartDashboard.putData(
+        "Calibrate Camera Mounts", new CalibrateCameraMounts(vision).ignoringDisable(true));
+    SmartDashboard.putData(
+        "Apply Camera Calibration", CalibrateCameraMounts.applyLastSuggestion(vision));
   }
 
   public Command getAutonomousCommand() {
