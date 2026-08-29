@@ -104,8 +104,7 @@ public class Launcher extends SubsystemBase {
     // Clamp, do not take the magnitude: with Math.abs, trim that pushed the setpoint negative
     // spun the flywheel back up at that magnitude instead of stopping it.
     desiredVelocity =
-        MathUtil.clamp(
-            desiredVelocity + rpsAdjust, 0.0, LauncherConstants.SHOOTER_MAX_VELOCITY);
+        MathUtil.clamp(desiredVelocity + rpsAdjust, 0.0, LauncherConstants.SHOOTER_MAX_VELOCITY);
     // desiredVelocity = 0; FOR TESTING ONLY
 
     if (desiredVelocity < LauncherConstants.SHOOTER_VELOCITY_DEADBAND) {
