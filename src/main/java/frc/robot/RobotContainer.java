@@ -450,19 +450,20 @@ public class RobotContainer {
     // opController.leftBumper().onTrue(new RunCommand(() -> turret.goToZero(), turret));
     // opController.rightBumper().onTrue(new RunCommand(() -> turret.goToTestSetpoint(), turret));
 
-    if (!drivercontroller.leftBumper().getAsBoolean()
-        || drivercontroller.povCenter().getAsBoolean()) {
-      opController
-          .rightBumper()
-          .whileTrue(
-              new SequentialCommandGroup(
-                      new InstantCommand(() -> intake.setFlow()),
-                      new WaitCommand(IntakeConstants.INTAKE_JOSTLE_TIME_SEC),
-                      new InstantCommand(() -> intake.setDeployed()),
-                      new WaitCommand(IntakeConstants.INTAKE_JOSTLE_TIME_SEC))
-                  .repeatedly())
-          .onFalse(new InstantCommand(() -> intake.setDeployed()));
-    }
+    // Don't jostle while the driver is intaking. This has to live on the trigger: as a plain if
+    // around the binding it was evaluated once at boot (when nobody is holding the bumper), so
+    // the binding always registered and the condition never applied at runtime.
+    opController
+        .rightBumper()
+        .and(() -> !drivercontroller.leftBumper().getAsBoolean())
+        .whileTrue(
+            new SequentialCommandGroup(
+                    new InstantCommand(() -> intake.setFlow()),
+                    new WaitCommand(IntakeConstants.INTAKE_JOSTLE_TIME_SEC),
+                    new InstantCommand(() -> intake.setDeployed()),
+                    new WaitCommand(IntakeConstants.INTAKE_JOSTLE_TIME_SEC))
+                .repeatedly())
+        .onFalse(new InstantCommand(() -> intake.setDeployed()));
 
     opController
         .start()
