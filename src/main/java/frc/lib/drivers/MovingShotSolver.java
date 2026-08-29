@@ -31,35 +31,76 @@ public class MovingShotSolver {
     return INSTANCE;
   }
 
-  private MovingShotSolver() {}
+  private MovingShotSolver() {
+    createShotMapTunables();
+  }
 
   @Getter
   private static ShotSolution shotSolution = new ShotSolution(0.0, 0.0, Rotation2d.kZero, 0.0);
 
-  private final InterpolatingDoubleTreeMap LAUNCH_ANGLE_MAP() {
-    // Mapping distance from hub (m) to desired hood angle (rads)
-    InterpolatingDoubleTreeMap map = new InterpolatingDoubleTreeMap();
-    map.put(1.639, Units.degreesToRadians(90 - 11.0));
-    map.put(2.640, Units.degreesToRadians(90 - 17.0));
-    map.put(3.638, Units.degreesToRadians(90 - 23.0));
-    map.put(4.676, Units.degreesToRadians(90 - 27.0));
-    map.put(11.0, Units.degreesToRadians(90 - 35.0));
-    return map;
+  // Shot map breakpoints, tunable from the dashboard so practice-field tuning does not need a
+  // redeploy. Defaults are exactly what used to be hardcoded here, with the old hand-added +3/+4
+  // fudge terms folded into the numbers.
+  //
+  // Hood angles are stored in the map as (90 - hoodDeg) radians, which is what the trajectory math
+  // wants, but they are exposed here in hood degrees: the same units as HOOD_MIN/MAX_ANGLE_RADS
+  // and what the mechanism actually reads.
+  private static final int SHOT_MAP_POINTS = 5;
+  private static final double[] DEFAULT_ANGLE_DISTANCES = {1.639, 2.640, 3.638, 4.676, 11.0};
+  private static final double[] DEFAULT_HOOD_DEGREES = {11.0, 17.0, 23.0, 27.0, 35.0};
+
+  // The RPS breakpoints sit at slightly different distances than the angle breakpoints: the two
+  // were measured in separate sessions at the same shooting positions. They are kept as measured
+  // rather than silently averaged. ShotMap/PairKeyMismatch logs the gap, so converging them stays
+  // a deliberate tuning decision made with the robot present.
+  private static final double[] DEFAULT_RPS_DISTANCES = {1.678, 2.682, 3.623, 4.805, 11.0};
+  private static final double[] DEFAULT_RPS_VALUES = {37.906, 41.719, 41.622, 49.0, 75.0};
+
+  private final LoggedTunableNumber[] angleDistances = new LoggedTunableNumber[SHOT_MAP_POINTS];
+  private final LoggedTunableNumber[] hoodDegrees = new LoggedTunableNumber[SHOT_MAP_POINTS];
+  private final LoggedTunableNumber[] rpsDistances = new LoggedTunableNumber[SHOT_MAP_POINTS];
+  private final LoggedTunableNumber[] rpsValues = new LoggedTunableNumber[SHOT_MAP_POINTS];
+  private final LoggedTunableNumber[] allShotMapTunables =
+      new LoggedTunableNumber[SHOT_MAP_POINTS * 4];
+
+  private final InterpolatingDoubleTreeMap launchAngleMap = new InterpolatingDoubleTreeMap();
+  private final InterpolatingDoubleTreeMap launchRPSMap = new InterpolatingDoubleTreeMap();
+
+  private void createShotMapTunables() {
+    for (int i = 0; i < SHOT_MAP_POINTS; i++) {
+      int point = i + 1;
+      angleDistances[i] =
+          new LoggedTunableNumber("ShotMap/Angle Dist " + point, DEFAULT_ANGLE_DISTANCES[i]);
+      hoodDegrees[i] =
+          new LoggedTunableNumber("ShotMap/Hood Deg " + point, DEFAULT_HOOD_DEGREES[i]);
+      rpsDistances[i] =
+          new LoggedTunableNumber("ShotMap/RPS Dist " + point, DEFAULT_RPS_DISTANCES[i]);
+      rpsValues[i] = new LoggedTunableNumber("ShotMap/RPS " + point, DEFAULT_RPS_VALUES[i]);
+
+      allShotMapTunables[i * 4] = angleDistances[i];
+      allShotMapTunables[i * 4 + 1] = hoodDegrees[i];
+      allShotMapTunables[i * 4 + 2] = rpsDistances[i];
+      allShotMapTunables[i * 4 + 3] = rpsValues[i];
+    }
+    rebuildShotMaps();
   }
 
-  private final InterpolatingDoubleTreeMap LAUNCH_RPS_MAP() {
-    // Mapping distance from hub (m) to desired launcher speed (rps)
-    InterpolatingDoubleTreeMap map = new InterpolatingDoubleTreeMap();
-    map.put(1.678, 34.906 + 3);
-    map.put(2.682, 38.719 + 3);
-    map.put(3.623, 41.622);
-    map.put(4.805, 45.0 + 4);
-    map.put(11.0, 75.0);
-    return map;
-  }
+  private void rebuildShotMaps() {
+    launchAngleMap.clear();
+    launchRPSMap.clear();
 
-  private final InterpolatingDoubleTreeMap launchAngleMap = LAUNCH_ANGLE_MAP();
-  private final InterpolatingDoubleTreeMap launchRPSMap = LAUNCH_RPS_MAP();
+    double worstKeyMismatch = 0.0;
+    for (int i = 0; i < SHOT_MAP_POINTS; i++) {
+      launchAngleMap.put(
+          angleDistances[i].get(), Units.degreesToRadians(90.0 - hoodDegrees[i].get()));
+      launchRPSMap.put(rpsDistances[i].get(), rpsValues[i].get());
+
+      worstKeyMismatch =
+          Math.max(worstKeyMismatch, Math.abs(angleDistances[i].get() - rpsDistances[i].get()));
+    }
+
+    Logger.recordOutput("ShotMap/PairKeyMismatch", worstKeyMismatch);
+  }
 
   private static LoggedTunableNumber woahMultiplierAgain =
       new LoggedTunableNumber("SOTM/everywhere multiplier", 1.0);
@@ -138,6 +179,8 @@ public class MovingShotSolver {
 
   public ShotSolution solve(
       Supplier<Pose2d> poseSupplier, Supplier<ChassisSpeeds> robotRelativeSpeedSupplier) {
+
+    LoggedTunableNumber.ifChanged(hashCode(), this::rebuildShotMaps, allShotMapTunables);
 
     Alliance alliance = Robot.getAlliance();
 
@@ -312,6 +355,13 @@ public class MovingShotSolver {
     Logger.recordOutput("SOTM/distancetoVirtualTarget", distanceToVirtualTarget);
     Logger.recordOutput("SOTM/Goal", goal.toString());
     Logger.recordOutput("SOTM/desiredHoodAngle", Units.radiansToDegrees(hoodAngleRadians));
+
+    // Tuning capture set: these three channels, read at the moment a shot goes out, are what a
+    // made or missed shot turns into a new ShotMap breakpoint. Scrub them in AdvantageScope
+    // against SOTM/readyToShoot to find the shots that actually left the robot.
+    Logger.recordOutput("ShotMap/Capture/Distance", distanceToVirtualTarget);
+    Logger.recordOutput("ShotMap/Capture/HoodDeg", 90.0 - Units.radiansToDegrees(hoodAngleRadians));
+    Logger.recordOutput("ShotMap/Capture/RPS", shooterSpeedRPS);
 
     return shotSolution =
         new ShotSolution(
