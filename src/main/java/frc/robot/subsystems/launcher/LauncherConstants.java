@@ -32,6 +32,9 @@ public class LauncherConstants {
   public static final double LAUNCHER_GEARING = 1.0;
   public static final double DEFAULT_VELOCITY_SETPOINT_RPS = 46; // 51.3
 
+  // Operator trim, in rps per 20 ms tick while the stick is held (so about 5 rps per second).
+  public static final double OP_RPS_ADJUST_INCREMENT = 0.1;
+
   public static final TalonFXConfiguration LAUNCHER_CONFIG = new TalonFXConfiguration();
   public static final Slot0Configs LAUNCHER_CONFIG_SLOT0 = LAUNCHER_CONFIG.Slot0;
 

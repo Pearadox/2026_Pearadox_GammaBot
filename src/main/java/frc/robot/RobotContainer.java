@@ -49,6 +49,7 @@ import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.launcher.Launcher;
+import frc.robot.subsystems.launcher.LauncherConstants;
 import frc.robot.subsystems.launcher.LauncherConstants.LauncherState;
 import frc.robot.subsystems.launcher.LauncherIO;
 import frc.robot.subsystems.launcher.LauncherIOReal;
@@ -427,8 +428,10 @@ public class RobotContainer {
         new RunCommand(
             () ->
                 launcher.adjustRPSBy(
-                    Math.signum(opController.getRightY())
-                        * IntakeConstants.OP_ADJUST_INCREMENT_DEGREES)));
+                    // Xbox sticks report up as negative, so negate to make stick-up raise rps,
+                    // matching the intake pivot binding above.
+                    Math.signum(-opController.getRightY())
+                        * LauncherConstants.OP_RPS_ADJUST_INCREMENT)));
 
     turret.setDefaultCommand(
         new RunCommand(
