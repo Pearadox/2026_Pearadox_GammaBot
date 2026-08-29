@@ -99,7 +99,17 @@ public class Turret extends SubsystemBase {
 
   /** Follows a robot-centric angle. */
   public void followRobotCentricTarget(Supplier<Rotation2d> robotCentricAngleSupplier) {
-    if (!hasZeroed || !turretHasClearanceSupplier.getAsBoolean()) return;
+    if (!hasZeroed) return;
+
+    if (!turretHasClearanceSupplier.getAsBoolean()) {
+      // Motion Magic keeps driving toward its last setpoint on its own, so merely withholding new
+      // setpoints would let an in-flight turret coast on through the intake's zone. Commanding the
+      // current position is what actually stops it.
+      io.runPosition(inputs.turretData.position(), 0);
+      Logger.recordOutput("Turret/Holding For Clearance", true);
+      return;
+    }
+    Logger.recordOutput("Turret/Holding For Clearance", false);
 
     double setpointTurretRads = wrap(robotCentricAngleSupplier.get().getRadians());
     double setpointMotorRots = setpointTurretRads / TurretConstants.TURRET_P_COEFFICIENT;
