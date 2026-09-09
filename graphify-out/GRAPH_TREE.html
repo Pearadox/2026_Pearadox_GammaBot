@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>/ — graphify tree viewer</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      margin: 20px 0 0 24px;
+      font-size: 2.2rem;
+      font-weight: bold;
+      color: #1e3a56;
+    }
+    .controls {
+      margin: 20px 0 15px 24px;
+    }
+    button {
+      margin-right: 10px;
+      padding: 8px 18px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 0.2s ease-in-out;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    button:active {
+      background: #004085;
+    }
+    #tree-container {
+      width: calc(100vw - 48px); /* Adjust for body margin/padding */
+      height: 85vh;
+      overflow: auto;
+      border-radius: 8px;
+      background: #fff;
+      margin-left: 24px;
+      margin-right: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border: 1px solid #ddd;
+    }
+    svg {
+      background: #fff;
+      border-radius: 8px;
+      display: block; /* Important for D3 */
+    }
+    .node circle {
+      stroke-width: 2.5px;
+    }
+    .node text { /* Base style for the <text> container */
+      font: 13px 'Segoe UI', sans-serif;
+      paint-order: stroke fill; /* Ensures text is readable over lines */
+      stroke: #fff; /* White halo */
+      stroke-width: 3px; /* Halo thickness */
+      stroke-linejoin: round;
+      stroke-opacity: 0.85; /* Halo opacity */
+    }
+    .link {
+      fill: none;
+      stroke-opacity: 0.7;
+      stroke-width: 2px;
+    }
+  </style>
+</head>
+<body>
+  <h1>/ — Knowledge Graph</h1>
+  <div class="controls">
+    <button onclick="expandAll()">Expand All</button>
+    <button onclick="collapseAll()">Collapse All</button>
+    <button onclick="resetView()">Reset View</button>
+  </div>
+  <div id="tree-container">
+    <svg id="tree-svg" width="6000" height="8000"></svg>
+  </div>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    const initialJsonData = {"name":"/","total_count":498,"children":[{"name":"gradlew","total_count":3,"children":[{"name":"die()","total_count":1,"children":[]},{"name":"gradlew script","total_count":1,"children":[]},{"name":"warn()","total_count":1,"children":[]}]},{"name":"src","total_count":493,"children":[{"name":"main","total_count":493,"children":[{"name":"java","total_count":493,"children":[{"name":"frc","total_count":493,"children":[{"name":"lib","total_count":19,"children":[{"name":"drivers","total_count":19,"children":[{"name":"MovingShotSolver.java","total_count":13,"children":[{"name":".getInstance()","total_count":1,"children":[]},{"name":".LAUNCH_ANGLE_MAP()","total_count":1,"children":[]},{"name":".LAUNCH_RPS_MAP()","total_count":1,"children":[]},{"name":".MovingShotSolver()","total_count":1,"children":[]},{"name":".solve()","total_count":1,"children":[]},{"name":"DEPOT_CORNER","total_count":1,"children":[]},{"name":"findTarget()","total_count":1,"children":[]},{"name":"getLocation()","total_count":1,"children":[]},{"name":"Goal","total_count":1,"children":[]},{"name":"HUB","total_count":1,"children":[]},{"name":"MovingShotSolver","total_count":1,"children":[]},{"name":"OUTPOST_CORNER","total_count":1,"children":[]},{"name":"ShotSolution","total_count":1,"children":[]}]},{"name":"PearadoxTalonFX.java","total_count":6,"children":[{"name":".applyConfig()","total_count":1,"children":[]},{"name":".getData()","total_count":1,"children":[]},{"name":".MotorData()","total_count":1,"children":[]},{"name":".PearadoxTalonFX()","total_count":1,"children":[]},{"name":"MotorData","total_count":1,"children":[]},{"name":"PearadoxTalonFX","total_count":1,"children":[]}]}]}]},{"name":"robot","total_count":474,"children":[{"name":"commands","total_count":14,"children":[{"name":"DriveCommands.java","total_count":8,"children":[{"name":".DriveCommands()","total_count":1,"children":[]},{"name":".feedforwardCharacterization()","total_count":1,"children":[]},{"name":".getLinearVelocityFromJoysticks()","total_count":1,"children":[]},{"name":".joystickDrive()","total_count":1,"children":[]},{"name":".joystickDriveAtAngle()","total_count":1,"children":[]},{"name":".wheelRadiusCharacterization()","total_count":1,"children":[]},{"name":"DriveCommands","total_count":1,"children":[]},{"name":"WheelRadiusCharacterizationState","total_count":1,"children":[]}]},{"name":"ShootOnTheMove.java","total_count":6,"children":[{"name":".end()","total_count":1,"children":[]},{"name":".execute()","total_count":1,"children":[]},{"name":".initialize()","total_count":1,"children":[]},{"name":".isFinished()","total_count":1,"children":[]},{"name":".ShootOnTheMove()","total_count":1,"children":[]},{"name":"ShootOnTheMove","total_count":1,"children":[]}]}]},{"name":"Constants.java","total_count":20,"children":[{"name":".loadFieldLayout()","total_count":1,"children":[]},{"name":"AlignConstants","total_count":1,"children":[]},{"name":"Constants","total_count":1,"children":[]},{"name":"Depot","total_count":1,"children":[]},{"name":"FieldConstants","total_count":1,"children":[]},{"name":"Hub","total_count":1,"children":[]},{"name":"LEDConstants","total_count":1,"children":[]},{"name":"LeftBump","total_count":1,"children":[]},{"name":"LeftTrench","total_count":1,"children":[]},{"name":"LinesHorizontal","total_count":1,"children":[]},{"name":"LinesVertical","total_count":1,"children":[]},{"name":"Mode","total_count":1,"children":[]},{"name":"Outpost","total_count":1,"children":[]},{"name":"REAL","total_count":1,"children":[]},{"name":"REPLAY","total_count":1,"children":[]},{"name":"RightBump","total_count":1,"children":[]},{"name":"RightTrench","total_count":1,"children":[]},{"name":"SIM","total_count":1,"children":[]},{"name":"Tower","total_count":1,"children":[]},{"name":"VisualizerConstants","total_count":1,"children":[]}]},{"name":"generated","total_count":3,"children":[{"name":"TunerConstants.java","total_count":3,"children":[{"name":".TunerSwerveDrivetrain()","total_count":1,"children":[]},{"name":"TunerConstants","total_count":1,"children":[]},{"name":"TunerSwerveDrivetrain","total_count":1,"children":[]}]}]},{"name":"Main.java","total_count":2,"children":[{"name":".Main()","total_count":1,"children":[]},{"name":"Main","total_count":1,"children":[]}]},{"name":"Robot.java","total_count":14,"children":[{"name":".autonomousInit()","total_count":1,"children":[]},{"name":".autonomousPeriodic()","total_count":1,"children":[]},{"name":".disabledInit()","total_count":1,"children":[]},{"name":".disabledPeriodic()","total_count":1,"children":[]},{"name":".isHubActive()","total_count":1,"children":[]},{"name":".Robot()","total_count":1,"children":[]},{"name":".robotPeriodic()","total_count":1,"children":[]},{"name":".simulationInit()","total_count":1,"children":[]},{"name":".simulationPeriodic()","total_count":1,"children":[]},{"name":".teleopInit()","total_count":1,"children":[]},{"name":".teleopPeriodic()","total_count":1,"children":[]},{"name":".testInit()","total_count":1,"children":[]},{"name":".testPeriodic()","total_count":1,"children":[]},{"name":"Robot","total_count":1,"children":[]}]},{"name":"RobotContainer.java","total_count":6,"children":[{"name":".configureButtonBindings()","total_count":1,"children":[]},{"name":".getAutonomousCommand()","total_count":1,"children":[]},{"name":".registerNamedCommands()","total_count":1,"children":[]},{"name":".RobotContainer()","total_count":1,"children":[]},{"name":".setUpAutonomousCommand()","total_count":1,"children":[]},{"name":"RobotContainer","total_count":1,"children":[]}]},{"name":"RobotVisualizer.java","total_count":4,"children":[{"name":".getHopperExtension()","total_count":1,"children":[]},{"name":".periodic()","total_count":1,"children":[]},{"name":".RobotVisualizer()","total_count":1,"children":[]},{"name":"RobotVisualizer","total_count":1,"children":[]}]},{"name":"subsystems","total_count":364,"children":[{"name":"climber","total_count":24,"children":[{"name":"Climber.java","total_count":5,"children":[{"name":".climb()","total_count":1,"children":[]},{"name":".Climber()","total_count":1,"children":[]},{"name":".descend()","total_count":1,"children":[]},{"name":".periodic()","total_count":1,"children":[]},{"name":"Climber","total_count":1,"children":[]}]},{"name":"ClimberConstants.java","total_count":5,"children":[{"name":".getClimberConfigTalonFX()","total_count":1,"children":[]},{"name":"ClimberConstants","total_count":1,"children":[]},{"name":"ClimberState","total_count":1,"children":[]},{"name":"LOWERED","total_count":1,"children":[]},{"name":"RAISED","total_count":1,"children":[]}]},{"name":"ClimberIO.java","total_count":5,"children":[{"name":".runPosition()","total_count":1,"children":[]},{"name":".updateInputs()","total_count":1,"children":[]},{"name":".zeroClimber()","total_count":1,"children":[]},{"name":"ClimberIO","total_count":1,"children":[]},{"name":"ClimberIOInputs","total_count":1,"children":[]}]},{"name":"ClimberIOReal.java","total_count":1,"children":[{"name":"ClimberIOReal","total_count":1,"children":[]}]},{"name":"ClimberIOSim.java","total_count":3,"children":[{"name":".ClimberIOSim()","total_count":1,"children":[]},{"name":".updateInputs()","total_count":1,"children":[]},{"name":"ClimberIOSim","total_count":1,"children":[]}]},{"name":"ClimberIOTalonFX.java","total_count":5,"children":[{"name":".ClimberIOTalonFX()","total_count":1,"children":[]},{"name":".runPosition()","total_count":1,"children":[]},{"name":".updateInputs()","total_count":1,"children":[]},{"name":".zeroClimber()","total_count":1,"children":[]},{"name":"ClimberIOTalonFX","total_count":1,"children":[]}]}]},{"name":"drive","total_count":73,"children":[{"name":"Drive.java","total_count":21,"children":[{"name":".addVisionMeasurement()","total_count":1,"children":[]},{"name":".Drive()","total_count":1,"children":[]},{"name":".getChassisSpeeds()","total_count":1,"children":[]},{"name":".getFFCharacterizationVelocity()","total_count":1,"children":[]},{"name":".getMaxAngularSpeedRadPerSec()","total_count":1,"children":[]},{"name":".getMaxLinearSpeedMetersPerSec()","total_count":1,"children":[]},{"name":".getModulePositions()","total_count":1,"children":[]},{"name":".getModuleStates()","total_count":1,"children":[]},{"name":".getModuleTranslations()","total_count":1,"children":[]},{"name":".getPose()","total_count":1,"children":[]},{"name":".getRotation()","total_count":1,"children":[]},{"name":".getWheelRadiusCharacterizationPositions()","total_count":1,"children":[]},{"name":".periodic()","total_count":1,"children":[]},{"name":".runCharacterization()","total_count":1,"children":[]},{"name":".runVelocity()","total_count":1,"children":[]},{"name":".setPose()","total_count":1,"children":[]},{"name":".stop()","total_count":1,"children":[]},{"name":".stopWithX()","total_count":1,"children":[]},{"name":".sysIdDynamic()","total_count":1,"children":[]},{"name":".sysIdQuasistatic()","total_count":1,"children":[]},{"name":"Drive","total_count":1,"children":[]}]},{"name":"GyroIO.java","total_count":3,"children":[{"name":".updateInputs()","total_count":1,"children":[]},{"name":"GyroIO","total_count":1,"children":[]},{"name":"GyroIOInputs","total_count":1,"children":[]}]},{"name":"GyroIONavX.java","total_count":3,"children":[{"name":".GyroIONavX()","total_count":1,"children":[]},{"name":".updateInputs()","total_count":1,"children":[]},{"name":"GyroIONavX","total_count":1,"children":[]}]},{"name":"GyroIOPigeon2.java","total_count":3,"children":[{"name":".GyroIOPigeon2()","total_count":1,"children":[]},{"name":".updateInputs()","total_count":1,"children":[]},{"name":"GyroIOPigeon2","total_count":1,"children":[]}]},{"name":"Module.java","total_count":15,"children":[{"name":".getAngle()","total_count":1,"children":[]},{"name":".getFFCharacterizationVelocity()","total_count":1,"children":[]},{"name":".getOdometryPositions()","total_count":1,"children":[]},{"name":".getOdometryTimestamps()","total_count":1,"children":[]},{"name":".getPosition()","total_count":1,"children":[]},{"name":".getPositionMeters()","total_count":1,"children":[]},{"name":".getState()","total_count":1,"children":[]},{"name":".getVelocityMetersPerSec()","total_count":1,"children":[]},{"name":".getWheelRadiusCharacterizationPosition()","total_count":1,"children":[]},{"name":".Module()","total_count":1,"children":[]},{"name":".periodic()","total_count":1,"children":[]},{"name":".runCharacterization()","total_count":1,"children":[]},{"name":".runSetpoint()","total_count":1,"children":[]},{"name":".stop()","total_count":1,"children":[]},{"name":"Module","total_count":1,"children":[]}]},{"name":"ModuleIO.java","total_count":7,"children":[{"name":".setDriveOpenLoop()","total_count":1,"children":[]},{"name":".setDriveVelocity()","total_count":1,"children":[]},{"name":".setTurnOpenLoop()","total_count":1,"children":[]},{"name":".setTurnPosition()","total_count":1,"children":[]},{"name":".updateInputs()","total_count":1,"children":[]},{"name":"ModuleIO","total_count":1,"children":[]},{"name":"ModuleIOInputs","total_count":1,"children":[]}]},{"name":"ModuleIOSim.java","total_count":7,"children":[{"name":".ModuleIOSim()","total_count":1,"children":[]},{"name":".setDriveOpenLoop()","total_count":1,"children":[]},{"name":".setDriveVelocity()","total_count":1,"children":[]},{"name":".setTurnOpenLoop()","total_count":1,"children":[]},{"name":".setTurnPosition()","total_count":1,"children":[]},{"name":".updateInputs()","total_count":1,"children":[]},{"name":"ModuleIOSim","total_count":1,"children":[]}]},{"name":"ModuleIOTalonFX.java","total_count":7,"children":[{"name":".ModuleIOTalonFX()","total_count":1,"children":[]},{"name":".setDriveOpenLoop()","total_count":1,"children":[]},{"name":".setDriveVelocity()","total_count":1,"children":[]},{"name":".setTurnOpenLoop()","total_count":1,"children":[]},{"name":".setTurnPosition()","total_count":1,"children":[]},{"name":".updateInputs()","total_count":1,"children":[]},{"name":"ModuleIOTalonFX","total_count":1,"children":[]}]},{"name":"PhoenixOdometryThread.java","total_count":7,"children":[{"name":".getInstance()","total_count":1,"children":[]},{"name":".makeTimestampQueue()","total_count":1,"children":[]},{"name":".PhoenixOdometryThread()","total_count":1,"children":[]},{"name":".registerSignal()","total_count":1,"children":[]},{"name":".run()","total_count":1,"children":[]},{"name":".start()","total_count":1,"children":[]},{"name":"PhoenixOdometryThread","total_count":1,"children":[]}]}]},{"name":"feeder","total_count":35,"children":[{"name":"Feeder.java","total_count":14,"children":[{"name":".canRangeGetDistanceMeters()","total_count":1,"children":[]},{"name":".canRangeGetSignalStrength()","total_count":1,"children":[]},{"name":".Feeder()","total_count":1,"children":[]},{"name":".getFuelCount()","total_count":1,"children":[]},{"name":".getTimestamp()","total_count":1,"children":[]},{"name":".isDetectedDebounced()","total_count":1,"children":[]},{"name":".isHopperEmpty()","total_count":1,"children":[]},{"name":".periodic()","total_count":1,"children":[]},{"name":".resetForAuto()","total_count":1,"children":[]},{"name":".setRunning()","total_count":1,"children":[]},{"name":".setStopped()","total_count":1,"children":[]},{"name":".startTimer()","total_count":1,"children":[]},{"name":".updateFuelCount()","total_count":1,"children":[]},{"name":"Feeder","total_count":1,"children":[]}]},{"name":"FeederConstants.java","total_count":7,"children":[{"name":".createCANrangeConfig()","total_count":1,"children":[]},{"name":".FEEDER_MOTOR_CONFIG()","total_count":1,"children":[]},{"name":"FeederConstants","total_count":1,"children":[]},{"name":"FeederState","total_count":1,"children":[]},{"name":"RUNNING","total_count":1,"children":[]},{"name":"StateConfig","total_count":1,"children":[]},{"name":"STOPPED","total_count":1,"children":[]}]},{"name":"FeederIO.java","total_count":4,"children":[{"name":".runFeederVoltage()","total_count":1,"children":[]},{"name":".updateInputs()","total_count":1,"children":[]},{"name":"FeederIO","total_count":1,"children":[]},{"name":"FeederIOInputs","total_count":1,"children":[]}]},{"name":"FeederIOReal.java","total_count":1,"children":[{"name":"FeederIOReal","total_count":1,"children":[]}]},{"name":"FeederIOSim.java","total_count":5,"children":[{"name":".FeederIOSim()","total_count":1,"children":[]},{"name":".runFeederVoltage()","total_count":1,"children":[]},{"name":".updateInputs()","total_count":1,"children":[]},{"name":".updateSim()","total_count":1,"children":[]},{"name":"FeederIOSim","total_count":1,"children":[]}]},{"name":"FeederIOTalonFX.java","total_count":4,"children":[{"name":".FeederIOTalonFX()","total_count":1,"children":[]},{"name":".runFeederVoltage()","total_count":1,"children":[]},{"name":".updateInputs()","total_count":1,"children":[]},{"name":"FeederIOTalonFX","total_count":1,"children":[]}]}]},{"name":"intake","total_count":54,"children":[{"name":"Intake.java","total_count":17,"children":[{"name":".adjustMaxDuty()","total_count":1,"children":[]},{"name":".adjustPivotAngleBy()","total_count":1,"children":[]},{"name":".adjustVoltsBy()","total_count":1,"children":[]},{"name":".getAngleDegs()","total_count":1,"children":[]},{"name":".getFFVolts()","total_count":1,"children":[]},{"name":".getIntakeState()","total_count":1,"children":[]},{"name":".Intake()","total_count":1,"children":[]},{"name":".periodic()","total_count":1,"children":[]},{"name":".setDeployed()","total_count":1,"children":[]},{"name":".setFlow()","total_count":1,"children":[]},{"name":".setHold()","total_count":1,"children":[]},{"name":".setIntaking()","total_count":1,"children":[]},{"name":".setIntakingFast()","total_count":1,"children":[]},{"name":".setOuttaking()","total_count":1,"children":[]},{"name":".setStowed()","total_count":1,"children":[]},{"name":".turretHasClearance()","total_count":1,"children":[]},{"name":"Intake","total_count":1,"children":[]}]},{"name":"IntakeConstants.java","total_count":12,"children":[{"name":".getPivotConfigTalonFX()","total_count":1,"children":[]},{"name":".getRollerConfigTalonFX()","total_count":1,"children":[]},{"name":"DEPLOYED","total_count":1,"children":[]},{"name":"FLOW_STATE","total_count":1,"children":[]},{"name":"HOLD_STATE","total_count":1,"children":[]},{"name":"IntakeConstants","total_count":1,"children":[]},{"name":"IntakeState","total_count":1,"children":[]},{"name":"INTAKING","total_count":1,"children":[]},{"name":"INTAKING_FAST","total_count":1,"children":[]},{"name":"OUTTAKING","total_count":1,"children":[]},{"name":"StateConfig","total_count":1,"children":[]},{"name":"STOWED","total_count":1,"children":[]}]},{"name":"IntakeIO.java","total_count":10,"children":[{"name":".runPivotVolts()","total_count":1,"children":[]},{"name":".runPositionDegrees()","total_count":1,"children":[]},{"name":".runPositionDegreesWithoutFF()","total_count":1,"children":[]},{"name":".runRollersAmps()","total_count":1,"children":[]},{"name":".runRollersVelocityTorqueCurrentFOC()","total_count":1,"children":[]},{"name":".runRollersVolts()","total_count":1,"children":[]},{"name":".setPIDFF()","total_count":1,"children":[]},{"name":".updateInputs()","total_count":1,"children":[]},{"name":"IntakeIO","total_count":1,"children":[]},{"name":"IntakeIOInputs","total_count":1,"children":[]}]},{"name":"IntakeIOReal.java","total_count":1,"children":[{"name":"IntakeIOReal","total_count":1,"children":[]}]},{"name":"IntakeIOSim.java","total_count":3,"children":[{"name":".IntakeIOSim()","total_count":1,"children":[]},{"name":".updateInputs()","total_count":1,"children":[]},{"name":"IntakeIOSim","total_count":1,"children":[]}]},{"name":"IntakeIOTalonFX.java","total_count":10,"children":[{"name":".IntakeIOTalonFX()","total_count":1,"children":[]},{"name":".runPivotVolts()","total_count":1,"children":[]},{"name":".runPositionDegrees()","total_count":1,"children":[]},{"name":".runPositionDegreesWithoutFF()","total_count":1,"children":[]},{"name":".runRollersAmps()","total_count":1,"children":[]},{"name":".runRollersVelocityTorqueCurrentFOC()","total_count":1,"children":[]},{"name":".runRollersVolts()","total_count":1,"children":[]},{"name":".setPIDFF()","total_count":1,"children":[]},{"name":".updateInputs()","total_count":1,"children":[]},{"name":"IntakeIOTalonFX","total_count":1,"children":[]}]},{"name":"MechVisualizer.java","total_count":1,"children":[]}]},{"name":"launcher","total_count":58,"children":[{"name":"Launcher.java","total_count":16,"children":[{"name":".adjustRPSBy()","total_count":1,"children":[]},{"name":".getHoodAngleRads()","total_count":1,"children":[]},{"name":".getkG()","total_count":1,"children":[]},{"name":".getLauncherVelocity()","total_count":1,"children":[]},{"name":".Launcher()","total_count":1,"children":[]},{"name":".periodic()","total_count":1,"children":[]},{"name":".score()","total_count":1,"children":[]},{"name":".setIdle()","total_count":1,"children":[]},{"name":".setManual()","total_count":1,"children":[]},{"name":".setOff()","total_count":1,"children":[]},{"name":".setScoring()","total_count":1,"children":[]},{"name":".setVelocity()","total_count":1,"children":[]},{"name":".turnLauncherOff()","total_count":1,"children":[]},{"name":".zeroHood()","total_count":1,"children":[]},{"name":".zeroHoodCommand()","total_count":1,"children":[]},{"name":"Launcher","total_count":1,"children":[]}]},{"name":"LauncherConstants.java","total_count":8,"children":[{"name":".HOOD_CONFIG()","total_count":1,"children":[]},{"name":".LAUNCHER_MOTOR_CONFIG()","total_count":1,"children":[]},{"name":"IDLE","total_count":1,"children":[]},{"name":"LauncherConstants","total_count":1,"children":[]},{"name":"LauncherState","total_count":1,"children":[]},{"name":"MANUAL","total_count":1,"children":[]},{"name":"OFF","total_count":1,"children":[]},{"name":"SELF_DIRECTING","total_count":1,"children":[]}]},{"name":"LauncherIO.java","total_count":12,"children":[{"name":".runHoodVolts()","total_count":1,"children":[]},{"name":".runLauncherVelocity()","total_count":1,"children":[]},{"name":".setCurrentLimits()","total_count":1,"children":[]},{"name":".setHoodAngleRads()","total_count":1,"children":[]},{"name":".setHoodPIDFF()","total_count":1,"children":[]},{"name":".setLauncherPIDFF()","total_count":1,"children":[]},{"name":".setLauncherVoltage()","total_count":1,"children":[]},{"name":".stopLauncher()","total_count":1,"children":[]},{"name":".updateInputs()","total_count":1,"children":[]},{"name":".zeroHood()","total_count":1,"children":[]},{"name":"LauncherIO","total_count":1,"children":[]},{"name":"LauncherIOInputs","total_count":1,"children":[]}]},{"name":"LauncherIOReal.java","total_count":1,"children":[{"name":"LauncherIOReal","total_count":1,"children":[]}]},{"name":"LauncherIOSim.java","total_count":3,"children":[{"name":".LauncherIOSim()","total_count":1,"children":[]},{"name":".updateInputs()","total_count":1,"children":[]},{"name":"LauncherIOSim","total_count":1,"children":[]}]},{"name":"LauncherIOTalonFX.java","total_count":12,"children":[{"name":".LauncherIOTalonFX()","total_count":1,"children":[]},{"name":".runHoodVolts()","total_count":1,"children":[]},{"name":".runLauncherVelocity()","total_count":1,"children":[]},{"name":".setCurrentLimits()","total_count":1,"children":[]},{"name":".setHoodAngleRads()","total_count":1,"children":[]},{"name":".setHoodPIDFF()","total_count":1,"children":[]},{"name":".setLauncherPIDFF()","total_count":1,"children":[]},{"name":".setLauncherVoltage()","total_count":1,"children":[]},{"name":".stopLauncher()","total_count":1,"children":[]},{"name":".updateInputs()","total_count":1,"children":[]},{"name":".zeroHood()","total_count":1,"children":[]},{"name":"LauncherIOTalonFX","total_count":1,"children":[]}]},{"name":"LauncherVisualizer.java","total_count":6,"children":[{"name":".getInstance()","total_count":1,"children":[]},{"name":".LauncherVisualizer()","total_count":1,"children":[]},{"name":".periodic()","total_count":1,"children":[]},{"name":".updateFlywheelPositionDeg()","total_count":1,"children":[]},{"name":".updateHoodPositionDeg()","total_count":1,"children":[]},{"name":"LauncherVisualizer","total_count":1,"children":[]}]}]},{"name":"leds","total_count":10,"children":[{"name":"LEDStrip.java","total_count":10,"children":[{"name":".getInstance()","total_count":1,"children":[]},{"name":".isHubActive()","total_count":1,"children":[]},{"name":".LEDStrip()","total_count":1,"children":[]},{"name":".periodic()","total_count":1,"children":[]},{"name":".setBlinking()","total_count":1,"children":[]},{"name":".setBreathing()","total_count":1,"children":[]},{"name":".setBreathingWithBreathePeriod()","total_count":1,"children":[]},{"name":".setGradient()","total_count":1,"children":[]},{"name":".setSolid()","total_count":1,"children":[]},{"name":"LEDStrip","total_count":1,"children":[]}]}]},{"name":"spindexer","total_count":29,"children":[{"name":"Spindexer.java","total_count":9,"children":[{"name":".adjustVoltage()","total_count":1,"children":[]},{"name":".getAdjust()","total_count":1,"children":[]},{"name":".periodic()","total_count":1,"children":[]},{"name":".resetAdjust()","total_count":1,"children":[]},{"name":".setReverse()","total_count":1,"children":[]},{"name":".setRunning()","total_count":1,"children":[]},{"name":".setStopped()","total_count":1,"children":[]},{"name":".Spindexer()","total_count":1,"children":[]},{"name":"Spindexer","total_count":1,"children":[]}]},{"name":"SpindexerConstants.java","total_count":7,"children":[{"name":".spindexerConfig()","total_count":1,"children":[]},{"name":"REVERSE","total_count":1,"children":[]},{"name":"RUNNING","total_count":1,"children":[]},{"name":"SpindexerConstants","total_count":1,"children":[]},{"name":"SpindexerState","total_count":1,"children":[]},{"name":"StateConfig","total_count":1,"children":[]},{"name":"STOPPED","total_count":1,"children":[]}]},{"name":"SpindexerIO.java","total_count":4,"children":[{"name":".runSpindexerTorqueCurrent()","total_count":1,"children":[]},{"name":".updateInputs()","total_count":1,"children":[]},{"name":"SpindexerIO","total_count":1,"children":[]},{"name":"SpindexerIOInputs","total_count":1,"children":[]}]},{"name":"SpindexerIOReal.java","total_count":1,"children":[{"name":"SpindexerIOReal","total_count":1,"children":[]}]},{"name":"SpindexerIOSim.java","total_count":4,"children":[{"name":".SpindexerIOSim()","total_count":1,"children":[]},{"name":".updateInputs()","total_count":1,"children":[]},{"name":".updateSim()","total_count":1,"children":[]},{"name":"SpindexerIOSim","total_count":1,"children":[]}]},{"name":"SpindexerIOTalonFX.java","total_count":4,"children":[{"name":".runSpindexerTorqueCurrent()","total_count":1,"children":[]},{"name":".SpindexerIOTalonFX()","total_count":1,"children":[]},{"name":".updateInputs()","total_count":1,"children":[]},{"name":"SpindexerIOTalonFX","total_count":1,"children":[]}]}]},{"name":"turret","total_count":48,"children":[{"name":"Turret.java","total_count":20,"children":[{"name":".adjustRotationBy()","total_count":1,"children":[]},{"name":".followFieldCentricTarget()","total_count":1,"children":[]},{"name":".followRobotCentricTarget()","total_count":1,"children":[]},{"name":".getFF()","total_count":1,"children":[]},{"name":".getFieldRelativeTurretAngleRotation2d()","total_count":1,"children":[]},{"name":".getRobotRelativeTurretAngleRotation2d()","total_count":1,"children":[]},{"name":".getTurretAngleDegs()","total_count":1,"children":[]},{"name":".getTurretAngleRads()","total_count":1,"children":[]},{"name":".goToTestSetpoint()","total_count":1,"children":[]},{"name":".goToZero()","total_count":1,"children":[]},{"name":".periodic()","total_count":1,"children":[]},{"name":".requestZero()","total_count":1,"children":[]},{"name":".runVoltage()","total_count":1,"children":[]},{"name":".setBrakeMode()","total_count":1,"children":[]},{"name":".sysIdDynamic()","total_count":1,"children":[]},{"name":".sysIdQuasistatic()","total_count":1,"children":[]},{"name":".Turret()","total_count":1,"children":[]},{"name":".undoZero()","total_count":1,"children":[]},{"name":".wrap()","total_count":1,"children":[]},{"name":"Turret","total_count":1,"children":[]}]},{"name":"TurretConstants.java","total_count":2,"children":[{"name":".getTurretConfig()","total_count":1,"children":[]},{"name":"TurretConstants","total_count":1,"children":[]}]},{"name":"TurretIO.java","total_count":10,"children":[{"name":".runPosition()","total_count":1,"children":[]},{"name":".runVoltage()","total_count":1,"children":[]},{"name":".setBrakeMode()","total_count":1,"children":[]},{"name":".setFFGains()","total_count":1,"children":[]},{"name":".setMotionMagicLimits()","total_count":1,"children":[]},{"name":".setPID()","total_count":1,"children":[]},{"name":".setPosition()","total_count":1,"children":[]},{"name":".updateInputs()","total_count":1,"children":[]},{"name":"TurretIO","total_count":1,"children":[]},{"name":"TurretIOInputs","total_count":1,"children":[]}]},{"name":"TurretIOReal.java","total_count":3,"children":[{"name":".TurretIOReal()","total_count":1,"children":[]},{"name":".updateInputs()","total_count":1,"children":[]},{"name":"TurretIOReal","total_count":1,"children":[]}]},{"name":"TurretIOSim.java","total_count":3,"children":[{"name":".TurretIOSim()","total_count":1,"children":[]},{"name":".updateInputs()","total_count":1,"children":[]},{"name":"TurretIOSim","total_count":1,"children":[]}]},{"name":"TurretIOTalonFX.java","total_count":10,"children":[{"name":".runPosition()","total_count":1,"children":[]},{"name":".runVoltage()","total_count":1,"children":[]},{"name":".setBrakeMode()","total_count":1,"children":[]},{"name":".setFFGains()","total_count":1,"children":[]},{"name":".setMotionMagicLimits()","total_count":1,"children":[]},{"name":".setPID()","total_count":1,"children":[]},{"name":".setPosition()","total_count":1,"children":[]},{"name":".TurretIOTalonFX()","total_count":1,"children":[]},{"name":".updateInputs()","total_count":1,"children":[]},{"name":"TurretIOTalonFX","total_count":1,"children":[]}]}]},{"name":"vision","total_count":33,"children":[{"name":"Vision.java","total_count":9,"children":[{"name":".accept()","total_count":1,"children":[]},{"name":".captureRewind()","total_count":1,"children":[]},{"name":".getTargetX()","total_count":1,"children":[]},{"name":".periodic()","total_count":1,"children":[]},{"name":".throttleLimelights()","total_count":1,"children":[]},{"name":".unthrottleLimelights()","total_count":1,"children":[]},{"name":".Vision()","total_count":1,"children":[]},{"name":"Vision","total_count":1,"children":[]},{"name":"VisionConsumer","total_count":1,"children":[]}]},{"name":"VisionConstants.java","total_count":1,"children":[{"name":"VisionConstants","total_count":1,"children":[]}]},{"name":"VisionIO.java","total_count":11,"children":[{"name":".captureRewind()","total_count":1,"children":[]},{"name":".setThrottle()","total_count":1,"children":[]},{"name":".updateInputs()","total_count":1,"children":[]},{"name":"MEGATAG_1","total_count":1,"children":[]},{"name":"MEGATAG_2","total_count":1,"children":[]},{"name":"PHOTONVISION","total_count":1,"children":[]},{"name":"PoseObservation","total_count":1,"children":[]},{"name":"PoseObservationType","total_count":1,"children":[]},{"name":"TargetObservation","total_count":1,"children":[]},{"name":"VisionIO","total_count":1,"children":[]},{"name":"VisionIOInputs","total_count":1,"children":[]}]},{"name":"VisionIOLimelight.java","total_count":6,"children":[{"name":".captureRewind()","total_count":1,"children":[]},{"name":".parsePose()","total_count":1,"children":[]},{"name":".setThrottle()","total_count":1,"children":[]},{"name":".updateInputs()","total_count":1,"children":[]},{"name":".VisionIOLimelight()","total_count":1,"children":[]},{"name":"VisionIOLimelight","total_count":1,"children":[]}]},{"name":"VisionIOPhotonVision.java","total_count":3,"children":[{"name":".updateInputs()","total_count":1,"children":[]},{"name":".VisionIOPhotonVision()","total_count":1,"children":[]},{"name":"VisionIOPhotonVision","total_count":1,"children":[]}]},{"name":"VisionIOPhotonVisionSim.java","total_count":3,"children":[{"name":".updateInputs()","total_count":1,"children":[]},{"name":".VisionIOPhotonVisionSim()","total_count":1,"children":[]},{"name":"VisionIOPhotonVisionSim","total_count":1,"children":[]}]}]}]},{"name":"util","total_count":47,"children":[{"name":"CircleSim.java","total_count":4,"children":[{"name":".CircleSim()","total_count":1,"children":[]},{"name":".getRoot()","total_count":1,"children":[]},{"name":".updateAngleDeg()","total_count":1,"children":[]},{"name":"CircleSim","total_count":1,"children":[]}]},{"name":"DriveHelpers.java","total_count":3,"children":[{"name":".findClosestCorner()","total_count":1,"children":[]},{"name":".getCourseRotation2d()","total_count":1,"children":[]},{"name":"DriveHelpers","total_count":1,"children":[]}]},{"name":"EnergyTracker.java","total_count":14,"children":[{"name":".periodic()","total_count":1,"children":[]},{"name":".reportCurrentUsage()","total_count":1,"children":[]},{"name":"CLIMBER","total_count":1,"children":[]},{"name":"Compeartment","total_count":1,"children":[]},{"name":"DRIVE_MOTORS","total_count":1,"children":[]},{"name":"EnergyTracker","total_count":1,"children":[]},{"name":"FEEDER","total_count":1,"children":[]},{"name":"HOOD","total_count":1,"children":[]},{"name":"INTAKE_PIVOT","total_count":1,"children":[]},{"name":"INTAKE_ROLLERS","total_count":1,"children":[]},{"name":"LAUNCHER","total_count":1,"children":[]},{"name":"SPINDEXER","total_count":1,"children":[]},{"name":"TURN_MOTORS","total_count":1,"children":[]},{"name":"TURRET","total_count":1,"children":[]}]},{"name":"LocalADStarAK.java","total_count":11,"children":[{"name":".fromLog()","total_count":1,"children":[]},{"name":".getCurrentPath()","total_count":1,"children":[]},{"name":".isNewPathAvailable()","total_count":1,"children":[]},{"name":".setDynamicObstacles()","total_count":1,"children":[]},{"name":".setGoalPosition()","total_count":1,"children":[]},{"name":".setStartPosition()","total_count":1,"children":[]},{"name":".toLog()","total_count":1,"children":[]},{"name":".updateCurrentPathPoints()","total_count":1,"children":[]},{"name":".updateIsNewPathAvailable()","total_count":1,"children":[]},{"name":"ADStarIO","total_count":1,"children":[]},{"name":"LocalADStarAK","total_count":1,"children":[]}]},{"name":"LoggedTracer.java","total_count":4,"children":[{"name":".LoggedTracer()","total_count":1,"children":[]},{"name":".record()","total_count":1,"children":[]},{"name":".reset()","total_count":1,"children":[]},{"name":"LoggedTracer","total_count":1,"children":[]}]},{"name":"LoggedTunableNumber.java","total_count":7,"children":[{"name":".get()","total_count":1,"children":[]},{"name":".getAsDouble()","total_count":1,"children":[]},{"name":".hasChanged()","total_count":1,"children":[]},{"name":".ifChanged()","total_count":1,"children":[]},{"name":".initDefault()","total_count":1,"children":[]},{"name":".LoggedTunableNumber()","total_count":1,"children":[]},{"name":"LoggedTunableNumber","total_count":1,"children":[]}]},{"name":"PhoenixUtil.java","total_count":4,"children":[{"name":".refreshAll()","total_count":1,"children":[]},{"name":".registerSignals()","total_count":1,"children":[]},{"name":".tryUntilOk()","total_count":1,"children":[]},{"name":"PhoenixUtil","total_count":1,"children":[]}]}]}]}]}]}]}]},{"name":"build.gradle","total_count":1,"children":[]},{"name":"settings.gradle","total_count":1,"children":[]}]};
+
+    function transformData(jsonData) {
+        // Helper function to recursively build the children structure
+        function processNode(node, parentL1StageName) {
+            let displayName = node.name;
+            // Append total_count if it exists and is not already in the name
+            if (node.total_count !== undefined) {
+                if (!/\(Total Count: \d+\)$/.test(displayName)) {
+                    displayName += ` (Total Count: ${node.total_count})`;
+                }
+            }
+
+            const newNode = { name: displayName };
+
+            if (parentL1StageName === "Root") {
+                 newNode.originalStageName = node.name;
+            } else {
+                newNode.originalStageName = parentL1StageName;
+            }
+
+            if (node.children && node.children.length > 0) {
+                const stageNameToPass = (parentL1StageName === "Root") ? node.name : parentL1StageName;
+                newNode.children = node.children.map(child => processNode(child, stageNameToPass));
+            }
+
+            return newNode;
+        }
+
+        let rootDisplayName = jsonData.name;
+        if (jsonData.total_count !== undefined && !/\(Total Count: \d+\)$/.test(rootDisplayName)) {
+            rootDisplayName += ` (Total Count: ${jsonData.total_count})`;
+        }
+
+        return {
+            name: rootDisplayName,
+            originalStageName: "Root",
+            children: (jsonData.children || []).map(child => processNode(child, "Root"))
+        };
+    }
+
+    const treeData = transformData(initialJsonData);
+
+    // Auto-populated phaseColors: every depth-1 child of the root gets
+    // a stable colour from a bigger palette so all top-level dirs are
+    // distinguishable.
+    const PALETTE = [
+      ["#3498DB","#2980B9","#AED6F1"], ["#2ECC71","#27AE60","#A9DFBF"],
+      ["#E74C3C","#C0392B","#F5B7B1"], ["#9B59B6","#8E44AD","#D7BDE2"],
+      ["#F39C12","#D68910","#FAD7A0"], ["#1ABC9C","#117864","#A2D9CE"],
+      ["#34495E","#1B2631","#ABB2B9"], ["#E67E22","#BA4A00","#F5CBA7"],
+      ["#16A085","#0E6655","#A2D9CE"], ["#D35400","#A04000","#EDBB99"],
+      ["#7F8C8D","#566573","#D5DBDB"], ["#C0392B","#7B241C","#F5B7B1"],
+      ["#2E86C1","#1B4F72","#A9CCE3"], ["#28B463","#196F3D","#A9DFBF"],
+      ["#AF7AC5","#6C3483","#D2B4DE"],
+    ];
+    const phaseColors = { "Root": { fill: "#4A4A4A", stroke: "#333333", collapsedFill: "#6C757D" },
+                          "Default": { fill: "#BDC3C7", stroke: "#95A5A6", collapsedFill: "#ECF0F1" } };
+    (initialJsonData.children || []).forEach((c, i) => {
+      const pal = PALETTE[i % PALETTE.length];
+      phaseColors[c.name] = { fill: pal[0], stroke: pal[1], collapsedFill: pal[2] };
+    });
+
+    const levelSpecificPalettes = {
+      0: { fill: "#4A4A4A", stroke: "#333333", collapsedFill: "#6C757D" },
+      2: { fill: "#6ab04c", stroke: "#508a38", collapsedFill: "#a3d391" },
+      3: { fill: "#f0932b", stroke: "#d0730f", collapsedFill: "#f6c07e" },
+      4: { fill: "#be2edd", stroke: "#a01cb3", collapsedFill: "#e08bf2" },
+      5: { fill: "#00a8ff", stroke: "#007ac1", collapsedFill: "#74d2ff" },
+      6: { fill: "#e55039", stroke: "#c23620", collapsedFill: "#f09a8d" },
+      default: { fill: "#747d8c", stroke: "#57606f", collapsedFill: "#a4b0be" }
+    };
+
+    const svgElement = d3.select("#tree-svg");
+    const initialSvgWidth = +svgElement.attr("width");
+    const initialSvgHeight = +svgElement.attr("height");
+    const margin = { top: 40, right: 120, bottom: 80, left: 450 };
+    let width = initialSvgWidth - margin.left - margin.right;
+    let height = initialSvgHeight - margin.top - margin.bottom;
+    const duration = 500;
+    let nodeCounter = 0;
+    const g = svgElement.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+    const treemap = d3.tree().nodeSize([40, 0]);
+    let rootNode = d3.hierarchy(treeData, d => d.children);
+    rootNode.x0 = 0;
+    rootNode.y0 = 0;
+
+    if (rootNode.children) {
+      rootNode.children.forEach(d_child => {
+        if (d_child.children) { collapseBranch(d_child); }
+      });
+    }
+    updateTree(rootNode);
+
+    function collapseBranch(d) { if (d.children) { d._children = d.children; d._children.forEach(collapseBranch); d.children = null; } }
+    function expandBranch(d) { if (d._children) { d.children = d._children; d._children = null; } if (d.children) { d.children.forEach(expandBranch); } }
+    window.expandAll = () => { expandBranch(rootNode); updateTree(rootNode); };
+    window.collapseAll = () => { if (rootNode.children) { rootNode.children.forEach(collapseBranch); } updateTree(rootNode); };
+    window.resetView = () => { if (rootNode.children) { rootNode.children.forEach(d_child => { if (d_child.children || d_child._children) { collapseBranch(d_child); } }); } if (rootNode._children && !rootNode.children) { rootNode.children = rootNode._children; rootNode._children = null; } updateTree(rootNode); };
+
+    function updateTree(source) {
+      const treeLayoutData = treemap(rootNode);
+      let nodes = treeLayoutData.descendants();
+      let links = treeLayoutData.descendants().slice(1);
+
+      let minX = 0;
+      let maxX = 0;
+      if (nodes.length > 0) {
+        minX = d3.min(nodes, d => d.x);
+        maxX = d3.max(nodes, d => d.x);
+      }
+
+      let neededHeight = Math.max(initialSvgHeight, maxX - minX + margin.top + margin.bottom + 100);
+      svgElement.transition().duration(duration / 2).attr("height", neededHeight);
+      g.transition().duration(duration / 2).attr("transform", `translate(${margin.left},${margin.top - minX + 40})`);
+
+      nodes.forEach(d => { d.y = d.depth * 400; }); // Adjust horizontal separation if needed
+
+      const node = g.selectAll('g.node').data(nodes, d => d.id || (d.id = ++nodeCounter));
+      const nodeEnter = node.enter().append('g')
+        .attr('class', d => "node" + (d.children || d._children ? " node--internal" : " node--leaf") + (d._children ? " _children" : ""))
+        .attr('transform', d => `translate(${source.y0},${source.x0})`)
+        .on('click', (event, d) => { if (d.children) { d._children = d.children; d.children = null; } else if (d._children) { d.children = d._children; d._children = null; } updateTree(d); })
+        .style('cursor', d => (d.children || d._children) ? 'pointer' : 'default');
+
+      nodeEnter.append('circle').attr('r', 1e-6);
+
+      nodeEnter.append('text')
+        .attr('dy', '.35em')
+        .attr('x', d => d.children || d._children ? -14 : 14)
+        .attr('text-anchor', d => d.children || d._children ? 'end' : 'start')
+        .style("fill-opacity", 1e-6)
+        .call(wrapText, 380);
+
+      const nodeUpdate = nodeEnter.merge(node);
+      nodeUpdate.transition().duration(duration)
+        .attr('transform', d => `translate(${d.y},${d.x})`)
+        .attr('class', d => "node" + (d.children ? " node--internal" : " node--leaf") + (d._children ? " node--internal _children" : ""));
+
+      nodeUpdate.select('circle').attr('r', 8.5)
+        .style('fill', d => {
+            let palette;
+            if (d.depth === 0) {
+                palette = levelSpecificPalettes[0];
+            } else if (d.depth === 1) {
+                palette = phaseColors[d.data.originalStageName] || phaseColors.Default;
+            } else {
+                palette = levelSpecificPalettes[d.depth] || levelSpecificPalettes.default;
+            }
+            if (d._children) return palette.collapsedFill;
+            if (d.children) return palette.fill;
+            return "#fff";
+        })
+        .style('stroke', d => {
+            let palette;
+            if (d.depth === 0) {
+                palette = levelSpecificPalettes[0];
+            } else if (d.depth === 1) {
+                palette = phaseColors[d.data.originalStageName] || phaseColors.Default;
+            } else {
+                palette = levelSpecificPalettes[d.depth] || levelSpecificPalettes.default;
+            }
+            return palette.stroke;
+        });
+      nodeUpdate.select('text').style("fill-opacity", 1).call(wrapText, 380);
+
+      const nodeExit = node.exit().transition().duration(duration).attr('transform', d => `translate(${source.y},${source.x})`).remove();
+      nodeExit.select('circle').attr('r', 1e-6);
+      nodeExit.select('text').style('fill-opacity', 1e-6);
+
+      const link = g.selectAll('path.link').data(links, d => d.id);
+      const linkEnter = link.enter().insert('path', "g").attr('class', 'link').attr('d', d => { const o = { x: source.x0, y: source.y0 }; return diagonal(o, o); });
+
+      linkEnter.merge(link).transition().duration(duration).attr('d', d => diagonal(d, d.parent))
+        .style('stroke', d => {
+            const sourceNode = d.parent;
+            if (!sourceNode) return phaseColors.Default.stroke;
+            const l1AncestorName = sourceNode.data.originalStageName;
+            const colorPalette = phaseColors[l1AncestorName] || phaseColors.Default;
+            return colorPalette.stroke;
+        });
+      link.exit().transition().duration(duration).attr('d', d => { const o = { x: source.x, y: source.y }; return diagonal(o, o); }).remove();
+      nodes.forEach(d => { d.x0 = d.x; d.y0 = d.y; });
+    }
+
+    function diagonal(s, d) { return `M ${s.y} ${s.x} C ${(s.y + d.y) / 2} ${s.x}, ${(s.y + d.y) / 2} ${d.x}, ${d.y} ${d.x}`; }
+
+    function wrapText(textElements, maxWidth) {
+        const textPartColors = {
+            name: '#343a40',
+            count: '#0056b3'
+        };
+        const countRegex = /(\s\(Total Count: \d+\))$/;
+
+        textElements.each(function () {
+            const textD3 = d3.select(this);
+            const originalNodeText = textD3.datum().data.name;
+            const x = parseFloat(textD3.attr("x") || 0);
+            const initialDy = textD3.attr("dy");
+            const textAnchor = textD3.attr("text-anchor");
+            const lineHeight = 1.1;
+
+            textD3.text(null);
+
+            let namePart = originalNodeText;
+            let countPartText = "";
+
+            const countMatch = originalNodeText.match(countRegex);
+            if (countMatch && originalNodeText.endsWith(countMatch[0])) {
+                namePart = originalNodeText.substring(0, originalNodeText.length - countMatch[0].length).trim();
+                countPartText = countMatch[0].trim();
+            }
+
+            const tokens = [];
+            namePart.split(/\s+/).filter(Boolean).forEach(word => {
+                tokens.push({ text: word, type: 'name' });
+            });
+            if (countPartText) {
+                tokens.push({ text: countPartText, type: 'count' });
+            }
+
+            if (tokens.length === 0 && originalNodeText) {
+                tokens.push({ text: originalNodeText, type: 'name' });
+            }
+
+            let currentTspan = textD3.append("tspan").attr("x", x).attr("dy", initialDy);
+            if (textAnchor === "end") currentTspan.attr("text-anchor", "end");
+
+            let lineTokens = [];
+
+            for (let i = 0; i < tokens.length; i++) {
+                const tokenObj = tokens[i];
+
+                lineTokens.push(tokenObj);
+                currentTspan.text(lineTokens.map(t => t.text).join(" "));
+
+                if (currentTspan.node().getComputedTextLength() > maxWidth && lineTokens.length > 1) {
+                    lineTokens.pop();
+
+                    currentTspan.text(null);
+                    lineTokens.forEach((prevToken, idx) => {
+                        currentTspan.append("tspan")
+                            .text((idx > 0 ? " " : "") + prevToken.text)
+                            .style("fill", textPartColors[prevToken.type] || textPartColors.name)
+                            .style("font-weight", prevToken.type === 'count' ? "bold" : "normal");
+                    });
+
+                    lineTokens = [tokenObj];
+                    currentTspan = textD3.append("tspan").attr("x", x).attr("dy", lineHeight + "em");
+                    if (textAnchor === "end") currentTspan.attr("text-anchor", "end");
+                }
+            }
+
+            currentTspan.text(null);
+            lineTokens.forEach((token, idx) => {
+                currentTspan.append("tspan")
+                    .text((idx > 0 ? " " : "") + token.text)
+                    .style("fill", textPartColors[token.type] || textPartColors.name)
+                    .style("font-weight", token.type === 'count' ? "bold" : "normal");
+            });
+
+            if (textD3.selectAll("tspan > tspan").empty() && textD3.select("tspan").text().length === 0 && originalNodeText) {
+                let t = textD3.select("tspan");
+                let displayText = originalNodeText;
+                t.text(displayText).style("fill", textPartColors.name);
+                if (t.node() && t.node().getComputedTextLength() > maxWidth && displayText.length > 20) {
+                    let estimatedChars = Math.floor(maxWidth / (t.node().getComputedTextLength()/displayText.length) );
+                    displayText = displayText.substring(0, Math.max(0, estimatedChars - 3)) + "...";
+                    t.text(displayText);
+                }
+            }
+        });
+    }
+  </script>
+</body>
+</html>

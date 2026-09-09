@@ -1,0 +1,477 @@
+{
+  ".claude/settings.local.json": {
+    "mtime": 1784162045.4222589,
+    "ast_hash": "908b1712697a2b86278ccb698a87bfc3",
+    "semantic_hash": "908b1712697a2b86278ccb698a87bfc3"
+  },
+  ".vscode/launch.json": {
+    "mtime": 1775260632.9022038,
+    "ast_hash": "233d0351b9bad9c5cd60fc9a68ad807d",
+    "semantic_hash": "233d0351b9bad9c5cd60fc9a68ad807d"
+  },
+  ".vscode/settings.json": {
+    "mtime": 1775260632.9057975,
+    "ast_hash": "161442f2538533186b003a89a8f121d2",
+    "semantic_hash": "161442f2538533186b003a89a8f121d2"
+  },
+  ".wpilib/wpilib_preferences.json": {
+    "mtime": 1775947565.7647612,
+    "ast_hash": "db185cbf1bcfbe2ca7ea73f1c38ca7c8",
+    "semantic_hash": "db185cbf1bcfbe2ca7ea73f1c38ca7c8"
+  },
+  "ascope_assets/AdvantageScope 2-18-2026.json": {
+    "mtime": 1775260632.90802,
+    "ast_hash": "e49edbb974544a11b8a7824d969cd4db",
+    "semantic_hash": "e49edbb974544a11b8a7824d969cd4db"
+  },
+  "ascope_assets/AdvantageScope 4-11-2026.json": {
+    "mtime": 1775947565.767025,
+    "ast_hash": "a6f62fc8e8e812e25bfdb92f3fe234ae",
+    "semantic_hash": "a6f62fc8e8e812e25bfdb92f3fe234ae"
+  },
+  "ascope_assets/Robot_Pearadox2026/config.json": {
+    "mtime": 1775260632.912326,
+    "ast_hash": "cf24a689cb2f31cee06a64d26e077cc8",
+    "semantic_hash": "cf24a689cb2f31cee06a64d26e077cc8"
+  },
+  "ascope_assets/Robot_Pearsephone/config.json": {
+    "mtime": 1775947565.7680328,
+    "ast_hash": "12f549b2cce23d34fb2eb2ab49602748",
+    "semantic_hash": "12f549b2cce23d34fb2eb2ab49602748"
+  },
+  "build.gradle": {
+    "mtime": 1777420483.615797,
+    "ast_hash": "18f26ac2c078edac41ef6f2fe03e6742",
+    "semantic_hash": "18f26ac2c078edac41ef6f2fe03e6742"
+  },
+  "gradlew": {
+    "mtime": 1775260633.10591,
+    "ast_hash": "acf9007174811a6ebb9c43febccbcf37",
+    "semantic_hash": "acf9007174811a6ebb9c43febccbcf37"
+  },
+  "settings.gradle": {
+    "mtime": 1775260633.1099188,
+    "ast_hash": "2e125c6e8412ef63397e8d96804df2ae",
+    "semantic_hash": "2e125c6e8412ef63397e8d96804df2ae"
+  },
+  "simgui-ds.json": {
+    "mtime": 1775947566.0870538,
+    "ast_hash": "bca2c297ce29b3001345e2f6a93f18e2",
+    "semantic_hash": "bca2c297ce29b3001345e2f6a93f18e2"
+  },
+  "src/main/deploy/pathplanner/navgrid.json": {
+    "mtime": 1775260633.1201456,
+    "ast_hash": "58198b9cd6e07f1423db6fdf514c933c",
+    "semantic_hash": "58198b9cd6e07f1423db6fdf514c933c"
+  },
+  "src/main/deploy/pathplanner/settings.json": {
+    "mtime": 1777420483.6578825,
+    "ast_hash": "2528415a0c47c2063d57a4fb91be3a39",
+    "semantic_hash": "2528415a0c47c2063d57a4fb91be3a39"
+  },
+  "src/main/deploy/practice_field.json": {
+    "mtime": 1777420483.6588788,
+    "ast_hash": "0e2e8f9441884a57be09d76b22902429",
+    "semantic_hash": "0e2e8f9441884a57be09d76b22902429"
+  },
+  "src/main/java/frc/lib/drivers/MovingShotSolver.java": {
+    "mtime": 1779931604.357891,
+    "ast_hash": "44260e3740ac476941a873d153ac5899",
+    "semantic_hash": "44260e3740ac476941a873d153ac5899"
+  },
+  "src/main/java/frc/lib/drivers/PearadoxTalonFX.java": {
+    "mtime": 1775260633.1457627,
+    "ast_hash": "aa96316a71def1fcaa370bd58e9e203b",
+    "semantic_hash": "aa96316a71def1fcaa370bd58e9e203b"
+  },
+  "src/main/java/frc/robot/Constants.java": {
+    "mtime": 1779931604.3588881,
+    "ast_hash": "c2b6ce375ed2f9a60519b7292bb2c6c3",
+    "semantic_hash": "c2b6ce375ed2f9a60519b7292bb2c6c3"
+  },
+  "src/main/java/frc/robot/Main.java": {
+    "mtime": 1775260633.1457627,
+    "ast_hash": "84bc8a38a52ab1e278a795a332ec3f4d",
+    "semantic_hash": "84bc8a38a52ab1e278a795a332ec3f4d"
+  },
+  "src/main/java/frc/robot/Robot.java": {
+    "mtime": 1777421281.2473817,
+    "ast_hash": "0b6e41a31d5f6c4461df0acf073c1457",
+    "semantic_hash": "0b6e41a31d5f6c4461df0acf073c1457"
+  },
+  "src/main/java/frc/robot/RobotContainer.java": {
+    "mtime": 1779931612.537347,
+    "ast_hash": "311ed0b4200876b4c29fb76dd2b23e01",
+    "semantic_hash": "311ed0b4200876b4c29fb76dd2b23e01"
+  },
+  "src/main/java/frc/robot/RobotVisualizer.java": {
+    "mtime": 1775947566.133529,
+    "ast_hash": "1a0e109a36460ebe8e2eb5bef4a54145",
+    "semantic_hash": "1a0e109a36460ebe8e2eb5bef4a54145"
+  },
+  "src/main/java/frc/robot/commands/DriveCommands.java": {
+    "mtime": 1775947566.1365192,
+    "ast_hash": "603825b217a71be0f3b68f2915a20777",
+    "semantic_hash": "603825b217a71be0f3b68f2915a20777"
+  },
+  "src/main/java/frc/robot/commands/ShootOnTheMove.java": {
+    "mtime": 1777421281.2515023,
+    "ast_hash": "617694459c84a8d323efc3c9f3c160ae",
+    "semantic_hash": "617694459c84a8d323efc3c9f3c160ae"
+  },
+  "src/main/java/frc/robot/generated/TunerConstants.java": {
+    "mtime": 1779931604.3613887,
+    "ast_hash": "8ba5b45680df43d69ce0c80130b40f4f",
+    "semantic_hash": "8ba5b45680df43d69ce0c80130b40f4f"
+  },
+  "src/main/java/frc/robot/subsystems/climber/Climber.java": {
+    "mtime": 1775260633.161098,
+    "ast_hash": "b4df5b8cb8a2354ecc663a587f5cd9e3",
+    "semantic_hash": "b4df5b8cb8a2354ecc663a587f5cd9e3"
+  },
+  "src/main/java/frc/robot/subsystems/climber/ClimberConstants.java": {
+    "mtime": 1775260633.161098,
+    "ast_hash": "f1decdec348a22830aaad8b78a62aed2",
+    "semantic_hash": "f1decdec348a22830aaad8b78a62aed2"
+  },
+  "src/main/java/frc/robot/subsystems/climber/ClimberIO.java": {
+    "mtime": 1775260633.161098,
+    "ast_hash": "6254fd13d347eb8f835dbd8d2a35d93b",
+    "semantic_hash": "6254fd13d347eb8f835dbd8d2a35d93b"
+  },
+  "src/main/java/frc/robot/subsystems/climber/ClimberIOReal.java": {
+    "mtime": 1775260633.161098,
+    "ast_hash": "72d1b49e4bf37ff76088bea516f6cfc4",
+    "semantic_hash": "72d1b49e4bf37ff76088bea516f6cfc4"
+  },
+  "src/main/java/frc/robot/subsystems/climber/ClimberIOSim.java": {
+    "mtime": 1775947566.142499,
+    "ast_hash": "deb4a338e166393ba1889b9c2a0ffbd4",
+    "semantic_hash": "deb4a338e166393ba1889b9c2a0ffbd4"
+  },
+  "src/main/java/frc/robot/subsystems/climber/ClimberIOTalonFX.java": {
+    "mtime": 1775947566.1445394,
+    "ast_hash": "6284c44918c68ed85ea9d09ccb8bec25",
+    "semantic_hash": "6284c44918c68ed85ea9d09ccb8bec25"
+  },
+  "src/main/java/frc/robot/subsystems/drive/Drive.java": {
+    "mtime": 1776276769.6804416,
+    "ast_hash": "abc4ea6bcd33d2394dcab34d957804d6",
+    "semantic_hash": "abc4ea6bcd33d2394dcab34d957804d6"
+  },
+  "src/main/java/frc/robot/subsystems/drive/GyroIO.java": {
+    "mtime": 1775260633.1663795,
+    "ast_hash": "839827b878226c35d9a397bb9d2d6cd1",
+    "semantic_hash": "839827b878226c35d9a397bb9d2d6cd1"
+  },
+  "src/main/java/frc/robot/subsystems/drive/GyroIONavX.java": {
+    "mtime": 1775260633.1663795,
+    "ast_hash": "53861a2c309b2fe9cac74409348c37ce",
+    "semantic_hash": "53861a2c309b2fe9cac74409348c37ce"
+  },
+  "src/main/java/frc/robot/subsystems/drive/GyroIOPigeon2.java": {
+    "mtime": 1775260633.1677477,
+    "ast_hash": "4cbadbe5d5697f29e570cc09a07fed18",
+    "semantic_hash": "4cbadbe5d5697f29e570cc09a07fed18"
+  },
+  "src/main/java/frc/robot/subsystems/drive/Module.java": {
+    "mtime": 1775260633.1684616,
+    "ast_hash": "1ccaaed448fd4428206bfd97f9807103",
+    "semantic_hash": "1ccaaed448fd4428206bfd97f9807103"
+  },
+  "src/main/java/frc/robot/subsystems/drive/ModuleIO.java": {
+    "mtime": 1775260633.169213,
+    "ast_hash": "41295b400fec9ae01612302aa6d1ffdb",
+    "semantic_hash": "41295b400fec9ae01612302aa6d1ffdb"
+  },
+  "src/main/java/frc/robot/subsystems/drive/ModuleIOSim.java": {
+    "mtime": 1775260633.169213,
+    "ast_hash": "8d0b2c247d0e8915a40d7415a05a9d5d",
+    "semantic_hash": "8d0b2c247d0e8915a40d7415a05a9d5d"
+  },
+  "src/main/java/frc/robot/subsystems/drive/ModuleIOTalonFX.java": {
+    "mtime": 1777420483.666059,
+    "ast_hash": "a26f25b4d9aa6f55a2fbb6337db5e7fd",
+    "semantic_hash": "a26f25b4d9aa6f55a2fbb6337db5e7fd"
+  },
+  "src/main/java/frc/robot/subsystems/drive/PhoenixOdometryThread.java": {
+    "mtime": 1775260633.1713889,
+    "ast_hash": "ce8734714711dae759a4b3768e65d18c",
+    "semantic_hash": "ce8734714711dae759a4b3768e65d18c"
+  },
+  "src/main/java/frc/robot/subsystems/feeder/Feeder.java": {
+    "mtime": 1777420483.6670558,
+    "ast_hash": "a89f17e983de73eeb594bff0a9d0f68b",
+    "semantic_hash": "a89f17e983de73eeb594bff0a9d0f68b"
+  },
+  "src/main/java/frc/robot/subsystems/feeder/FeederConstants.java": {
+    "mtime": 1777420483.6680512,
+    "ast_hash": "72e43db62c76258c4d43e50bbb32aa6a",
+    "semantic_hash": "72e43db62c76258c4d43e50bbb32aa6a"
+  },
+  "src/main/java/frc/robot/subsystems/feeder/FeederIO.java": {
+    "mtime": 1775260633.1736069,
+    "ast_hash": "a3c5fa572128fc1ce061a9a34a48d846",
+    "semantic_hash": "a3c5fa572128fc1ce061a9a34a48d846"
+  },
+  "src/main/java/frc/robot/subsystems/feeder/FeederIOReal.java": {
+    "mtime": 1775260633.1736069,
+    "ast_hash": "36e0cea3301bcdfc4908c6be4b6d86d4",
+    "semantic_hash": "36e0cea3301bcdfc4908c6be4b6d86d4"
+  },
+  "src/main/java/frc/robot/subsystems/feeder/FeederIOSim.java": {
+    "mtime": 1775260633.174422,
+    "ast_hash": "730ccbb74c5981f6f65589213254b389",
+    "semantic_hash": "730ccbb74c5981f6f65589213254b389"
+  },
+  "src/main/java/frc/robot/subsystems/feeder/FeederIOTalonFX.java": {
+    "mtime": 1776122164.1891153,
+    "ast_hash": "5af9043e4b8f81f58ec8c9a0692de677",
+    "semantic_hash": "5af9043e4b8f81f58ec8c9a0692de677"
+  },
+  "src/main/java/frc/robot/subsystems/intake/Intake.java": {
+    "mtime": 1779931612.5393405,
+    "ast_hash": "34522bc25d5cd74f92984c3a46200527",
+    "semantic_hash": "34522bc25d5cd74f92984c3a46200527"
+  },
+  "src/main/java/frc/robot/subsystems/intake/IntakeConstants.java": {
+    "mtime": 1779931612.5403376,
+    "ast_hash": "f01ed460719bc02f0284e0a133f244fa",
+    "semantic_hash": "f01ed460719bc02f0284e0a133f244fa"
+  },
+  "src/main/java/frc/robot/subsystems/intake/IntakeIO.java": {
+    "mtime": 1777421281.2527397,
+    "ast_hash": "62ff113afe3831124835279848f0bd77",
+    "semantic_hash": "62ff113afe3831124835279848f0bd77"
+  },
+  "src/main/java/frc/robot/subsystems/intake/IntakeIOReal.java": {
+    "mtime": 1775260633.1773353,
+    "ast_hash": "1e3f975279793b53aa6cbb793dac6ea1",
+    "semantic_hash": "1e3f975279793b53aa6cbb793dac6ea1"
+  },
+  "src/main/java/frc/robot/subsystems/intake/IntakeIOSim.java": {
+    "mtime": 1775947566.1580067,
+    "ast_hash": "7661fb361c6e0aeb5aea2289d83b0210",
+    "semantic_hash": "7661fb361c6e0aeb5aea2289d83b0210"
+  },
+  "src/main/java/frc/robot/subsystems/intake/IntakeIOTalonFX.java": {
+    "mtime": 1777421281.2537408,
+    "ast_hash": "855991d43af164216496e50dcb66cd9a",
+    "semantic_hash": "855991d43af164216496e50dcb66cd9a"
+  },
+  "src/main/java/frc/robot/subsystems/intake/MechVisualizer.java": {
+    "mtime": 1775947566.1615758,
+    "ast_hash": "f9d913f5b22e6838412474d38ac291e3",
+    "semantic_hash": "f9d913f5b22e6838412474d38ac291e3"
+  },
+  "src/main/java/frc/robot/subsystems/launcher/Launcher.java": {
+    "mtime": 1777421281.2550642,
+    "ast_hash": "199ee8c0ef9b60aaca804f8bbbaa19ab",
+    "semantic_hash": "199ee8c0ef9b60aaca804f8bbbaa19ab"
+  },
+  "src/main/java/frc/robot/subsystems/launcher/LauncherConstants.java": {
+    "mtime": 1777421281.2560658,
+    "ast_hash": "e1afc33f4a159e8439951c5ef12ff38b",
+    "semantic_hash": "e1afc33f4a159e8439951c5ef12ff38b"
+  },
+  "src/main/java/frc/robot/subsystems/launcher/LauncherIO.java": {
+    "mtime": 1777421281.2570632,
+    "ast_hash": "9a8f2eee5a464abb1836aa7e3e5d8926",
+    "semantic_hash": "9a8f2eee5a464abb1836aa7e3e5d8926"
+  },
+  "src/main/java/frc/robot/subsystems/launcher/LauncherIOReal.java": {
+    "mtime": 1775260633.1863422,
+    "ast_hash": "1a75b0093cc8337edfa392f736d0702e",
+    "semantic_hash": "1a75b0093cc8337edfa392f736d0702e"
+  },
+  "src/main/java/frc/robot/subsystems/launcher/LauncherIOSim.java": {
+    "mtime": 1775947566.169213,
+    "ast_hash": "5ed861d91c2dccc59d2cb868f218d6c7",
+    "semantic_hash": "5ed861d91c2dccc59d2cb868f218d6c7"
+  },
+  "src/main/java/frc/robot/subsystems/launcher/LauncherIOTalonFX.java": {
+    "mtime": 1777421281.2580588,
+    "ast_hash": "49c138ca42ff6f28c0d9017a09b2d13f",
+    "semantic_hash": "49c138ca42ff6f28c0d9017a09b2d13f"
+  },
+  "src/main/java/frc/robot/subsystems/launcher/LauncherVisualizer.java": {
+    "mtime": 1775947566.173144,
+    "ast_hash": "c2eb92b1dab97335e4f5342b668d93d2",
+    "semantic_hash": "c2eb92b1dab97335e4f5342b668d93d2"
+  },
+  "src/main/java/frc/robot/subsystems/leds/LEDStrip.java": {
+    "mtime": 1775947566.17546,
+    "ast_hash": "bf0a9ca6bfafa2b7f2d827b055ed4a60",
+    "semantic_hash": "bf0a9ca6bfafa2b7f2d827b055ed4a60"
+  },
+  "src/main/java/frc/robot/subsystems/spindexer/Spindexer.java": {
+    "mtime": 1779931612.5443237,
+    "ast_hash": "f3c40482216d6b72068112b441ddf8a9",
+    "semantic_hash": "f3c40482216d6b72068112b441ddf8a9"
+  },
+  "src/main/java/frc/robot/subsystems/spindexer/SpindexerConstants.java": {
+    "mtime": 1779931612.551381,
+    "ast_hash": "861df4dcd20b15cc34202aa4a8dacb41",
+    "semantic_hash": "861df4dcd20b15cc34202aa4a8dacb41"
+  },
+  "src/main/java/frc/robot/subsystems/spindexer/SpindexerIO.java": {
+    "mtime": 1775260633.1903517,
+    "ast_hash": "76e3d0a79b27a378db1c8fa781ca3618",
+    "semantic_hash": "76e3d0a79b27a378db1c8fa781ca3618"
+  },
+  "src/main/java/frc/robot/subsystems/spindexer/SpindexerIOReal.java": {
+    "mtime": 1775260633.1903517,
+    "ast_hash": "aa6c3f14ab90987061d870483d784031",
+    "semantic_hash": "aa6c3f14ab90987061d870483d784031"
+  },
+  "src/main/java/frc/robot/subsystems/spindexer/SpindexerIOSim.java": {
+    "mtime": 1775260633.1903517,
+    "ast_hash": "19d77040207f3b29e79a0a6ca8d56b5a",
+    "semantic_hash": "19d77040207f3b29e79a0a6ca8d56b5a"
+  },
+  "src/main/java/frc/robot/subsystems/spindexer/SpindexerIOTalonFX.java": {
+    "mtime": 1775260633.192355,
+    "ast_hash": "c05bf58d4d93475155bff07ba2150ad8",
+    "semantic_hash": "c05bf58d4d93475155bff07ba2150ad8"
+  },
+  "src/main/java/frc/robot/subsystems/turret/Turret.java": {
+    "mtime": 1776811140.6954045,
+    "ast_hash": "46568601be1cae12a29c102eb66afa0d",
+    "semantic_hash": "46568601be1cae12a29c102eb66afa0d"
+  },
+  "src/main/java/frc/robot/subsystems/turret/TurretConstants.java": {
+    "mtime": 1777421281.2610488,
+    "ast_hash": "92a20188d84e63e5779a66b8e06183b1",
+    "semantic_hash": "92a20188d84e63e5779a66b8e06183b1"
+  },
+  "src/main/java/frc/robot/subsystems/turret/TurretIO.java": {
+    "mtime": 1775260633.1943586,
+    "ast_hash": "6293be5145c21d3cab8adb7201fc2aed",
+    "semantic_hash": "6293be5145c21d3cab8adb7201fc2aed"
+  },
+  "src/main/java/frc/robot/subsystems/turret/TurretIOReal.java": {
+    "mtime": 1775260633.1943586,
+    "ast_hash": "733d052ddb7e78c9152bd3b01c991efc",
+    "semantic_hash": "733d052ddb7e78c9152bd3b01c991efc"
+  },
+  "src/main/java/frc/robot/subsystems/turret/TurretIOSim.java": {
+    "mtime": 1775260633.1943586,
+    "ast_hash": "719b0885f9be361d04dbe3ebec965e59",
+    "semantic_hash": "719b0885f9be361d04dbe3ebec965e59"
+  },
+  "src/main/java/frc/robot/subsystems/turret/TurretIOTalonFX.java": {
+    "mtime": 1775260633.1943586,
+    "ast_hash": "0312f43ebcd5952c2ffd541e351078ff",
+    "semantic_hash": "0312f43ebcd5952c2ffd541e351078ff"
+  },
+  "src/main/java/frc/robot/subsystems/vision/Vision.java": {
+    "mtime": 1777421281.263043,
+    "ast_hash": "d5d547139aee6b19574c48d812d7731d",
+    "semantic_hash": "d5d547139aee6b19574c48d812d7731d"
+  },
+  "src/main/java/frc/robot/subsystems/vision/VisionConstants.java": {
+    "mtime": 1777420483.6762679,
+    "ast_hash": "857c5dd0a551810218439f74305509b3",
+    "semantic_hash": "857c5dd0a551810218439f74305509b3"
+  },
+  "src/main/java/frc/robot/subsystems/vision/VisionIO.java": {
+    "mtime": 1775947566.18961,
+    "ast_hash": "4cfcf324d9a8f196679a7b148282c0c8",
+    "semantic_hash": "4cfcf324d9a8f196679a7b148282c0c8"
+  },
+  "src/main/java/frc/robot/subsystems/vision/VisionIOLimelight.java": {
+    "mtime": 1777072112.7375407,
+    "ast_hash": "671f47c82e01d91e53af25a358b642b1",
+    "semantic_hash": "671f47c82e01d91e53af25a358b642b1"
+  },
+  "src/main/java/frc/robot/subsystems/vision/VisionIOPhotonVision.java": {
+    "mtime": 1775260633.200371,
+    "ast_hash": "22f253ec3232a8695539c036bf920979",
+    "semantic_hash": "22f253ec3232a8695539c036bf920979"
+  },
+  "src/main/java/frc/robot/subsystems/vision/VisionIOPhotonVisionSim.java": {
+    "mtime": 1775260633.200371,
+    "ast_hash": "4b40eac876a843f8ff52cfe6c216d747",
+    "semantic_hash": "4b40eac876a843f8ff52cfe6c216d747"
+  },
+  "src/main/java/frc/robot/util/CircleSim.java": {
+    "mtime": 1775260633.200371,
+    "ast_hash": "aee3bc36ec0414c74f05270c31ee5ba1",
+    "semantic_hash": "aee3bc36ec0414c74f05270c31ee5ba1"
+  },
+  "src/main/java/frc/robot/util/DriveHelpers.java": {
+    "mtime": 1775947566.194594,
+    "ast_hash": "d549a83359f4755c98a33041aa3a64e8",
+    "semantic_hash": "d549a83359f4755c98a33041aa3a64e8"
+  },
+  "src/main/java/frc/robot/util/EnergyTracker.java": {
+    "mtime": 1775260633.2023742,
+    "ast_hash": "afc121d6c2e3c2050cbfc299ea6801e4",
+    "semantic_hash": "afc121d6c2e3c2050cbfc299ea6801e4"
+  },
+  "src/main/java/frc/robot/util/LocalADStarAK.java": {
+    "mtime": 1775260633.2023742,
+    "ast_hash": "fd7b3da04652e6afdaf4b6fbe9b43059",
+    "semantic_hash": "fd7b3da04652e6afdaf4b6fbe9b43059"
+  },
+  "src/main/java/frc/robot/util/LoggedTracer.java": {
+    "mtime": 1775260633.2043777,
+    "ast_hash": "f3f1b5fb598d34489736730a9f3d8168",
+    "semantic_hash": "f3f1b5fb598d34489736730a9f3d8168"
+  },
+  "src/main/java/frc/robot/util/LoggedTunableNumber.java": {
+    "mtime": 1776811140.697398,
+    "ast_hash": "4645ecfc62ec6afc2f63ec4ea7232a72",
+    "semantic_hash": "4645ecfc62ec6afc2f63ec4ea7232a72"
+  },
+  "src/main/java/frc/robot/util/PhoenixUtil.java": {
+    "mtime": 1775260633.2043777,
+    "ast_hash": "cb9f6be5a8d100c6de7f26dfc28beb25",
+    "semantic_hash": "cb9f6be5a8d100c6de7f26dfc28beb25"
+  },
+  "vendordeps/AdvantageKit.json": {
+    "mtime": 1775260633.2063808,
+    "ast_hash": "9688b227b587f5763e3eb491d7868ac2",
+    "semantic_hash": "9688b227b587f5763e3eb491d7868ac2"
+  },
+  "vendordeps/ChoreoLib2026.json": {
+    "mtime": 1775260633.2063808,
+    "ast_hash": "4ff5e46469eb8a396b2c77bbd08440d7",
+    "semantic_hash": "4ff5e46469eb8a396b2c77bbd08440d7"
+  },
+  "vendordeps/PathplannerLib-2026.1.2.json": {
+    "mtime": 1775260633.208384,
+    "ast_hash": "02945c11e91d43364ffe02a3b974f94c",
+    "semantic_hash": "02945c11e91d43364ffe02a3b974f94c"
+  },
+  "vendordeps/Phoenix6-26.1.0.json": {
+    "mtime": 1775260633.208384,
+    "ast_hash": "9e5c9d3651d832bd9f772a740fae59cf",
+    "semantic_hash": "9e5c9d3651d832bd9f772a740fae59cf"
+  },
+  "vendordeps/REVLib.json": {
+    "mtime": 1775260633.208384,
+    "ast_hash": "0783327614a5bd7ed46ed571ae754820",
+    "semantic_hash": "0783327614a5bd7ed46ed571ae754820"
+  },
+  "vendordeps/Studica.json": {
+    "mtime": 1775260633.208384,
+    "ast_hash": "049fd4cd66c58a7f92ca25130f8fee00",
+    "semantic_hash": "049fd4cd66c58a7f92ca25130f8fee00"
+  },
+  "vendordeps/StudicaLib.json": {
+    "mtime": 1775260633.210388,
+    "ast_hash": "cddac722942c55db7faaf88334a452a5",
+    "semantic_hash": "cddac722942c55db7faaf88334a452a5"
+  },
+  "vendordeps/WPILibNewCommands.json": {
+    "mtime": 1775260633.2128997,
+    "ast_hash": "a8ad61fc1075d3770495977a84739d69",
+    "semantic_hash": "a8ad61fc1075d3770495977a84739d69"
+  },
+  "vendordeps/photonlib.json": {
+    "mtime": 1775260633.2149048,
+    "ast_hash": "312246a3dd23f0fddb52581e267e88aa",
+    "semantic_hash": "312246a3dd23f0fddb52581e267e88aa"
+  }
+}
