@@ -65,7 +65,6 @@ import frc.robot.subsystems.turret.TurretIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
-import frc.robot.util.DriveHelpers;
 import frc.robot.util.LoggedTracer;
 import java.util.function.DoubleSupplier;
 import lombok.Getter;
@@ -280,26 +279,27 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     // Drive at a 45° for going over the bump
-    drivercontroller
-        .a()
-        .or(blakeController.a())
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -activeY.getAsDouble(),
-                () -> -activeX.getAsDouble(),
-                () -> DriveHelpers.findClosestCorner(drive::getPose)));
+    // drivercontroller
+    //     .a()
+    //     .or(blakeController.a())
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive,
+    //             () -> -activeY.getAsDouble(),
+    //             () -> -activeX.getAsDouble(),
+    //             () -> DriveHelpers.findClosestCorner(drive::getPose)));
 
-    drivercontroller
-        .y()
-        .or(blakeController.y())
-        .toggleOnTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -activeY.getAsDouble(),
-                () -> -activeX.getAsDouble(),
-                () ->
-                    DriveHelpers.getCourseRotation2d(drive::getChassisSpeeds, drive::getRotation)));
+    // drivercontroller
+    //     .y()
+    //     .or(blakeController.y())
+    //     .toggleOnTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive,
+    //             () -> -activeY.getAsDouble(),
+    //             () -> -activeX.getAsDouble(),
+    //             () ->
+    //                 DriveHelpers.getCourseRotation2d(drive::getChassisSpeeds,
+    // drive::getRotation)));
 
     // drivercontroller
     //     .rightBumper()
@@ -423,13 +423,13 @@ public class RobotContainer {
                     Math.signum(-opController.getLeftY())
                         * IntakeConstants.OP_ADJUST_INCREMENT_DEGREES)));
 
-    Trigger launcherAdjust = new Trigger(() -> Math.abs(opController.getRightY()) > 0.9);
-    launcherAdjust.whileTrue(
-        new RunCommand(
-            () ->
-                launcher.adjustRPSBy(
-                    Math.signum(opController.getRightY())
-                        * IntakeConstants.OP_ADJUST_INCREMENT_DEGREES)));
+    // Trigger launcherAdjust = new Trigger(() -> Math.abs(opController.getRightY()) > 0.9);
+    // launcherAdjust.whileTrue(
+    //     new RunCommand(
+    //         () ->
+    //             launcher.adjustRPSBy(
+    //                 Math.signum(opController.getRightY())
+    //                     * IntakeConstants.OP_ADJUST_INCREMENT_DEGREES)));
 
     turret.setDefaultCommand(
         new RunCommand(
