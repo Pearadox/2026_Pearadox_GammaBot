@@ -35,6 +35,10 @@ public class Turret extends SubsystemBase {
     turretRotationAdjust -= adj;
   }
 
+  public void setRotationAdjust(double adj) {
+    turretRotationAdjust = -adj;
+  }
+
   private final LoggedTunableNumber kP =
       new LoggedTunableNumber("Turret/kP", Constants.currentMode == Mode.SIM ? 3.0 : 6.7, false);
   private final LoggedTunableNumber kI = new LoggedTunableNumber("Turret/kI", 0.0, false);
