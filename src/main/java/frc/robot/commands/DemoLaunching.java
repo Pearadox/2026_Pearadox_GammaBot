@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -29,7 +30,7 @@ public class DemoLaunching {
             Commands.repeatingSequence( // execute code
                 Commands.runOnce(() -> {
                     launcher.setAdjust(Math.random() * velocityVariation.get());
-                    turret.setRotationAdjust(Math.random() * yawRange.get());
+                    turret.setRotationAdjust(Math.random() * Units.degreesToRadians(yawRange.get()));
                 }, launcher, turret),
 
                 new WaitCommand(waitTime.get() * 4/5),
