@@ -42,7 +42,7 @@ public class Launcher extends SubsystemBase {
       new LoggedTunableNumber(
           "Launcher/Manual Mode Default Velocity", LauncherConstants.DEFAULT_VELOCITY_SETPOINT_RPS);
   private final LoggedTunableNumber idleDefaultVelocity =
-      new LoggedTunableNumber("Launcher/Idle Mode Default Velocity", 40);
+      new LoggedTunableNumber("Launcher/Idle Mode Default Velocity", 0);
 
   private final LoggedTunableNumber defaultHoodAngleDegs =
       new LoggedTunableNumber("Launcher/Default Hood Angle Degrees", 11);

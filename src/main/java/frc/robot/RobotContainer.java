@@ -28,7 +28,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.drivers.MovingShotSolver;
-import frc.lib.drivers.MovingShotSolver.Goal;
 import frc.robot.Constants.VisualizerConstants;
 import frc.robot.commands.DemoLaunching;
 import frc.robot.commands.DriveCommands;
@@ -342,7 +341,8 @@ public class RobotContainer {
     //                   feeder.setStopped();
     //                 }),
     //             new ShootOnTheMove(
-    //                     launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d)
+    //                     launcher, feeder, spindexer,
+    // turret::getFieldRelativeTurretAngleRotation2d)
     //                 .alongWith(launcher.score())
     //                 .finallyDo(
     //                     (b) -> {
@@ -364,9 +364,9 @@ public class RobotContainer {
     //             }));
 
     // demo temp control
-    drivercontroller.rightBumper().whileTrue(
-        DemoLaunching.launchRandomly(launcher, turret, feeder, spindexer)
-    );
+    drivercontroller
+        .rightBumper()
+        .whileTrue(DemoLaunching.launchRandomly(launcher, turret, feeder, spindexer));
 
     drivercontroller
         .leftBumper()
@@ -471,8 +471,10 @@ public class RobotContainer {
           .onFalse(new InstantCommand(() -> intake.setDeployed()));
     }
 
-    opController
-        .start()
+    // opController
+    //     .start()
+    drivercontroller
+        .leftStick()
         .onTrue(
             new InstantCommand(
                     () -> {
