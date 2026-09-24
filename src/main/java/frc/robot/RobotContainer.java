@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.drivers.MovingShotSolver;
 import frc.lib.drivers.MovingShotSolver.Goal;
 import frc.robot.Constants.VisualizerConstants;
+import frc.robot.commands.DemoLaunching;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ShootOnTheMove;
 import frc.robot.generated.TunerConstants;
@@ -65,7 +66,6 @@ import frc.robot.subsystems.turret.TurretIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
-import frc.robot.util.DriveHelpers;
 import frc.robot.util.LoggedTracer;
 import java.util.function.DoubleSupplier;
 import lombok.Getter;
@@ -84,7 +84,7 @@ public class RobotContainer {
 
   // Visualizer
   public final RobotVisualizer visualizer;
-  @Getter @Setter private double robotSpeedMultiplier = 1.0;
+  @Getter @Setter private double robotSpeedMultiplier = 0.5;
 
   // Controller
   private final CommandXboxController drivercontroller = new CommandXboxController(0);
@@ -280,26 +280,27 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     // Drive at a 45° for going over the bump
-    drivercontroller
-        .a()
-        .or(blakeController.a())
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -activeY.getAsDouble(),
-                () -> -activeX.getAsDouble(),
-                () -> DriveHelpers.findClosestCorner(drive::getPose)));
+    // drivercontroller
+    //     .a()
+    //     .or(blakeController.a())
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive,
+    //             () -> -activeY.getAsDouble(),
+    //             () -> -activeX.getAsDouble(),
+    //             () -> DriveHelpers.findClosestCorner(drive::getPose)));
 
-    drivercontroller
-        .y()
-        .or(blakeController.y())
-        .toggleOnTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -activeY.getAsDouble(),
-                () -> -activeX.getAsDouble(),
-                () ->
-                    DriveHelpers.getCourseRotation2d(drive::getChassisSpeeds, drive::getRotation)));
+    // drivercontroller
+    //     .y()
+    //     .or(blakeController.y())
+    //     .toggleOnTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive,
+    //             () -> -activeY.getAsDouble(),
+    //             () -> -activeX.getAsDouble(),
+    //             () ->
+    //                 DriveHelpers.getCourseRotation2d(drive::getChassisSpeeds,
+    // drive::getRotation)));
 
     // drivercontroller
     //     .rightBumper()
@@ -327,40 +328,45 @@ public class RobotContainer {
     //             .andThen(new WaitCommand(0.2))
     //             .andThen(new InstantCommand(() -> feeder.setStopped())));
 
-    drivercontroller
-        .rightBumper()
-        .whileTrue(
-            Commands.either(
-                Commands.startEnd(
-                    () -> {
-                      feeder.setRunning();
-                      spindexer.setRunning();
-                    },
-                    () -> {
-                      spindexer.setStopped();
-                      feeder.setStopped();
-                    }),
-                new ShootOnTheMove(
-                        launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d)
-                    .alongWith(launcher.score())
-                    .finallyDo(
-                        (b) -> {
-                          spindexer.setStopped();
-                          feeder.setStopped();
-                        }),
-                () -> launcher.getLauncherState() == LauncherState.MANUAL));
+    // drivercontroller
+    //     .rightBumper()
+    //     .whileTrue(
+    //         Commands.either(
+    //             Commands.startEnd(
+    //                 () -> {
+    //                   feeder.setRunning();
+    //                   spindexer.setRunning();
+    //                 },
+    //                 () -> {
+    //                   spindexer.setStopped();
+    //                   feeder.setStopped();
+    //                 }),
+    //             new ShootOnTheMove(
+    //                     launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d)
+    //                 .alongWith(launcher.score())
+    //                 .finallyDo(
+    //                     (b) -> {
+    //                       spindexer.setStopped();
+    //                       feeder.setStopped();
+    //                     }),
+    //             () -> launcher.getLauncherState() == LauncherState.MANUAL));
 
-    drivercontroller
-        .rightBumper()
-        .and(() -> MovingShotSolver.getInstance().getGoal() == Goal.HUB)
-        .whileTrue(
-            Commands.startEnd(
-                () -> {
-                  setRobotSpeedMultiplier(Math.sqrt(0.25));
-                },
-                () -> {
-                  setRobotSpeedMultiplier(1.0);
-                }));
+    // drivercontroller
+    //     .rightBumper()
+    //     .and(() -> MovingShotSolver.getInstance().getGoal() == Goal.HUB)
+    //     .whileTrue(
+    //         Commands.startEnd(
+    //             () -> {
+    //               setRobotSpeedMultiplier(Math.sqrt(0.25));
+    //             },
+    //             () -> {
+    //               setRobotSpeedMultiplier(1.0);
+    //             }));
+
+    // demo temp control
+    drivercontroller.rightBumper().whileTrue(
+        DemoLaunching.launchRandomly(launcher, turret, feeder, spindexer)
+    );
 
     drivercontroller
         .leftBumper()
@@ -423,13 +429,13 @@ public class RobotContainer {
                     Math.signum(-opController.getLeftY())
                         * IntakeConstants.OP_ADJUST_INCREMENT_DEGREES)));
 
-    Trigger launcherAdjust = new Trigger(() -> Math.abs(opController.getRightY()) > 0.9);
-    launcherAdjust.whileTrue(
-        new RunCommand(
-            () ->
-                launcher.adjustRPSBy(
-                    Math.signum(opController.getRightY())
-                        * IntakeConstants.OP_ADJUST_INCREMENT_DEGREES)));
+    // Trigger launcherAdjust = new Trigger(() -> Math.abs(opController.getRightY()) > 0.9);
+    // launcherAdjust.whileTrue(
+    //     new RunCommand(
+    //         () ->
+    //             launcher.adjustRPSBy(
+    //                 Math.signum(opController.getRightY())
+    //                     * IntakeConstants.OP_ADJUST_INCREMENT_DEGREES)));
 
     turret.setDefaultCommand(
         new RunCommand(

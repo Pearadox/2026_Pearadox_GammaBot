@@ -43,26 +43,37 @@ public class MovingShotSolver {
     map.put(2.640, Units.degreesToRadians(90 - 17.0));
     map.put(3.638, Units.degreesToRadians(90 - 23.0));
     map.put(4.676, Units.degreesToRadians(90 - 27.0));
-    map.put(11.0, Units.degreesToRadians(90 - 35.0));
+    map.put(11.0, Units.degreesToRadians(90 - 37.0));
     return map;
   }
 
   private final InterpolatingDoubleTreeMap LAUNCH_RPS_MAP() {
     // Mapping distance from hub (m) to desired launcher speed (rps)
     InterpolatingDoubleTreeMap map = new InterpolatingDoubleTreeMap();
-    map.put(1.678, 34.906 + 3);
-    map.put(2.682, 38.719 + 3);
-    map.put(3.623, 41.622);
-    map.put(4.805, 45.0 + 4);
-    map.put(11.0, 75.0);
+    map.put(1.678, firstEntryRPS.get());
+    map.put(2.682, secondEntryRPS.get());
+    map.put(3.623, thirdEntryRPS.get());
+    map.put(4.805, fourthEntryRPS.get());
+    map.put(11.0, passingEntryRPS.get());
     return map;
   }
 
   private final InterpolatingDoubleTreeMap launchAngleMap = LAUNCH_ANGLE_MAP();
   private final InterpolatingDoubleTreeMap launchRPSMap = LAUNCH_RPS_MAP();
 
-  private static LoggedTunableNumber woahMultiplierAgain =
+  // multiplier galore
+  private static LoggedTunableNumber allEntriesMultiplier =
       new LoggedTunableNumber("SOTM/everywhere multiplier", 1.0);
+  private static LoggedTunableNumber firstEntryRPS =
+      new LoggedTunableNumber("SOTM/1.678m RPS", 36.769);
+  private static LoggedTunableNumber secondEntryRPS =
+      new LoggedTunableNumber("SOTM/2.682m RPS", 41.719);
+  private static LoggedTunableNumber thirdEntryRPS =
+      new LoggedTunableNumber("SOTM/3.623m RPS", 41.622);
+  private static LoggedTunableNumber fourthEntryRPS =
+      new LoggedTunableNumber("SOTM/4.805m RPS", 47.53);
+  private static LoggedTunableNumber passingEntryRPS =
+      new LoggedTunableNumber("SOTM/11.0m RPS", 75.0);
 
   public enum Goal {
     HUB(Hub.topCenterPointRed, Hub.topCenterPointBlue),
@@ -279,7 +290,7 @@ public class MovingShotSolver {
     double distanceY = targetYOffsetMeters - turretYMeters;
     double distanceToVirtualTarget = Math.hypot(distanceX, distanceY);
 
-    double shooterSpeedRPS = launchRPSMap.get(distanceToVirtualTarget) * woahMultiplierAgain.get();
+    double shooterSpeedRPS = launchRPSMap.get(distanceToVirtualTarget) * allEntriesMultiplier.get();
 
     // Compute field-relative turret angle
 

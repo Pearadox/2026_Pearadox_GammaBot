@@ -31,6 +31,10 @@ public class Launcher extends SubsystemBase {
     rpsAdjust += adj;
   }
 
+  public void setAdjust(double adj) {
+    rpsAdjust = adj;
+  }
+
   private boolean isZeroing = false;
 
   private final LoggedTunableNumber tunableffAmps = new LoggedTunableNumber("Launcher/ffamps", 0);
