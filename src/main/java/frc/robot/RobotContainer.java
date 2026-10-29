@@ -28,7 +28,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.drivers.MovingShotSolver;
-import frc.lib.drivers.MovingShotSolver.Goal;
 import frc.robot.Constants.VisualizerConstants;
 import frc.robot.commands.DemoLaunching;
 import frc.robot.commands.DriveCommands;
@@ -55,6 +54,11 @@ import frc.robot.subsystems.launcher.LauncherIO;
 import frc.robot.subsystems.launcher.LauncherIOReal;
 import frc.robot.subsystems.launcher.LauncherIOSim;
 import frc.robot.subsystems.leds.LEDStrip;
+import frc.robot.subsystems.object_detection.ObjectDetection;
+import frc.robot.subsystems.object_detection.ObjectDetectionConstants;
+import frc.robot.subsystems.object_detection.ObjectDetectionIO;
+import frc.robot.subsystems.object_detection.ObjectDetectionIOReal;
+import frc.robot.subsystems.object_detection.ObjectDetectionIOSim;
 import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerIO;
 import frc.robot.subsystems.spindexer.SpindexerIOReal;
@@ -80,6 +84,7 @@ public class RobotContainer {
   public final Spindexer spindexer;
   private final Turret turret;
   public final Vision vision;
+  public final ObjectDetection objectDetection;
   public static final LEDStrip ledStrip = LEDStrip.getInstance();
 
   // Visualizer
@@ -132,6 +137,7 @@ public class RobotContainer {
                 // new VisionIOPhotonVision(
                 //     VisionConstants.camera1Name, VisionConstants.robotToCamera1)
                 );
+        objectDetection = new ObjectDetection(new ObjectDetectionIOReal(ObjectDetectionConstants.cameraName));
 
         break;
 
@@ -156,6 +162,7 @@ public class RobotContainer {
                 drive::getRotation,
                 intake::turretHasClearance);
         vision = new Vision(drive::addVisionMeasurement, drive::getChassisSpeeds);
+        objectDetection = new ObjectDetection(new ObjectDetectionIOSim());
 
         DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
 
@@ -182,6 +189,7 @@ public class RobotContainer {
                 drive::getRotation,
                 intake::turretHasClearance);
         vision = new Vision(drive::addVisionMeasurement, drive::getChassisSpeeds);
+        objectDetection = new ObjectDetection(new ObjectDetectionIO() {});
 
         break;
     }
@@ -279,7 +287,7 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // Drive at a 45° for going over the bump
+    // // Drive at a 45° for going over the bump
     // drivercontroller
     //     .a()
     //     .or(blakeController.a())
@@ -289,6 +297,16 @@ public class RobotContainer {
     //             () -> -activeY.getAsDouble(),
     //             () -> -activeX.getAsDouble(),
     //             () -> DriveHelpers.findClosestCorner(drive::getPose)));
+
+    drivercontroller
+            .y()
+            .whileTrue(
+                DriveCommands.joystickDriveAtAngle(
+                    drive,
+                    () -> 0.0,
+                    () -> 0.0,
+                    () -> objectDetection.getTargetX()
+                ));
 
     // drivercontroller
     //     .y()
@@ -342,7 +360,8 @@ public class RobotContainer {
     //                   feeder.setStopped();
     //                 }),
     //             new ShootOnTheMove(
-    //                     launcher, feeder, spindexer, turret::getFieldRelativeTurretAngleRotation2d)
+    //                     launcher, feeder, spindexer,
+    // turret::getFieldRelativeTurretAngleRotation2d)
     //                 .alongWith(launcher.score())
     //                 .finallyDo(
     //                     (b) -> {
@@ -364,9 +383,9 @@ public class RobotContainer {
     //             }));
 
     // demo temp control
-    drivercontroller.rightBumper().whileTrue(
-        DemoLaunching.launchRandomly(launcher, turret, feeder, spindexer)
-    );
+    drivercontroller
+        .rightBumper()
+        .whileTrue(DemoLaunching.launchRandomly(launcher, turret, feeder, spindexer));
 
     drivercontroller
         .leftBumper()
