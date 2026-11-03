@@ -142,6 +142,9 @@ public class Robot extends LoggedRobot {
 
     robotContainer.vision.throttleLimelights();
 
+    // Abandon any stick calibration trace that was running before the robot was enabled
+    robotContainer.stickCalibration.disabledInit();
+
     // Pathplanner warm-up command
     CommandScheduler.getInstance()
         .schedule(
@@ -152,7 +155,9 @@ public class Robot extends LoggedRobot {
 
   /** This function is called periodically when disabled. */
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    robotContainer.stickCalibration.disabledPeriodic();
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override

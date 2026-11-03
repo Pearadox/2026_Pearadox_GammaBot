@@ -66,7 +66,9 @@ import frc.robot.subsystems.turret.TurretIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOLimelight;
+import frc.robot.util.CalibratedStick;
 import frc.robot.util.LoggedTracer;
+import frc.robot.util.StickCalibrationRunner;
 import java.util.function.DoubleSupplier;
 
 public class RobotContainer {
@@ -88,6 +90,12 @@ public class RobotContainer {
   private final CommandXboxController opController = new CommandXboxController(1);
 
   private final CommandXboxController blakeController = new CommandXboxController(3);
+
+  // Drive sticks with their saved rim calibration, and the dashboard calibration runner
+  private final CalibratedStick driverStick = new CalibratedStick(drivercontroller.getHID(), 0);
+  private final CalibratedStick blakeStick = new CalibratedStick(blakeController.getHID(), 3);
+  public final StickCalibrationRunner stickCalibration =
+      new StickCalibrationRunner(driverStick, blakeStick);
 
   // Dashboard inputs
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -215,6 +223,18 @@ public class RobotContainer {
   }
 
   /**
+   * The calibrated stick feeding the drive this loop: the driver pad when its RAW sticks are pushed
+   * past the 0.1 deadband (the same rule as activeX, activeY and activeOmega), else the second pad.
+   */
+  private CalibratedStick activeStick() {
+    boolean driverActive =
+        Math.abs(drivercontroller.getLeftY()) > 0.1
+            || Math.abs(drivercontroller.getLeftX()) > 0.1
+            || Math.abs(drivercontroller.getRightX()) > 0.1;
+    return driverActive ? driverStick : blakeStick;
+  }
+
+  /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
@@ -257,8 +277,8 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -activeY.getAsDouble(),
-            () -> -activeX.getAsDouble(),
+            () -> activeStick().read()[0],
+            () -> activeStick().read()[1],
             () -> -activeOmega.getAsDouble()));
 
     // Switch to X pattern when X button is pressed
