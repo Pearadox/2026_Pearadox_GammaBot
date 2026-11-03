@@ -349,6 +349,14 @@ public class Drive extends SubsystemBase {
     return getMaxLinearSpeedMetersPerSec() / DRIVE_BASE_RADIUS;
   }
 
+  /**
+   * Returns the maximum linear acceleration in meters per second squared: the tire grip limit,
+   * friction coefficient times gravity, the same physics the PathPlanner config above uses.
+   */
+  public double getMaxLinearAccelMetersPerSecSq() {
+    return WHEEL_COF * Constants.g;
+  }
+
   /** Returns an array of module translations. */
   public static Translation2d[] getModuleTranslations() {
     return new Translation2d[] {
