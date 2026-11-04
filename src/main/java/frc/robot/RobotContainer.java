@@ -719,6 +719,13 @@ public class RobotContainer {
 
     autoChooser.addOption("Center Depot", new PathPlannerAuto("Center (Depot Intaking)"));
 
+    // Measures the drive feedforward: points the wheels straight, ramps the voltage 0.1 V/s and
+    // drives forward until disabled, then prints kS and kV to the console in the units
+    // TunerConstants.driveGains uses (volts per wheel rotation per second). Run it on an open
+    // stretch of floor for 15 to 20 seconds; it covers under 10 m.
+    autoChooser.addOption(
+        "Drive FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+
     SmartDashboard.putData("clean auto chooser", autoChooser);
   }
 

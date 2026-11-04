@@ -33,8 +33,15 @@ public class TunerConstants {
           .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
   // When using closed-loop control, the drive motor uses the control
   // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
+  //
+  // ModuleIOTalonFX sets Feedback.SensorToMechanismRatio to the drive gear ratio, so these
+  // gains are per WHEEL rotation per second. Tuner X generated kP 0.1 and kV 0.124 per ROTOR
+  // rotation; times the 6.03 gear ratio that is kP 0.6 and kV 0.75. kV had been left at 0.4,
+  // which held the robot to about 73 percent of its commanded speed at every speed (practice
+  // logs of 2026-11-03: 3.7 m/s at full stick against 5.12 commanded, drive motors at 9 V).
+  // The "Drive FF Characterization" auto prints measured kS and kV in these units; prefer those.
   private static final Slot0Configs driveGains =
-      new Slot0Configs().withKP(0.6).withKI(0).withKD(0).withKS(0).withKV(0.4);
+      new Slot0Configs().withKP(0.6).withKI(0).withKD(0).withKS(0).withKV(0.75);
 
   // The closed-loop output type to use for the steer motors;
   // This affects the PID/FF gains for the steer motors
