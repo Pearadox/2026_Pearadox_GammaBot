@@ -695,6 +695,8 @@ public class RobotContainer {
     //     new PathPlannerAuto("CircleBack Adamant Trench (Outpost, 3 Sweeps, Rush)", true));
 
     autoChooser.addOption("Center Depot", new PathPlannerAuto("Center (Depot Intaking)"));
+    autoChooser.addOption("ff char", DriveCommands.feedforwardCharacterization(drive));
+    autoChooser.addOption("wheel radius char", DriveCommands.wheelRadiusCharacterization(drive));
 
     SmartDashboard.putData("clean auto chooser", autoChooser);
   }
