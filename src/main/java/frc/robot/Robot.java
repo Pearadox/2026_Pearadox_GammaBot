@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -142,6 +143,9 @@ public class Robot extends LoggedRobot {
 
     robotContainer.vision.throttleLimelights();
 
+    // Stop hoot logger
+    SignalLogger.stop();
+
     // Pathplanner warm-up command
     CommandScheduler.getInstance()
         .schedule(
@@ -181,6 +185,9 @@ public class Robot extends LoggedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+
+    // Start hoot logger
+    SignalLogger.start();
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
@@ -190,7 +197,7 @@ public class Robot extends LoggedRobot {
 
     robotContainer.spindexer.setStopped();
     robotContainer.feeder.setStopped();
-    robotContainer.launcher.setIdle();
+    robotContainer.launcher.setManual();
 
     Optional<Alliance> allianceOptional = DriverStation.getAlliance();
     alliance = allianceOptional.orElse(Alliance.Blue);

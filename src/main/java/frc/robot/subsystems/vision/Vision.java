@@ -115,7 +115,9 @@ public class Vision extends SubsystemBase {
                 || tagId == 17
                 || tagId == 28
                 || tagId == 22
-                || tagId == 23;
+                || tagId == 23
+                || tagId == 13
+                || tagId == 14;
 
         if (!isTrenchTag) {
           onlySeesTrenchTags = false;

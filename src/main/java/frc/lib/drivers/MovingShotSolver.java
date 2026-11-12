@@ -290,7 +290,8 @@ public class MovingShotSolver {
     double distanceY = targetYOffsetMeters - turretYMeters;
     double distanceToVirtualTarget = Math.hypot(distanceX, distanceY);
 
-    double shooterSpeedRPS = launchRPSMap.get(distanceToVirtualTarget) * allEntriesMultiplier.get();
+    double shooterSpeedRPS =
+        launchRPSMap.get(distanceToVirtualTarget) * allEntriesMultiplier.get() * 0;
 
     // Compute field-relative turret angle
 
