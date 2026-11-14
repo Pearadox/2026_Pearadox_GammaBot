@@ -172,7 +172,7 @@ public class Drive extends SubsystemBase {
       Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
     }
 
-    Logger.recordOutput("Drive/Battery", "Comp Battery 1");
+    Logger.recordOutput("Drive/Battery", "Ex: Comp Battery 1");
 
     // Update odometry
     double[] sampleTimestamps =
