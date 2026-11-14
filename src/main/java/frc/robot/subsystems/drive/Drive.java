@@ -172,6 +172,7 @@ public class Drive extends SubsystemBase {
       Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
     }
 
+    Logger.recordOutput("Drive/Battery", "Ex: Comp Battery 1"); // make sure to enable to the submit button on elastic for this to work!!
     // Update odometry
     double[] sampleTimestamps =
         modules[0].getOdometryTimestamps(); // All signals are sampled together
